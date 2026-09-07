@@ -55,13 +55,12 @@ export const menu: MenuCategory[] = [
     slug: "to-begin",
     title: "To Begin",
     intro: "Small plates to share while the fire settles.",
-    intro_placeholder: true,
     items: [
       { name: "Starter one", description: "Add the dish description here.", price: "On request", featured: true },
       { name: "Starter two", description: "Add the dish description here.", price: "On request" },
       { name: "Starter three", description: "Add the dish description here.", price: "On request" },
     ],
-  } as MenuCategory,
+  },
   {
     slug: "traditional-plates",
     title: "Traditional Plates",
