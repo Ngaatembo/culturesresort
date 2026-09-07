@@ -21,7 +21,7 @@ export const Route = createFileRoute("/gallery")({
       { property: "og:description", content: "A look at the garden, the plates and the atmosphere." },
     ],
   }),
-  component: Gallery;
+  component: Gallery,
 });
 
 function Gallery() {

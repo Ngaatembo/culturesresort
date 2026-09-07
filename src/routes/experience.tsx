@@ -20,7 +20,7 @@ export const Route = createFileRoute("/experience")({
       },
     ],
   }),
-  component: Experience;
+  component: Experience,
 });
 
 function Experience() {
