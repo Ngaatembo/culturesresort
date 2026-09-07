@@ -225,7 +225,7 @@ function Input({
   label,
   error,
   ...rest
-}: { label: string; error?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+}: { label: string; error?: string | undefined } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="block">
       <span className="eyebrow text-muted-foreground">{label}</span>
