@@ -1,10 +1,12 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { whatsappLink, whatsappMessages } from "@/lib/site-data";
+import { placeOrder as placeOrderServerFn } from "@/lib/server/orders";
 
 /**
- * A guest's list of items they want to ask about. This is an ENQUIRY list, not
- * an order: nothing is charged, stored or sent to a kitchen. The only outbound
- * action is opening WhatsApp with the list written out for the guest to send.
+ * A guest's cart line. Adding an item both opens the WhatsApp-prefilled
+ * enquiry (for guests who'd rather just ask) and can be submitted as a real
+ * order, saved to the restaurant's order queue and visible in the admin
+ * dashboard.
  */
 export type OrderLine = {
   id: string;
@@ -13,6 +15,15 @@ export type OrderLine = {
   price: string;
   qty: number;
 };
+
+/** "$4.50" -> 450. Placeholder prices like "On request" become 0. */
+function priceToCents(price: string): number {
+  const match = price.match(/[\d.]+/);
+  if (!match) return 0;
+  return Math.round(parseFloat(match[0]) * 100);
+}
+
+type PlaceOrderResult = { orderId: number; totalCents: number };
 
 type OrderContextValue = {
   lines: OrderLine[];
@@ -26,6 +37,9 @@ type OrderContextValue = {
   clear: () => void;
   has: (id: string) => boolean;
   whatsappHref: string;
+  /** Submits the cart as a real order. Throws on failure — caller shows the message. */
+  placeOrder: (customer: { name: string; phone: string; notes?: string }) => Promise<PlaceOrderResult>;
+  placing: boolean;
 };
 
 const OrderContext = createContext<OrderContextValue | null>(null);
@@ -33,6 +47,7 @@ const OrderContext = createContext<OrderContextValue | null>(null);
 export function OrderProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<OrderLine[]>([]);
   const [open, setOpen] = useState(false);
+  const [placing, setPlacing] = useState(false);
 
   const add = useCallback((item: { id: string; name: string; category: string; price: string }) => {
     setLines((prev) => {
@@ -52,6 +67,27 @@ export function OrderProvider({ children }: { children: ReactNode }) {
   const remove = useCallback((id: string) => setLines((prev) => prev.filter((l) => l.id !== id)), []);
   const clear = useCallback(() => setLines([]), []);
 
+  const placeOrder = useCallback(
+    async (customer: { name: string; phone: string; notes?: string }) => {
+      setPlacing(true);
+      try {
+        const result = await placeOrderServerFn({
+          data: {
+            customerName: customer.name,
+            customerPhone: customer.phone,
+            notes: customer.notes,
+            lines: lines.map((l) => ({ name: l.name, priceCents: priceToCents(l.price), qty: l.qty })),
+          },
+        });
+        setLines([]);
+        return result;
+      } finally {
+        setPlacing(false);
+      }
+    },
+    [lines],
+  );
+
   const value = useMemo<OrderContextValue>(() => {
     const count = lines.reduce((n, l) => n + l.qty, 0);
     const body = lines.length
@@ -70,8 +106,10 @@ export function OrderProvider({ children }: { children: ReactNode }) {
       clear,
       has: (id: string) => lines.some((l) => l.id === id),
       whatsappHref: whatsappLink(body),
+      placeOrder,
+      placing,
     };
-  }, [lines, open, add, setQty, remove, clear]);
+  }, [lines, open, add, setQty, remove, clear, placeOrder, placing]);
 
   return <OrderContext.Provider value={value}>{children}</OrderContext.Provider>;
 }

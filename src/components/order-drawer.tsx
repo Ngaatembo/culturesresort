@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Minus, Plus, X } from "lucide-react";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { useOrder } from "@/lib/order";
@@ -7,7 +7,11 @@ import { business } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
 export function OrderDrawer() {
-  const { open, closeDrawer, lines, count, setQty, remove, clear, whatsappHref } = useOrder();
+  const { open, closeDrawer, lines, count, setQty, remove, clear, whatsappHref, placeOrder, placing } = useOrder();
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [placed, setPlaced] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -16,6 +20,25 @@ export function OrderDrawer() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [closeDrawer]);
+
+  // Reset the "order placed" confirmation once the guest starts a new cart.
+  useEffect(() => {
+    if (lines.length > 0) setPlaced(null);
+  }, [lines.length]);
+
+  const handlePlaceOrder = async () => {
+    setError(null);
+    if (!name.trim() || !phone.trim()) {
+      setError("Please add your name and phone number.");
+      return;
+    }
+    try {
+      const result = await placeOrder({ name, phone });
+      setPlaced(result.orderId);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not place the order. Please try again.");
+    }
+  };
 
   return (
     <>
@@ -55,12 +78,27 @@ export function OrderDrawer() {
         </header>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-6">
-          {lines.length === 0 ? (
+          {placed !== null ? (
+            <div className="border border-dashed border-leaf px-6 py-14 text-center">
+              <p className="font-display text-2xl">Order sent — #{placed}</p>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                The kitchen has your order. You can also send it on WhatsApp so they see it right away.
+              </p>
+              <Link
+                to="/menu"
+                onClick={closeDrawer}
+                className="eyebrow mt-8 inline-block bg-primary px-6 py-4 text-primary-foreground"
+                tabIndex={open ? 0 : -1}
+              >
+                Order something else
+              </Link>
+            </div>
+          ) : lines.length === 0 ? (
             <div className="border border-dashed border-border px-6 py-14 text-center">
               <p className="font-display text-2xl">Nothing here yet</p>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Browse the food and beverage lists and add anything you'd like to ask about. We'll write it into a
-                WhatsApp message for you — no order is placed and nothing is charged.
+                Browse the food and beverage lists and add what you'd like. You can place it as a real order below,
+                or just ask about it on WhatsApp first.
               </p>
               <Link
                 to="/menu"
@@ -120,9 +158,42 @@ export function OrderDrawer() {
         </div>
 
         <footer className="shrink-0 border-t border-border bg-secondary px-5 py-5">
+          {lines.length > 0 && placed === null ? (
+            <div className="mb-4 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                  aria-label="Your name"
+                  className="border border-input bg-background px-3 py-3 text-sm"
+                  tabIndex={open ? 0 : -1}
+                />
+                <input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Phone number"
+                  aria-label="Phone number"
+                  className="border border-input bg-background px-3 py-3 text-sm"
+                  tabIndex={open ? 0 : -1}
+                />
+              </div>
+              {error ? <p className="text-xs text-destructive">{error}</p> : null}
+              <button
+                type="button"
+                onClick={handlePlaceOrder}
+                disabled={placing}
+                className="eyebrow w-full bg-primary px-6 py-4 text-primary-foreground disabled:opacity-60"
+                tabIndex={open ? 0 : -1}
+              >
+                {placing ? "Placing order…" : `Place order — ${count} item${count === 1 ? "" : "s"}`}
+              </button>
+            </div>
+          ) : null}
+
           <p className="text-xs leading-relaxed text-muted-foreground">
-            This is an enquiry, not an order. Prices and availability are confirmed by the restaurant — online
-            ordering and payment are not connected.
+            Placing an order sends it straight to the kitchen queue. You can also send it on WhatsApp so the team
+            sees it right away.
           </p>
           <a
             href={whatsappHref}

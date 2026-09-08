@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "culturesresort",
+  "compatibility_date": "2026-01-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "culturesresort",
+      "database_id": "4b13b866-2222-49f5-a98c-5b15328dcdb8"
+    }
+  ]
+}
