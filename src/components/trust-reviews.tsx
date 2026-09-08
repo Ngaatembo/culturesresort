@@ -11,6 +11,10 @@ import { business, socialLinks } from "@/lib/site-data";
  * Facebook / Instagram buttons render only once socialLinks.* is filled
  * in with a confirmed URL — see src/lib/site-data.ts. Never add a guessed
  * handle here.
+ *
+ * Rendered as a continuation of the homepage's "What guests say" section
+ * (see routes/index.tsx) rather than its own section, so reviews reads
+ * as one block instead of two back-to-back sections about the same topic.
  */
 export function TrustReviews() {
   const socials = [
@@ -19,16 +23,8 @@ export function TrustReviews() {
   ].filter((s): s is typeof s & { href: string } => Boolean(s.href));
 
   return (
-    <section className="grain bg-secondary py-20 lg:py-28">
-      <div className="mx-auto max-w-7xl px-5 lg:px-10">
-        <Reveal>
-          <p className="eyebrow rule-ochre text-primary">Verified</p>
-          <h2 className="mt-6 max-w-2xl font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
-            Read reviews, get directions
-          </h2>
-        </Reveal>
-
-        <Reveal delay={80} className="mt-12 grid gap-4 sm:grid-cols-3">
+    <>
+      <Reveal delay={80} className="mt-14 grid gap-4 sm:grid-cols-3">
           <a
             href={business.mapsHref}
             target="_blank"
@@ -109,7 +105,6 @@ export function TrustReviews() {
             ))}
           </Reveal>
         )}
-      </div>
-    </section>
+    </>
   );
 }

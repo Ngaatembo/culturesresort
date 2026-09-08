@@ -163,7 +163,7 @@ function Home() {
       </section>
 
       {/* Reviews */}
-      <section className="bg-background py-20 lg:py-32">
+      <section className="grain bg-secondary py-20 lg:py-32">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
             <p className="eyebrow rule-ochre text-primary">What guests say</p>
@@ -174,7 +174,7 @@ function Home() {
           <div className="mt-14 grid gap-8 lg:grid-cols-3">
             {testimonials.map((t, i) => (
               <Reveal key={t.name} delay={i * 100}>
-                <div className="grain h-full bg-secondary p-8">
+                <div className="grain h-full bg-background p-8">
                   <div className="eyebrow text-ochre" aria-hidden="true">
                     {"★".repeat(t.rating)}
                     {"☆".repeat(5 - t.rating)}
@@ -189,10 +189,10 @@ function Home() {
               </Reveal>
             ))}
           </div>
+
+          <TrustReviews />
         </div>
       </section>
-
-      <TrustReviews />
 
       {/* Culture band */}
       <section className="relative overflow-hidden">
