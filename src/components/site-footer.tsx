@@ -1,66 +1,39 @@
 import { Link } from "@tanstack/react-router";
 import { ExternalLink, Facebook, Instagram } from "lucide-react";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
-import {
-  business,
-  navLinks,
-  openingHours,
-  socialLinks,
-  whatsappLink,
-  whatsappMessages,
-} from "@/lib/site-data";
+import { business, navLinks, socialLinks, whatsappLink, whatsappMessages } from "@/lib/site-data";
 import logoMark from "@/assets/logo-mark.png";
 
 export function SiteFooter() {
   return (
     <footer className="bg-ink text-bone">
-      <div className="pattern-band h-1.5 w-full" aria-hidden="true" />
-      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-4 lg:px-10 lg:py-24">
-        <div className="lg:col-span-2">
+      <div className="mx-auto grid max-w-7xl gap-14 px-5 py-20 lg:grid-cols-3 lg:px-10 lg:py-28">
+        <div className="lg:col-span-1">
           <div className="flex items-center gap-3">
             <img
               src={logoMark}
               alt=""
               aria-hidden="true"
-              width={44}
-              height={44}
-              className="h-11 w-11 shrink-0 rounded-full"
+              width={52}
+              height={52}
+              className="h-[52px] w-[52px] shrink-0 rounded-full"
             />
-            <p className="font-display text-3xl">Cultures Resort</p>
+            <p className="font-display text-4xl">Cultures Resort</p>
           </div>
-          <p className="mt-4 max-w-sm text-sm leading-relaxed text-bone/70">
+          <p className="mt-5 max-w-xs leading-relaxed text-bone/65">
             A traditional African restaurant and cultural dining destination in Hillside, Harare.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/reservations" className="eyebrow bg-ochre px-5 py-3 text-ink">
-              Reserve a table
-            </Link>
-            <a
-              href={whatsappLink(whatsappMessages.general)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="eyebrow flex items-center gap-2 bg-leaf px-5 py-3 text-bone"
-            >
-              <WhatsAppIcon className="h-4 w-4" aria-hidden="true" />
-              WhatsApp
-            </a>
-            <a href={business.phoneHref} className="eyebrow border border-bone/30 px-5 py-3">
-              Call us
-            </a>
-            <a
-              href={business.mapsHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="eyebrow border border-bone/30 px-5 py-3"
-            >
-              Get directions
-            </a>
-          </div>
+          <Link
+            to="/reservations"
+            className="eyebrow mt-8 inline-block bg-primary px-7 py-4 text-primary-foreground"
+          >
+            Reserve a table →
+          </Link>
         </div>
 
-        <div>
-          <h2 className="eyebrow text-ochre">Find us</h2>
-          <address className="mt-5 space-y-3 text-sm not-italic leading-relaxed text-bone/80">
+        <address className="not-italic lg:col-span-1">
+          <h2 className="eyebrow text-ochre">Contact</h2>
+          <div className="mt-5 space-y-2 text-sm leading-relaxed text-bone/75">
             <a href={business.mapsHref} target="_blank" rel="noopener noreferrer" className="block hover:text-ochre">
               {business.addressLine}
             </a>
@@ -70,30 +43,28 @@ export function SiteFooter() {
             <a href={`mailto:${business.email}`} className="block break-all hover:text-ochre">
               {business.email}
             </a>
-          </address>
-          <h2 className="eyebrow mt-8 text-ochre">Opening hours</h2>
-          <ul className="mt-4 space-y-1 text-sm text-bone/70">
-            {openingHours.slice(0, 3).map((h) => (
-              <li key={h.day} className="flex justify-between gap-4">
-                <span>{h.day}</span>
-                <span>{h.hours}</span>
-              </li>
-            ))}
-            <li>
-              <Link to="/contact" className="text-ochre hover:underline">
-                Full hours
-              </Link>
-            </li>
-          </ul>
-          <div className="mt-8 flex flex-wrap items-center gap-4 text-sm text-bone/80">
+            <Link to="/contact" className="inline-block pt-1 text-ochre hover:underline">
+              Full hours →
+            </Link>
+          </div>
+          <div className="mt-8 flex items-center gap-4">
+            <a
+              href={whatsappLink(whatsappMessages.general)}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp Cultures Resort"
+              className="hover:text-ochre"
+            >
+              <WhatsAppIcon className="h-4 w-4" aria-hidden="true" />
+            </a>
             <a
               href={business.tripadvisorHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 hover:text-ochre"
+              aria-label="Cultures Resort on TripAdvisor"
+              className="hover:text-ochre"
             >
-              TripAdvisor
-              <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+              <ExternalLink className="h-4 w-4" aria-hidden="true" />
             </a>
             {socialLinks.facebook && (
               <a
@@ -118,11 +89,11 @@ export function SiteFooter() {
               </a>
             )}
           </div>
-        </div>
+        </address>
 
-        <nav aria-label="Footer">
+        <nav aria-label="Footer" className="lg:col-span-1">
           <h2 className="eyebrow text-ochre">Explore</h2>
-          <ul className="mt-5 space-y-3 text-sm text-bone/80">
+          <ul className="mt-5 space-y-2 text-sm text-bone/75">
             {navLinks.map((l) => (
               <li key={l.to}>
                 <Link to={l.to} className="hover:text-ochre">
@@ -130,20 +101,10 @@ export function SiteFooter() {
                 </Link>
               </li>
             ))}
-            <li>
-              <Link to="/reservations" className="hover:text-ochre">
-                Reservations
-              </Link>
-            </li>
-            <li>
-              <Link to="/admin" className="text-bone/50 hover:text-ochre">
-                Owner dashboard
-              </Link>
-            </li>
           </ul>
         </nav>
       </div>
-      <div className="border-t border-bone/10 px-5 py-6 text-center text-xs text-bone/50 lg:px-10">
+      <div className="border-t border-bone/10 px-5 py-6 text-center text-xs text-bone/45 lg:px-10">
         © {new Date().getFullYear()} Cultures Resort, Harare.
       </div>
     </footer>

@@ -4,6 +4,8 @@ import { ExperienceGrid } from "@/components/experience-grid";
 import { TrustReviews } from "@/components/trust-reviews";
 import { business, menu, testimonials } from "@/lib/site-data";
 import { images } from "@/lib/gallery";
+import fireGrill from "@/assets/fire-grill.jpg";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -110,31 +112,8 @@ function Home() {
 
       {/* Food */}
       <section className="bg-clay text-bone">
-        <div className="mx-auto grid max-w-7xl items-stretch lg:grid-cols-2">
-          <div className="order-2 px-5 py-16 lg:order-1 lg:px-14 lg:py-28">
-            <Reveal>
-              <p className="eyebrow text-ochre">The kitchen</p>
-              <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
-                Traditional plates, cooked without hurry
-              </h2>
-              <p className="mt-6 max-w-md leading-relaxed text-bone/75">
-                Slow-cooked relishes, grains, greens and meat from the open fire — served family
-                style on wood and clay.
-              </p>
-              <ul className="mt-10 space-y-4 border-t border-bone/15 pt-8">
-                {menu.slice(0, 4).map((c) => (
-                  <li key={c.slug} className="flex items-baseline justify-between gap-6 text-sm">
-                    <span className="font-display text-xl">{c.title}</span>
-                    <span className="text-bone/50">{c.items.length} dishes</span>
-                  </li>
-                ))}
-              </ul>
-              <Link to="/menu" className="eyebrow mt-10 inline-block bg-ochre px-7 py-4 text-ink">
-                View the menu
-              </Link>
-            </Reveal>
-          </div>
-          <div className="order-1 min-h-[50vh] lg:order-2">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-1 px-1 pt-1 lg:grid-cols-3 lg:gap-2 lg:px-2 lg:pt-2">
+          <div className="col-span-2 aspect-[16/11] overflow-hidden lg:col-span-2 lg:aspect-auto">
             <img
               src={images.food}
               alt="A grilled meat platter with rosemary garnish and cocktails, served in the evening garden"
@@ -144,6 +123,67 @@ function Home() {
               className="h-full w-full object-cover"
             />
           </div>
+          <div className="hidden gap-2 lg:grid">
+            <div className="aspect-[4/3] overflow-hidden">
+              <img
+                src={images.sadzaPlate}
+                alt="Sadza and covo served on a white plate at an outdoor wooden table"
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="aspect-[4/3] overflow-hidden">
+              <img
+                src={images.porkSizzler}
+                alt="Sizzling grilled pork served on a hot plate with tomato and onion"
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="mx-auto max-w-3xl px-5 py-16 text-center lg:px-10 lg:py-24">
+          <Reveal>
+            <p className="eyebrow text-ochre">The kitchen</p>
+            <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
+              Traditional plates, cooked without hurry
+            </h2>
+            <p className="mx-auto mt-6 max-w-md leading-relaxed text-bone/75">
+              Slow-cooked relishes, grains, greens and meat from the open fire — served family
+              style on wood and clay.
+            </p>
+            <ul className="mx-auto mt-10 flex max-w-md flex-wrap justify-center gap-x-8 gap-y-4 border-t border-bone/15 pt-8 text-sm">
+              {menu.slice(0, 4).map((c) => (
+                <li key={c.slug} className="flex items-baseline gap-2">
+                  <span className="font-display text-lg">{c.title}</span>
+                  <span className="text-bone/50">{c.items.length}</span>
+                </li>
+              ))}
+            </ul>
+            <Link to="/menu" className="eyebrow mt-10 inline-block bg-primary px-7 py-4 text-primary-foreground">
+              Explore the menu →
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Fire */}
+      <section className="relative overflow-hidden">
+        <img
+          src={fireGrill}
+          alt="Ribs and cuts of meat charring over open charcoal"
+          width={1600}
+          height={900}
+          loading="lazy"
+          className="h-[60svh] w-full object-cover"
+        />
+        <div className="absolute inset-0 flex items-center justify-center bg-ink/55 text-center">
+          <Reveal className="px-5">
+            <span className="mx-auto block h-px w-12 bg-ochre" aria-hidden="true" />
+            <blockquote className="mt-6 max-w-2xl font-display text-[clamp(1.8rem,4.5vw,3.25rem)] italic leading-tight text-bone">
+              Where tradition meets fire.
+            </blockquote>
+          </Reveal>
         </div>
       </section>
 
@@ -171,7 +211,7 @@ function Home() {
       </section>
 
       {/* Reviews */}
-      <section className="grain bg-secondary py-20 lg:py-32">
+      <section className="bg-background py-20 lg:py-32">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
             <p className="eyebrow rule-ochre text-primary">What guests say</p>
@@ -179,21 +219,18 @@ function Home() {
               Straight from Google reviews
             </h2>
           </Reveal>
-          <div className="mt-14 grid gap-8 lg:grid-cols-3">
+          <div className="mt-16 grid gap-12 lg:grid-cols-3 lg:gap-10">
             {testimonials.map((t, i) => (
-              <Reveal key={t.name} delay={i * 100}>
-                <div className="grain h-full bg-background p-8">
-                  <div className="eyebrow text-ochre" aria-hidden="true">
-                    {"★".repeat(t.rating)}
-                    {"☆".repeat(5 - t.rating)}
-                  </div>
-                  <p className="mt-5 text-base leading-relaxed text-foreground/85">
-                    &ldquo;{t.quote}&rdquo;
-                  </p>
-                  <p className="eyebrow mt-6 text-muted-foreground">
-                    {t.name} · {t.meta}
-                  </p>
-                </div>
+              <Reveal key={t.name} delay={i * 100} className={cn(i > 0 && "border-t border-border pt-10 lg:border-t-0 lg:border-l lg:pl-10 lg:pt-0")}>
+                <span className="font-display text-5xl italic leading-none text-accent" aria-hidden="true">
+                  &ldquo;
+                </span>
+                <p className="-mt-3 font-display text-xl italic leading-snug text-foreground">
+                  {t.quote}
+                </p>
+                <p className="eyebrow mt-6 text-muted-foreground">
+                  {t.name} · {t.rating}★ · {t.meta}
+                </p>
               </Reveal>
             ))}
           </div>
