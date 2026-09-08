@@ -9,6 +9,7 @@ import {
   whatsappLink,
   whatsappMessages,
 } from "@/lib/site-data";
+import logoMark from "@/assets/logo-mark.png";
 
 export function SiteFooter() {
   return (
@@ -16,7 +17,17 @@ export function SiteFooter() {
       <div className="pattern-band h-1.5 w-full" aria-hidden="true" />
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-4 lg:px-10 lg:py-24">
         <div className="lg:col-span-2">
-          <p className="font-display text-3xl">Cultures Resort</p>
+          <div className="flex items-center gap-3">
+            <img
+              src={logoMark}
+              alt=""
+              aria-hidden="true"
+              width={44}
+              height={44}
+              className="h-11 w-11 shrink-0 rounded-full"
+            />
+            <p className="font-display text-3xl">Cultures Resort</p>
+          </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-bone/70">
             A traditional African restaurant and cultural dining destination in Hillside, Harare.
           </p>

@@ -5,6 +5,7 @@ import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { useOrder } from "@/lib/order";
 import { business, navLinks, whatsappLink, whatsappMessages } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
+import logoMark from "@/assets/logo-mark.png";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -39,13 +40,23 @@ export function SiteHeader() {
           to="/"
           onClick={() => setOpen(false)}
           className={cn(
-            "min-w-0 leading-none transition-colors",
+            "flex min-w-0 items-center gap-3 leading-none transition-colors",
             scrolled || open ? "text-foreground" : "text-bone",
           )}
           aria-label={`${business.name} — home`}
         >
-          <span className="block font-display text-lg tracking-tight sm:text-xl">Cultures Resort</span>
-          <span className="eyebrow mt-1 block text-[0.6rem] opacity-70">Harare · Zimbabwe</span>
+          <img
+            src={logoMark}
+            alt=""
+            aria-hidden="true"
+            width={40}
+            height={40}
+            className="h-10 w-10 shrink-0 rounded-full"
+          />
+          <span className="min-w-0">
+            <span className="block font-display text-lg tracking-tight sm:text-xl">Cultures Resort</span>
+            <span className="eyebrow mt-1 block text-[0.6rem] opacity-70">Harare · Zimbabwe</span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Main">
