@@ -3,6 +3,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
+import { createBooking } from "@/lib/data/bookings";
 import { business } from "@/lib/site-data";
 
 export const Route = createFileRoute("/reservations")({
@@ -15,7 +16,10 @@ export const Route = createFileRoute("/reservations")({
           "Request a table at Cultures Resort, Hillside, Harare. Reservation requests are confirmed by the restaurant by phone — call +263 77 295 1308.",
       },
       { property: "og:title", content: "Reserve a Table | Cultures Resort" },
-      { property: "og:description", content: "Request a table in the garden at Cultures Resort, Harare." },
+      {
+        property: "og:description",
+        content: "Request a table in the garden at Cultures Resort, Harare.",
+      },
       { name: "robots", content: "index,follow" },
     ],
   }),
@@ -32,21 +36,35 @@ type Values = {
   request: string;
 };
 
-const empty: Values = { name: "", phone: "", email: "", date: "", time: "", guests: "2", request: "" };
+const empty: Values = {
+  name: "",
+  phone: "",
+  email: "",
+  date: "",
+  time: "",
+  guests: "2",
+  request: "",
+};
 
 function Reservations() {
   const [values, setValues] = useState<Values>(empty);
   const [errors, setErrors] = useState<Partial<Record<keyof Values, string>>>({});
   const [submitted, setSubmitted] = useState<Values | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const set = (k: keyof Values) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
-    setValues((v) => ({ ...v, [k]: e.target.value }));
+  const set =
+    (k: keyof Values) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setValues((v) => ({ ...v, [k]: e.target.value }));
 
   function validate(v: Values) {
     const next: Partial<Record<keyof Values, string>> = {};
     if (v.name.trim().length < 2) next.name = "Please enter your full name.";
-    if (v.phone.trim().replace(/\D/g, "").length < 8) next.phone = "Please enter a phone number we can reach you on.";
-    if (v.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email.trim())) next.email = "That email doesn't look right.";
+    if (v.phone.trim().replace(/\D/g, "").length < 8)
+      next.phone = "Please enter a phone number we can reach you on.";
+    if (v.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email.trim()))
+      next.email = "That email doesn't look right.";
     if (!v.date) next.date = "Please choose a date.";
     if (!v.time) next.time = "Please choose a time.";
     const g = Number(v.guests);
@@ -67,14 +85,14 @@ function Reservations() {
         <section className="bg-background py-20 lg:py-28">
           <div className="mx-auto max-w-2xl px-5 lg:px-10">
             <div className="border border-border bg-card p-8 lg:p-12">
-              <p className="eyebrow text-primary">Not yet confirmed</p>
+              <p className="eyebrow text-primary">Request saved</p>
               <h2 className="mt-5 font-display text-3xl leading-tight">
                 Your table is not booked until the restaurant confirms it
               </h2>
               <p className="mt-6 leading-relaxed text-muted-foreground">
-                This website isn't connected to the restaurant's booking system yet, so your request has{" "}
-                <strong className="text-foreground">not</strong> been sent anywhere. To secure the table, please call or
-                message the restaurant with the details below.
+                Your reservation request has been saved and the team will confirm it with you
+                directly. To speed things up, you can also call or message the restaurant with the
+                details below.
               </p>
 
               <dl className="mt-10 grid gap-5 border-y border-border py-8 sm:grid-cols-2">
@@ -88,7 +106,10 @@ function Reservations() {
               </dl>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <a href={business.phoneHref} className="eyebrow bg-primary px-7 py-4 text-primary-foreground">
+                <a
+                  href={business.phoneHref}
+                  className="eyebrow bg-primary px-7 py-4 text-primary-foreground"
+                >
                   Call {business.phoneDisplay}
                 </a>
                 <a
@@ -132,25 +153,93 @@ function Reservations() {
             <form
               className="border border-border bg-card p-8 lg:p-12"
               noValidate
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 const next = validate(values);
                 setErrors(next);
-                if (Object.keys(next).length === 0) setSubmitted(values);
+                if (Object.keys(next).length > 0) return;
+                setSubmitError(null);
+                setSubmitting(true);
+                try {
+                  await createBooking({
+                    data: {
+                      eventType: "Table reservation",
+                      guestName: values.name,
+                      guestPhone: values.phone,
+                      guestEmail: values.email || undefined,
+                      eventDate: values.date,
+                      guests: Number(values.guests),
+                      requirements: values.time ? `Time: ${values.time}` : undefined,
+                      message: values.request || undefined,
+                    },
+                  });
+                  setSubmitted(values);
+                } catch (err) {
+                  setSubmitError(
+                    err instanceof Error
+                      ? err.message
+                      : "Could not send the request. Please try again.",
+                  );
+                } finally {
+                  setSubmitting(false);
+                }
               }}
             >
               <h2 className="font-display text-3xl">Your details</h2>
 
               <div className="mt-8 space-y-5">
-                <Input label="Full name" value={values.name} onChange={set("name")} error={errors.name} maxLength={100} autoComplete="name" />
+                <Input
+                  label="Full name"
+                  value={values.name}
+                  onChange={set("name")}
+                  error={errors.name}
+                  maxLength={100}
+                  autoComplete="name"
+                />
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <Input label="Phone" type="tel" value={values.phone} onChange={set("phone")} error={errors.phone} maxLength={30} autoComplete="tel" />
-                  <Input label="Email (optional)" type="email" value={values.email} onChange={set("email")} error={errors.email} maxLength={255} autoComplete="email" />
+                  <Input
+                    label="Phone"
+                    type="tel"
+                    value={values.phone}
+                    onChange={set("phone")}
+                    error={errors.phone}
+                    maxLength={30}
+                    autoComplete="tel"
+                  />
+                  <Input
+                    label="Email (optional)"
+                    type="email"
+                    value={values.email}
+                    onChange={set("email")}
+                    error={errors.email}
+                    maxLength={255}
+                    autoComplete="email"
+                  />
                 </div>
                 <div className="grid gap-5 sm:grid-cols-3">
-                  <Input label="Date" type="date" value={values.date} onChange={set("date")} error={errors.date} />
-                  <Input label="Time" type="time" value={values.time} onChange={set("time")} error={errors.time} />
-                  <Input label="Guests" type="number" min={1} max={40} value={values.guests} onChange={set("guests")} error={errors.guests} />
+                  <Input
+                    label="Date"
+                    type="date"
+                    value={values.date}
+                    onChange={set("date")}
+                    error={errors.date}
+                  />
+                  <Input
+                    label="Time"
+                    type="time"
+                    value={values.time}
+                    onChange={set("time")}
+                    error={errors.time}
+                  />
+                  <Input
+                    label="Guests"
+                    type="number"
+                    min={1}
+                    max={40}
+                    value={values.guests}
+                    onChange={set("guests")}
+                    error={errors.guests}
+                  />
                 </div>
                 <label className="block">
                   <span className="eyebrow text-muted-foreground">Special requests (optional)</span>
@@ -170,11 +259,21 @@ function Reservations() {
                 </label>
               </div>
 
-              <button type="submit" className="eyebrow mt-9 w-full bg-primary px-7 py-5 text-primary-foreground">
-                Request this table
+              <button
+                type="submit"
+                disabled={submitting}
+                className="eyebrow mt-9 w-full bg-primary px-7 py-5 text-primary-foreground disabled:opacity-60"
+              >
+                {submitting ? "Sending…" : "Request this table"}
               </button>
+              {submitError ? (
+                <p role="alert" className="mt-3 text-sm text-destructive">
+                  {submitError}
+                </p>
+              ) : null}
               <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-                Submitting shows you how to confirm with the restaurant. Requests are not stored or emailed yet.
+                Submitting saves your request and shows you how to confirm with the restaurant
+                directly.
               </p>
             </form>
           </Reveal>
@@ -189,7 +288,8 @@ function Reservations() {
                 </li>
                 <li>
                   <span className="eyebrow block text-ochre">Step two</span>
-                  Call or WhatsApp the restaurant to confirm — this is the step that secures your table.
+                  Call or WhatsApp the restaurant to confirm — this is the step that secures your
+                  table.
                 </li>
                 <li>
                   <span className="eyebrow block text-ochre">Step three</span>
@@ -197,10 +297,16 @@ function Reservations() {
                 </li>
               </ol>
               <div className="mt-8 border-t border-border pt-6 text-sm">
-                <a href={business.phoneHref} className="block font-display text-lg hover:text-primary">
+                <a
+                  href={business.phoneHref}
+                  className="block font-display text-lg hover:text-primary"
+                >
                   {business.phoneDisplay}
                 </a>
-                <a href={`mailto:${business.email}`} className="mt-2 block break-all text-muted-foreground hover:text-primary">
+                <a
+                  href={`mailto:${business.email}`}
+                  className="mt-2 block break-all text-muted-foreground hover:text-primary"
+                >
                   {business.email}
                 </a>
               </div>

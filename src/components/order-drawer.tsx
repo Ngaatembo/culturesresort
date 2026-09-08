@@ -7,7 +7,18 @@ import { business } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
 export function OrderDrawer() {
-  const { open, closeDrawer, lines, count, setQty, remove, clear, whatsappHref, placeOrder, placing } = useOrder();
+  const {
+    open,
+    closeDrawer,
+    lines,
+    count,
+    setQty,
+    remove,
+    clear,
+    whatsappHref,
+    placeOrder,
+    placing,
+  } = useOrder();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [placed, setPlaced] = useState<number | null>(null);
@@ -57,7 +68,9 @@ export function OrderDrawer() {
         aria-hidden={!open}
         className={cn(
           "fixed inset-x-0 bottom-0 z-[95] flex max-h-[88vh] flex-col bg-background transition-transform duration-500 ease-out sm:inset-y-0 sm:left-auto sm:right-0 sm:max-h-none sm:w-[26rem]",
-          open ? "translate-y-0 sm:translate-x-0" : "translate-y-full sm:translate-y-0 sm:translate-x-full",
+          open
+            ? "translate-y-0 sm:translate-x-0"
+            : "translate-y-full sm:translate-y-0 sm:translate-x-full",
         )}
       >
         <div className="pattern-band h-1.5 w-full shrink-0" aria-hidden="true" />
@@ -82,7 +95,8 @@ export function OrderDrawer() {
             <div className="border border-dashed border-leaf px-6 py-14 text-center">
               <p className="font-display text-2xl">Order sent — #{placed}</p>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                The kitchen has your order. You can also send it on WhatsApp so they see it right away.
+                The kitchen has your order. You can also send it on WhatsApp so they see it right
+                away.
               </p>
               <Link
                 to="/menu"
@@ -97,8 +111,8 @@ export function OrderDrawer() {
             <div className="border border-dashed border-border px-6 py-14 text-center">
               <p className="font-display text-2xl">Nothing here yet</p>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Browse the food and beverage lists and add what you'd like. You can place it as a real order below,
-                or just ask about it on WhatsApp first.
+                Browse the food and beverage lists and add what you'd like. You can place it as a
+                real order below, or just ask about it on WhatsApp first.
               </p>
               <Link
                 to="/menu"
@@ -186,14 +200,16 @@ export function OrderDrawer() {
                 className="eyebrow w-full bg-primary px-6 py-4 text-primary-foreground disabled:opacity-60"
                 tabIndex={open ? 0 : -1}
               >
-                {placing ? "Placing order…" : `Place order — ${count} item${count === 1 ? "" : "s"}`}
+                {placing
+                  ? "Placing order…"
+                  : `Place order — ${count} item${count === 1 ? "" : "s"}`}
               </button>
             </div>
           ) : null}
 
           <p className="text-xs leading-relaxed text-muted-foreground">
-            Placing an order sends it straight to the kitchen queue. You can also send it on WhatsApp so the team
-            sees it right away.
+            Placing an order sends it straight to the kitchen queue. You can also send it on
+            WhatsApp so the team sees it right away.
           </p>
           <a
             href={whatsappHref}
@@ -203,18 +219,32 @@ export function OrderDrawer() {
             tabIndex={open ? 0 : -1}
           >
             <WhatsAppIcon className="h-4 w-4" />
-            {lines.length ? `Send ${count} item${count === 1 ? "" : "s"} on WhatsApp` : "Ask on WhatsApp"}
+            {lines.length
+              ? `Send ${count} item${count === 1 ? "" : "s"} on WhatsApp`
+              : "Ask on WhatsApp"}
           </a>
           <div className="mt-3 grid grid-cols-2 gap-3">
-            <a href={business.phoneHref} className="eyebrow border border-border px-4 py-4 text-center">
+            <a
+              href={business.phoneHref}
+              className="eyebrow border border-border px-4 py-4 text-center"
+            >
               Call
             </a>
             {lines.length ? (
-              <button type="button" onClick={clear} className="eyebrow border border-border px-4 py-4" tabIndex={open ? 0 : -1}>
+              <button
+                type="button"
+                onClick={clear}
+                className="eyebrow border border-border px-4 py-4"
+                tabIndex={open ? 0 : -1}
+              >
                 Clear list
               </button>
             ) : (
-              <Link to="/reservations" onClick={closeDrawer} className="eyebrow border border-border px-4 py-4 text-center">
+              <Link
+                to="/reservations"
+                onClick={closeDrawer}
+                className="eyebrow border border-border px-4 py-4 text-center"
+              >
                 Book a table
               </Link>
             )}

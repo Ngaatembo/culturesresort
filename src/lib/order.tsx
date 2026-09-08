@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { whatsappLink, whatsappMessages } from "@/lib/site-data";
-import { placeOrder as placeOrderServerFn } from "@/lib/server/orders";
+import { placeOrder as placeOrderServerFn } from "@/lib/data/orders";
 
 /**
  * A guest's cart line. Adding an item both opens the WhatsApp-prefilled
@@ -38,7 +38,11 @@ type OrderContextValue = {
   has: (id: string) => boolean;
   whatsappHref: string;
   /** Submits the cart as a real order. Throws on failure — caller shows the message. */
-  placeOrder: (customer: { name: string; phone: string; notes?: string }) => Promise<PlaceOrderResult>;
+  placeOrder: (customer: {
+    name: string;
+    phone: string;
+    notes?: string;
+  }) => Promise<PlaceOrderResult>;
   placing: boolean;
 };
 
@@ -60,11 +64,16 @@ export function OrderProvider({ children }: { children: ReactNode }) {
 
   const setQty = useCallback((id: string, qty: number) => {
     setLines((prev) =>
-      qty <= 0 ? prev.filter((l) => l.id !== id) : prev.map((l) => (l.id === id ? { ...l, qty } : l)),
+      qty <= 0
+        ? prev.filter((l) => l.id !== id)
+        : prev.map((l) => (l.id === id ? { ...l, qty } : l)),
     );
   }, []);
 
-  const remove = useCallback((id: string) => setLines((prev) => prev.filter((l) => l.id !== id)), []);
+  const remove = useCallback(
+    (id: string) => setLines((prev) => prev.filter((l) => l.id !== id)),
+    [],
+  );
   const clear = useCallback(() => setLines([]), []);
 
   const placeOrder = useCallback(
@@ -76,7 +85,11 @@ export function OrderProvider({ children }: { children: ReactNode }) {
             customerName: customer.name,
             customerPhone: customer.phone,
             notes: customer.notes,
-            lines: lines.map((l) => ({ name: l.name, priceCents: priceToCents(l.price), qty: l.qty })),
+            lines: lines.map((l) => ({
+              name: l.name,
+              priceCents: priceToCents(l.price),
+              qty: l.qty,
+            })),
           },
         });
         setLines([]);

@@ -13,7 +13,7 @@ export type PlaceOrderLine = {
 export type PlaceOrderInput = {
   customerName: string;
   customerPhone: string;
-  notes?: string;
+  notes?: string | undefined;
   lines: PlaceOrderLine[];
 };
 
@@ -33,7 +33,9 @@ export const placeOrder = createServerFn({ method: "POST" })
     const totalCents = lines.reduce((sum, l) => sum + l.priceCents * l.qty, 0);
 
     const orderResult = await db
-      .prepare("INSERT INTO orders (customer_name, customer_phone, notes, total_cents) VALUES (?, ?, ?, ?)")
+      .prepare(
+        "INSERT INTO orders (customer_name, customer_phone, notes, total_cents) VALUES (?, ?, ?, ?)",
+      )
       .bind(customerName.trim(), customerPhone.trim(), notes?.trim() || null, totalCents)
       .run();
 
@@ -42,7 +44,9 @@ export const placeOrder = createServerFn({ method: "POST" })
 
     for (const line of lines) {
       await db
-        .prepare("INSERT INTO order_items (order_id, menu_item_id, name, price_cents, qty) VALUES (?, ?, ?, ?, ?)")
+        .prepare(
+          "INSERT INTO order_items (order_id, menu_item_id, name, price_cents, qty) VALUES (?, ?, ?, ?, ?)",
+        )
         .bind(orderId, line.menuItemId ?? null, line.name, line.priceCents, line.qty)
         .run();
     }
@@ -71,23 +75,25 @@ type OrderItemRow = {
 export type OrderWithItems = OrderRow & { items: OrderItemRow[] };
 
 /** Recent orders for the admin dashboard, most recent first. */
-export const listOrders = createServerFn({ method: "GET" }).handler(async (): Promise<OrderWithItems[]> => {
-  const db = getDb();
-  const { results: orders } = await db
-    .prepare("SELECT * FROM orders ORDER BY created_at DESC LIMIT 100")
-    .all<OrderRow>();
+export const listOrders = createServerFn({ method: "GET" }).handler(
+  async (): Promise<OrderWithItems[]> => {
+    const db = getDb();
+    const { results: orders } = await db
+      .prepare("SELECT * FROM orders ORDER BY created_at DESC LIMIT 100")
+      .all<OrderRow>();
 
-  if (!orders.length) return [];
+    if (!orders.length) return [];
 
-  const ids = orders.map((o) => o.id);
-  const placeholders = ids.map(() => "?").join(",");
-  const { results: items } = await db
-    .prepare(`SELECT * FROM order_items WHERE order_id IN (${placeholders})`)
-    .bind(...ids)
-    .all<OrderItemRow>();
+    const ids = orders.map((o) => o.id);
+    const placeholders = ids.map(() => "?").join(",");
+    const { results: items } = await db
+      .prepare(`SELECT * FROM order_items WHERE order_id IN (${placeholders})`)
+      .bind(...ids)
+      .all<OrderItemRow>();
 
-  return orders.map((o) => ({ ...o, items: items.filter((i) => i.order_id === o.id) }));
-});
+    return orders.map((o) => ({ ...o, items: items.filter((i) => i.order_id === o.id) }));
+  },
+);
 
 export const updateOrderStatus = createServerFn({ method: "POST" })
   .validator((data: { id: number; status: OrderStatus }) => data)

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
+import { createEnquiry } from "@/lib/data/enquiries";
 import { business, openingHours, whatsappLink, whatsappMessages } from "@/lib/site-data";
 
 export const Route = createFileRoute("/contact")({
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/contact")({
 function Contact() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   return (
     <>
@@ -54,7 +56,9 @@ function Contact() {
                   >
                     {business.addressLine}
                   </a>
-                  <span className="mt-2 block text-xs text-muted-foreground">Opens in Google Maps</span>
+                  <span className="mt-2 block text-xs text-muted-foreground">
+                    Opens in Google Maps
+                  </span>
                 </dd>
               </div>
               <div>
@@ -68,7 +72,10 @@ function Contact() {
               <div>
                 <dt className="eyebrow text-muted-foreground">Email</dt>
                 <dd className="mt-2">
-                  <a href={`mailto:${business.email}`} className="break-all font-display text-xl hover:text-primary">
+                  <a
+                    href={`mailto:${business.email}`}
+                    className="break-all font-display text-xl hover:text-primary"
+                  >
                     {business.email}
                   </a>
                   <span className="mt-2 block text-xs text-muted-foreground">
@@ -79,7 +86,10 @@ function Contact() {
             </dl>
 
             <div className="mt-10 grid gap-3 sm:grid-cols-3">
-              <a href={business.phoneHref} className="eyebrow bg-primary px-5 py-4 text-center text-primary-foreground">
+              <a
+                href={business.phoneHref}
+                className="eyebrow bg-primary px-5 py-4 text-center text-primary-foreground"
+              >
                 Call
               </a>
               <a
@@ -90,7 +100,12 @@ function Contact() {
               >
                 WhatsApp
               </a>
-              <a href={business.mapsHref} target="_blank" rel="noreferrer" className="eyebrow border border-border px-5 py-4 text-center">
+              <a
+                href={business.mapsHref}
+                target="_blank"
+                rel="noreferrer"
+                className="eyebrow border border-border px-5 py-4 text-center"
+              >
                 Directions
               </a>
             </div>
@@ -109,15 +124,18 @@ function Contact() {
               <h2 className="eyebrow text-foreground">Opening hours</h2>
               <ul className="mt-4 space-y-2 text-sm">
                 {openingHours.map((h) => (
-                  <li key={h.day} className="flex justify-between gap-6 border-b border-border/60 pb-2">
+                  <li
+                    key={h.day}
+                    className="flex justify-between gap-6 border-b border-border/60 pb-2"
+                  >
                     <span>{h.day}</span>
                     <span className="text-muted-foreground">{h.hours}</span>
                   </li>
                 ))}
               </ul>
               <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-                Hours have not been published yet — they are editable from the owner dashboard. Please call to confirm
-                before travelling.
+                Hours have not been published yet — they are editable from the owner dashboard.
+                Please call to confirm before travelling.
               </p>
             </div>
           </Reveal>
@@ -127,67 +145,124 @@ function Contact() {
               <h2 className="font-display text-3xl">Send an enquiry</h2>
               {sent ? (
                 <div className="mt-8 border-l-2 border-ochre bg-secondary p-6">
-                  <p className="eyebrow text-primary">Message not yet sent</p>
+                  <p className="eyebrow text-primary">Message received</p>
                   <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    This form isn't connected to the restaurant's inbox yet, so nothing was delivered. Please call{" "}
+                    Thank you — your message has been saved and the team will get back to you. To
+                    reach them sooner, call{" "}
                     <a href={business.phoneHref} className="text-primary underline">
                       {business.phoneDisplay}
                     </a>{" "}
                     or email{" "}
-                    <a href={`mailto:${business.email}`} className="break-all text-primary underline">
+                    <a
+                      href={`mailto:${business.email}`}
+                      className="break-all text-primary underline"
+                    >
                       {business.email}
                     </a>
                     .
                   </p>
-                  <button type="button" onClick={() => setSent(false)} className="eyebrow mt-6 border border-border px-5 py-3">
-                    Edit message
+                  <button
+                    type="button"
+                    onClick={() => setSent(false)}
+                    className="eyebrow mt-6 border border-border px-5 py-3"
+                  >
+                    Send another message
                   </button>
                 </div>
               ) : (
                 <form
                   className="mt-8 space-y-5"
-                  onSubmit={(e) => {
+                  onSubmit={async (e) => {
                     e.preventDefault();
                     const data = new FormData(e.currentTarget);
                     const name = String(data.get("name") ?? "").trim();
-                    const message = String(data.get("message") ?? "").trim();
-                    if (name.length < 2 || message.length < 5) {
+                    const subject = String(data.get("subject") ?? "").trim();
+                    const body = String(data.get("message") ?? "").trim();
+                    if (name.length < 2 || body.length < 5) {
                       setError("Please add your name and a short message.");
                       return;
                     }
                     setError(null);
-                    setSent(true);
+                    setSubmitting(true);
+                    try {
+                      await createEnquiry({
+                        data: {
+                          name,
+                          phone: String(data.get("phone") ?? "").trim() || undefined,
+                          email: String(data.get("email") ?? "").trim() || undefined,
+                          message: subject ? `[${subject}] ${body}` : body,
+                        },
+                      });
+                      setSent(true);
+                    } catch (err) {
+                      setError(
+                        err instanceof Error
+                          ? err.message
+                          : "Could not send the message. Please try again.",
+                      );
+                    } finally {
+                      setSubmitting(false);
+                    }
                   }}
                 >
                   <label className="block">
                     <span className="eyebrow text-muted-foreground">Your name</span>
-                    <input name="name" required maxLength={100} className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm" />
+                    <input
+                      name="name"
+                      required
+                      maxLength={100}
+                      className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                    />
                   </label>
                   <div className="grid gap-5 sm:grid-cols-2">
                     <label className="block">
                       <span className="eyebrow text-muted-foreground">Phone</span>
-                      <input name="phone" type="tel" maxLength={30} className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm" />
+                      <input
+                        name="phone"
+                        type="tel"
+                        maxLength={30}
+                        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                      />
                     </label>
                     <label className="block">
                       <span className="eyebrow text-muted-foreground">Email</span>
-                      <input name="email" type="email" maxLength={255} className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm" />
+                      <input
+                        name="email"
+                        type="email"
+                        maxLength={255}
+                        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                      />
                     </label>
                   </div>
                   <label className="block">
                     <span className="eyebrow text-muted-foreground">Subject</span>
-                    <input name="subject" maxLength={120} className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm" />
+                    <input
+                      name="subject"
+                      maxLength={120}
+                      className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                    />
                   </label>
                   <label className="block">
                     <span className="eyebrow text-muted-foreground">Message</span>
-                    <textarea name="message" rows={5} maxLength={1000} required className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm" />
+                    <textarea
+                      name="message"
+                      rows={5}
+                      maxLength={1000}
+                      required
+                      className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                    />
                   </label>
                   {error ? (
                     <p role="alert" className="text-sm text-destructive">
                       {error}
                     </p>
                   ) : null}
-                  <button type="submit" className="eyebrow w-full bg-primary px-7 py-5 text-primary-foreground">
-                    Send message
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="eyebrow w-full bg-primary px-7 py-5 text-primary-foreground disabled:opacity-60"
+                  >
+                    {submitting ? "Sending…" : "Send message"}
                   </button>
                 </form>
               )}

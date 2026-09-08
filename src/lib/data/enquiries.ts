@@ -5,8 +5,8 @@ export type EnquiryStatus = "new" | "read" | "responded" | "closed";
 
 export type CreateEnquiryInput = {
   name: string;
-  phone?: string;
-  email?: string;
+  phone?: string | undefined;
+  email?: string | undefined;
   message: string;
 };
 
@@ -19,7 +19,12 @@ export const createEnquiry = createServerFn({ method: "POST" })
     const db = getDb();
     const result = await db
       .prepare("INSERT INTO enquiries (name, phone, email, message) VALUES (?, ?, ?, ?)")
-      .bind(data.name.trim(), data.phone?.trim() || null, data.email?.trim() || null, data.message.trim())
+      .bind(
+        data.name.trim(),
+        data.phone?.trim() || null,
+        data.email?.trim() || null,
+        data.message.trim(),
+      )
       .run();
 
     const enquiryId = result.meta.last_row_id;

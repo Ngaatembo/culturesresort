@@ -3,6 +3,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
+import { createBooking } from "@/lib/data/bookings";
 import { business, eventRequirements, eventTypes, visitDetails } from "@/lib/site-data";
 
 export const Route = createFileRoute("/events")({
@@ -27,14 +28,27 @@ export const Route = createFileRoute("/events")({
 });
 
 const steps = [
-  { n: "01", title: "Send your enquiry", body: "Tell us the occasion, the date you have in mind and roughly how many people." },
-  { n: "02", title: "The team replies", body: "Cultures Resort confirms what is possible for that date, seating and food." },
-  { n: "03", title: "Confirm by phone", body: "Nothing is held until the restaurant confirms it with you directly." },
+  {
+    n: "01",
+    title: "Send your enquiry",
+    body: "Tell us the occasion, the date you have in mind and roughly how many people.",
+  },
+  {
+    n: "02",
+    title: "The team replies",
+    body: "Cultures Resort confirms what is possible for that date, seating and food.",
+  },
+  {
+    n: "03",
+    title: "Confirm by phone",
+    body: "Nothing is held until the restaurant confirms it with you directly.",
+  },
 ];
 
 function Events() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   return (
     <>
@@ -69,7 +83,10 @@ function Events() {
             <p className="eyebrow rule-ochre text-primary">What we can host</p>
             <ul className="mt-8 space-y-4 text-sm leading-relaxed text-muted-foreground">
               {eventTypes.map((t) => (
-                <li key={t} className="border-b border-border pb-4 font-display text-lg text-foreground">
+                <li
+                  key={t}
+                  className="border-b border-border pb-4 font-display text-lg text-foreground"
+                >
                   {t}
                 </li>
               ))}
@@ -79,7 +96,10 @@ function Events() {
               <p className="eyebrow rule-ochre text-primary">Practical details</p>
               <dl className="mt-6 space-y-3 text-sm">
                 {visitDetails.map((d) => (
-                  <div key={d.label} className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-border pb-3">
+                  <div
+                    key={d.label}
+                    className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-border pb-3"
+                  >
                     <dt className="text-muted-foreground">{d.label}</dt>
                     <dd className="shrink-0 text-foreground">{d.value}</dd>
                   </div>
@@ -90,15 +110,23 @@ function Events() {
             <div className="mt-10 border border-border bg-secondary p-6 text-sm leading-relaxed text-muted-foreground">
               <p className="eyebrow text-foreground">No published calendar or packages</p>
               <p className="mt-3">
-                We don't list dates, prices or set packages here, because those change and we won't guess them. Send an
-                enquiry or call and the restaurant will confirm what's possible.
+                We don't list dates, prices or set packages here, because those change and we won't
+                guess them. Send an enquiry or call and the restaurant will confirm what's possible.
               </p>
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href={business.phoneHref} className="eyebrow bg-primary px-7 py-4 text-primary-foreground">
+              <a
+                href={business.phoneHref}
+                className="eyebrow bg-primary px-7 py-4 text-primary-foreground"
+              >
                 Call {business.phoneDisplay}
               </a>
-              <a href={business.whatsappHref} target="_blank" rel="noreferrer" className="eyebrow border border-border px-7 py-4">
+              <a
+                href={business.whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+                className="eyebrow border border-border px-7 py-4"
+              >
                 WhatsApp
               </a>
             </div>
@@ -109,37 +137,67 @@ function Events() {
               <h2 className="font-display text-3xl">Event enquiry</h2>
               {sent ? (
                 <div className="mt-8 border-l-2 border-ochre bg-secondary p-6">
-                  <p className="eyebrow text-primary">Enquiry not yet sent</p>
+                  <p className="eyebrow text-primary">Enquiry received</p>
                   <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    This form isn't connected to the restaurant's inbox yet, so nothing was delivered. To reach the team
-                    now, please call{" "}
+                    Thank you — your event enquiry has been saved and the team will confirm with you
+                    directly. To reach them sooner, call{" "}
                     <a href={business.phoneHref} className="text-primary underline">
                       {business.phoneDisplay}
                     </a>{" "}
                     or email{" "}
-                    <a href={`mailto:${business.email}`} className="break-all text-primary underline">
+                    <a
+                      href={`mailto:${business.email}`}
+                      className="break-all text-primary underline"
+                    >
                       {business.email}
                     </a>
                     .
                   </p>
-                  <button type="button" onClick={() => setSent(false)} className="eyebrow mt-6 border border-border px-5 py-3">
-                    Edit enquiry
+                  <button
+                    type="button"
+                    onClick={() => setSent(false)}
+                    className="eyebrow mt-6 border border-border px-5 py-3"
+                  >
+                    Send another enquiry
                   </button>
                 </div>
               ) : (
                 <form
                   className="mt-8 space-y-5"
-                  onSubmit={(e) => {
+                  onSubmit={async (e) => {
                     e.preventDefault();
                     const data = new FormData(e.currentTarget);
                     const name = String(data.get("name") ?? "").trim();
-                    const contact = String(data.get("phone") ?? "").trim();
-                    if (name.length < 2 || contact.length < 6) {
+                    const phone = String(data.get("phone") ?? "").trim();
+                    if (name.length < 2 || phone.length < 6) {
                       setError("Please add your name and a phone number we can reach you on.");
                       return;
                     }
                     setError(null);
-                    setSent(true);
+                    setSubmitting(true);
+                    try {
+                      await createBooking({
+                        data: {
+                          eventType: String(data.get("type") ?? eventTypes[0]),
+                          guestName: name,
+                          guestPhone: phone,
+                          guestEmail: String(data.get("email") ?? "").trim() || undefined,
+                          eventDate: String(data.get("date") ?? "") || undefined,
+                          guests: data.get("guests") ? Number(data.get("guests")) : undefined,
+                          requirements: data.getAll("requirements").join(", ") || undefined,
+                          message: String(data.get("message") ?? "").trim() || undefined,
+                        },
+                      });
+                      setSent(true);
+                    } catch (err) {
+                      setError(
+                        err instanceof Error
+                          ? err.message
+                          : "Could not send the enquiry. Please try again.",
+                      );
+                    } finally {
+                      setSubmitting(false);
+                    }
                   }}
                 >
                   <Field label="Your name" name="name" required maxLength={100} />
@@ -148,7 +206,10 @@ function Events() {
                   <div className="grid gap-5 sm:grid-cols-2">
                     <label className="block">
                       <span className="eyebrow text-muted-foreground">Type of event</span>
-                      <select name="type" className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm">
+                      <select
+                        name="type"
+                        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                      >
                         {eventTypes.map((t) => (
                           <option key={t}>{t}</option>
                         ))}
@@ -159,11 +220,21 @@ function Events() {
                   <Field label="Preferred date" name="date" type="date" />
 
                   <fieldset>
-                    <legend className="eyebrow text-muted-foreground">Anything you need? (optional)</legend>
+                    <legend className="eyebrow text-muted-foreground">
+                      Anything you need? (optional)
+                    </legend>
                     <div className="mt-3 grid gap-2 sm:grid-cols-2">
                       {eventRequirements.map((r) => (
-                        <label key={r} className="flex items-start gap-3 border border-border p-3 text-sm">
-                          <input type="checkbox" name="requirements" value={r} className="mt-1 accent-[var(--ochre)]" />
+                        <label
+                          key={r}
+                          className="flex items-start gap-3 border border-border p-3 text-sm"
+                        >
+                          <input
+                            type="checkbox"
+                            name="requirements"
+                            value={r}
+                            className="mt-1 accent-[var(--ochre)]"
+                          />
                           <span className="text-muted-foreground">{r}</span>
                         </label>
                       ))}
@@ -184,12 +255,16 @@ function Events() {
                       {error}
                     </p>
                   ) : null}
-                  <button type="submit" className="eyebrow w-full bg-primary px-7 py-5 text-primary-foreground">
-                    Send enquiry
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="eyebrow w-full bg-primary px-7 py-5 text-primary-foreground disabled:opacity-60"
+                  >
+                    {submitting ? "Sending…" : "Send enquiry"}
                   </button>
                   <p className="text-xs leading-relaxed text-muted-foreground">
-                    This form is not yet connected to the restaurant's inbox — you'll be shown how to reach them
-                    directly after submitting.
+                    Your enquiry is saved and the team will confirm with you directly by phone or
+                    email.
                   </p>
                 </form>
               )}

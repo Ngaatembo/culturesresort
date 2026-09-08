@@ -42,7 +42,9 @@ function formatPrice(cents: number) {
 export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
   const db = getDb();
   const { results } = await db
-    .prepare("SELECT * FROM menu_items WHERE available = 1 ORDER BY kind, category_slug, sort_order, id")
+    .prepare(
+      "SELECT * FROM menu_items WHERE available = 1 ORDER BY kind, category_slug, sort_order, id",
+    )
     .all<MenuItemRow>();
 
   const byKind: Record<MenuKind, MenuCategoryOut[]> = { food: [], beverages: [] };

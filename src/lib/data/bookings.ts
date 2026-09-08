@@ -7,11 +7,11 @@ export type CreateBookingInput = {
   eventType: string;
   guestName: string;
   guestPhone: string;
-  guestEmail?: string;
-  eventDate?: string;
-  guests?: number;
-  requirements?: string;
-  message?: string;
+  guestEmail?: string | undefined;
+  eventDate?: string | undefined;
+  guests?: number | undefined;
+  requirements?: string | undefined;
+  message?: string | undefined;
 };
 
 export const createBooking = createServerFn({ method: "POST" })

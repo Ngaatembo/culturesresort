@@ -1,7 +1,34 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { beverages, business, eventRequirements, eventTypes, menu, openingHours, visitDetails } from "@/lib/site-data";
+import { useEffect, useState } from "react";
+import {
+  beverages,
+  business,
+  eventRequirements,
+  eventTypes,
+  menu,
+  openingHours,
+  visitDetails,
+} from "@/lib/site-data";
 import { gallery } from "@/lib/gallery";
+import { getDashboardStats, type DashboardStats } from "@/lib/data/dashboard";
+import {
+  listOrders,
+  updateOrderStatus,
+  type OrderStatus,
+  type OrderWithItems,
+} from "@/lib/data/orders";
+import {
+  listBookings,
+  updateBookingStatus,
+  type BookingRow,
+  type BookingStatus,
+} from "@/lib/data/bookings";
+import {
+  listEnquiries,
+  updateEnquiryStatus,
+  type EnquiryRow,
+  type EnquiryStatus,
+} from "@/lib/data/enquiries";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin")({
@@ -17,6 +44,7 @@ export const Route = createFileRoute("/admin")({
 
 const sections = [
   "Overview",
+  "Orders",
   "Food menu",
   "Beverages",
   "Gallery",
@@ -44,7 +72,10 @@ function Admin() {
             View site →
           </Link>
         </div>
-        <nav className="mt-6 flex gap-2 overflow-x-auto lg:mt-10 lg:flex-col lg:overflow-visible" aria-label="Dashboard">
+        <nav
+          className="mt-6 flex gap-2 overflow-x-auto lg:mt-10 lg:flex-col lg:overflow-visible"
+          aria-label="Dashboard"
+        >
           {sections.map((s) => (
             <button
               key={s}
@@ -71,6 +102,7 @@ function Admin() {
 
         <div className="mt-10">
           {section === "Overview" && <Overview />}
+          {section === "Orders" && <OrdersAdmin />}
           {section === "Food menu" && <MenuAdmin kind="food" />}
           {section === "Beverages" && <MenuAdmin kind="beverages" />}
           {section === "Gallery" && <GalleryAdmin />}
@@ -89,14 +121,35 @@ function Admin() {
 function Banner() {
   return (
     <div className="border-l-2 border-ochre bg-secondary p-5 text-sm leading-relaxed text-muted-foreground">
-      <strong className="text-foreground">This dashboard is a working preview.</strong> Every field and table below shows
-      exactly what you'll be able to edit. Changes aren't saved yet, and there's no login — say the word and both can be
-      turned on.
+      <strong className="text-foreground">Orders, reservations and enquiries are now live</strong> —
+      they save to the database and show up below as guests submit them. The menu, gallery, hours
+      and contact sections are still a working preview; say the word and editing there can be
+      switched on too.
     </div>
   );
 }
 
-function Card({ title, children, note }: { title: string; children: React.ReactNode; note?: string }) {
+function formatMoney(cents: number) {
+  return `$${(cents / 100).toFixed(2)}`;
+}
+
+function formatDate(iso: string) {
+  try {
+    return new Date(iso.replace(" ", "T") + "Z").toLocaleString();
+  } catch {
+    return iso;
+  }
+}
+
+function Card({
+  title,
+  children,
+  note,
+}: {
+  title: string;
+  children: React.ReactNode;
+  note?: string;
+}) {
   return (
     <section className="border border-border bg-card p-6 lg:p-8">
       <h2 className="font-display text-2xl">{title}</h2>
@@ -106,7 +159,13 @@ function Card({ title, children, note }: { title: string; children: React.ReactN
   );
 }
 
-function Btn({ children, tone = "quiet" }: { children: React.ReactNode; tone?: "solid" | "quiet" }) {
+function Btn({
+  children,
+  tone = "quiet",
+}: {
+  children: React.ReactNode;
+  tone?: "solid" | "quiet";
+}) {
   return (
     <button
       type="button"
@@ -133,13 +192,65 @@ function Stat({ label, value, hint }: { label: string; value: string; hint: stri
 }
 
 function Overview() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    getDashboardStats()
+      .then(setStats)
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Could not load dashboard stats."),
+      );
+  }, []);
+
   return (
     <div className="space-y-8">
+      {error ? (
+        <div className="border border-dashed border-destructive p-6 text-sm text-destructive">
+          {error}
+        </div>
+      ) : null}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat label="Food items" value={String(menu.reduce((n, c) => n + c.items.length, 0))} hint="Placeholder dishes" />
-        <Stat label="Beverages" value={String(beverages.reduce((n, c) => n + c.items.length, 0))} hint="Placeholder drinks" />
-        <Stat label="Gallery images" value={String(gallery.length)} hint="Placeholder photography" />
-        <Stat label="Pending requests" value="—" hint="Storage not connected" />
+        <Stat
+          label="Today's orders"
+          value={stats ? String(stats.todaysOrders) : "…"}
+          hint="Placed today, excluding cancelled"
+        />
+        <Stat
+          label="Pending orders"
+          value={stats ? String(stats.pendingOrders) : "…"}
+          hint="Waiting to be started"
+        />
+        <Stat
+          label="Being prepared"
+          value={stats ? String(stats.beingPrepared) : "…"}
+          hint="In the kitchen now"
+        />
+        <Stat
+          label="Today's revenue"
+          value={stats ? formatMoney(stats.todaysRevenueCents) : "…"}
+          hint="From today's orders"
+        />
+        <Stat
+          label="Pending bookings"
+          value={stats ? String(stats.pendingBookings) : "…"}
+          hint="Events & reservations"
+        />
+        <Stat
+          label="New enquiries"
+          value={stats ? String(stats.newEnquiries) : "…"}
+          hint="Contact form messages"
+        />
+        <Stat
+          label="Menu items"
+          value={stats ? String(stats.menuItemsCount) : "…"}
+          hint="Currently available"
+        />
+        <Stat
+          label="Unavailable items"
+          value={stats ? String(stats.unavailableItems) : "…"}
+          hint="Marked sold out"
+        />
       </div>
       <Card title="Set-up checklist" note="What still needs the restaurant's own information.">
         <ul className="space-y-4 text-sm">
@@ -150,7 +261,6 @@ function Overview() {
             "Answer the practical visit details (parking, group size, payments)",
             "Confirm trading hours for each day",
             "Add social media links (none have been invented)",
-            "Turn on logins and storage so reservations and enquiries arrive here",
           ].map((t) => (
             <li key={t} className="flex items-start gap-3 border-b border-border pb-4">
               <span className="mt-1 h-3 w-3 shrink-0 border border-ochre" aria-hidden="true" />
@@ -160,6 +270,92 @@ function Overview() {
         </ul>
       </Card>
     </div>
+  );
+}
+
+const ORDER_STATUSES: OrderStatus[] = ["pending", "preparing", "completed", "cancelled"];
+
+function OrdersAdmin() {
+  const [orders, setOrders] = useState<OrderWithItems[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = () => {
+    listOrders()
+      .then(setOrders)
+      .catch((err) => setError(err instanceof Error ? err.message : "Could not load orders."));
+  };
+
+  useEffect(load, []);
+
+  return (
+    <Card
+      title="Orders"
+      note="Real orders placed from the cart. Update the status as the kitchen works through them."
+    >
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {!orders ? (
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      ) : orders.length === 0 ? (
+        <div className="border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+          No orders yet. They'll appear here as soon as a guest checks out from the cart.
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[760px] text-left text-sm">
+            <thead>
+              <tr className="border-b border-border">
+                {["#", "Customer", "Items", "Total", "Placed", "Status"].map((h) => (
+                  <th key={h} scope="col" className="eyebrow py-3 pr-4 text-muted-foreground">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((o) => (
+                <tr key={o.id} className="border-b border-border/60 align-top">
+                  <td className="py-4 pr-4 font-display">#{o.id}</td>
+                  <td className="py-4 pr-4">
+                    <p>{o.customer_name}</p>
+                    <p className="text-xs text-muted-foreground">{o.customer_phone}</p>
+                  </td>
+                  <td className="max-w-xs py-4 pr-4 text-muted-foreground">
+                    {o.items.map((i) => `${i.qty} × ${i.name}`).join(", ")}
+                  </td>
+                  <td className="py-4 pr-4">{formatMoney(o.total_cents)}</td>
+                  <td className="py-4 pr-4 text-xs text-muted-foreground">
+                    {formatDate(o.created_at)}
+                  </td>
+                  <td className="py-4">
+                    <select
+                      value={o.status}
+                      onChange={async (e) => {
+                        const status = e.target.value as OrderStatus;
+                        setOrders((prev) =>
+                          prev!.map((x) => (x.id === o.id ? { ...x, status } : x)),
+                        );
+                        try {
+                          await updateOrderStatus({ data: { id: o.id, status } });
+                        } catch {
+                          load();
+                        }
+                      }}
+                      className="border border-input bg-background px-3 py-2 text-sm capitalize"
+                    >
+                      {ORDER_STATUSES.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Card>
   );
 }
 
@@ -174,8 +370,8 @@ function MenuAdmin({ kind }: { kind: "food" | "beverages" }) {
         <Btn>Reorder</Btn>
       </div>
       <p className="text-sm text-muted-foreground">
-        Every {noun} name, description and price below is a placeholder. Nothing has been invented — load the
-        restaurant&apos;s real list here.
+        Every {noun} name, description and price below is a placeholder. Nothing has been invented —
+        load the restaurant&apos;s real list here.
       </p>
       {list.map((c) => (
         <Card key={c.slug} title={c.title} note={c.intro}>
@@ -219,7 +415,10 @@ function MenuAdmin({ kind }: { kind: "food" | "beverages" }) {
 
 function GalleryAdmin() {
   return (
-    <Card title="Gallery images" note="Upload the restaurant's own photographs to replace these placeholders.">
+    <Card
+      title="Gallery images"
+      note="Upload the restaurant's own photographs to replace these placeholders."
+    >
       <div className="mb-6 flex flex-wrap gap-3">
         <Btn tone="solid">Upload images</Btn>
         <Btn>Reorder</Btn>
@@ -227,7 +426,12 @@ function GalleryAdmin() {
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {gallery.map((g, i) => (
           <li key={`${g.caption}-${i}`} className="border border-border">
-            <img src={g.src} alt={g.alt} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+            <img
+              src={g.src}
+              alt={g.alt}
+              loading="lazy"
+              className="aspect-[4/3] w-full object-cover"
+            />
             <div className="p-4">
               <p className="eyebrow text-ochre">{g.category}</p>
               <p className="mt-2 text-sm text-muted-foreground">{g.caption}</p>
@@ -244,26 +448,57 @@ function GalleryAdmin() {
 }
 
 function EventsAdmin() {
+  const [bookings, setBookings] = useState<BookingRow[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = () => {
+    listBookings()
+      .then((all) => setBookings(all.filter((b) => b.event_type !== "Table reservation")))
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Could not load event enquiries."),
+      );
+  };
+  useEffect(load, []);
+
+  const onStatusChange = async (id: number, status: BookingStatus) => {
+    setBookings((prev) => prev!.map((b) => (b.id === id ? { ...b, status } : b)));
+    try {
+      await updateBookingStatus({ data: { id, status } });
+    } catch {
+      load();
+    }
+  };
+
   return (
     <div className="space-y-8">
       <Card
-        title="Published events"
-        note="No events have been published — nothing has been invented. Add real dates and details here when ready."
+        title="Event enquiries"
+        note="Saved directly from the /events page as guests submit them."
       >
-        <div className="flex flex-wrap gap-3">
-          <Btn tone="solid">Add event</Btn>
-        </div>
-        <div className="mt-6 border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-          No events yet. Fields ready: title, date, time, description, image, entry note, published toggle.
-        </div>
+        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+        {!bookings ? (
+          <p className="text-sm text-muted-foreground">Loading…</p>
+        ) : bookings.length === 0 ? (
+          <div className="border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+            No event enquiries yet.
+          </div>
+        ) : (
+          <BookingsTable bookings={bookings} onStatusChange={onStatusChange} />
+        )}
       </Card>
-      <Card title="Enquiry form options" note="These are the choices guests see on the events page.">
+      <Card
+        title="Enquiry form options"
+        note="These are the choices guests see on the events page."
+      >
         <div className="grid gap-8 lg:grid-cols-2">
           <div>
             <p className="eyebrow text-muted-foreground">Types of event</p>
             <ul className="mt-4 space-y-3 text-sm">
               {eventTypes.map((t) => (
-                <li key={t} className="flex items-center justify-between gap-4 border-b border-border pb-3">
+                <li
+                  key={t}
+                  className="flex items-center justify-between gap-4 border-b border-border pb-3"
+                >
                   <span className="text-muted-foreground">{t}</span>
                   <Btn>Edit</Btn>
                 </li>
@@ -274,7 +509,10 @@ function EventsAdmin() {
             <p className="eyebrow text-muted-foreground">Requests guests can tick</p>
             <ul className="mt-4 space-y-3 text-sm">
               {eventRequirements.map((t) => (
-                <li key={t} className="flex items-center justify-between gap-4 border-b border-border pb-3">
+                <li
+                  key={t}
+                  className="flex items-center justify-between gap-4 border-b border-border pb-3"
+                >
                   <span className="text-muted-foreground">{t}</span>
                   <Btn>Edit</Btn>
                 </li>
@@ -298,7 +536,10 @@ function VisitAdmin() {
     >
       <ul className="space-y-5">
         {visitDetails.map((d) => (
-          <li key={d.label} className="grid gap-3 sm:grid-cols-[14rem_minmax(0,1fr)] sm:items-center">
+          <li
+            key={d.label}
+            className="grid gap-3 sm:grid-cols-[14rem_minmax(0,1fr)] sm:items-center"
+          >
             <span className="eyebrow text-muted-foreground">{d.label}</span>
             <input
               defaultValue={d.value}
@@ -315,42 +556,183 @@ function VisitAdmin() {
   );
 }
 
+const BOOKING_STATUSES: BookingStatus[] = [
+  "pending",
+  "confirmed",
+  "declined",
+  "completed",
+  "cancelled",
+];
+
+function BookingsTable({
+  bookings,
+  onStatusChange,
+}: {
+  bookings: BookingRow[];
+  onStatusChange: (id: number, status: BookingStatus) => void;
+}) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[820px] text-left text-sm">
+        <thead>
+          <tr className="border-b border-border">
+            {["Guest", "Phone", "Type", "Date", "Guests", "Request", "Status"].map((h) => (
+              <th key={h} scope="col" className="eyebrow py-3 pr-4 text-muted-foreground">
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {bookings.map((b) => (
+            <tr key={b.id} className="border-b border-border/60 align-top">
+              <td className="py-4 pr-4">{b.guest_name}</td>
+              <td className="py-4 pr-4">{b.guest_phone}</td>
+              <td className="py-4 pr-4">{b.event_type}</td>
+              <td className="py-4 pr-4">{b.event_date ?? "—"}</td>
+              <td className="py-4 pr-4">{b.guests ?? "—"}</td>
+              <td className="max-w-xs py-4 pr-4 text-muted-foreground">
+                {[b.requirements, b.message].filter(Boolean).join(" — ") || "—"}
+              </td>
+              <td className="py-4">
+                <select
+                  value={b.status}
+                  onChange={(e) => onStatusChange(b.id, e.target.value as BookingStatus)}
+                  className="border border-input bg-background px-3 py-2 text-sm capitalize"
+                >
+                  {BOOKING_STATUSES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function ReservationsAdmin() {
+  const [bookings, setBookings] = useState<BookingRow[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = () => {
+    listBookings()
+      .then((all) => setBookings(all.filter((b) => b.event_type === "Table reservation")))
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Could not load reservations."),
+      );
+  };
+  useEffect(load, []);
+
+  const onStatusChange = async (id: number, status: BookingStatus) => {
+    setBookings((prev) => prev!.map((b) => (b.id === id ? { ...b, status } : b)));
+    try {
+      await updateBookingStatus({ data: { id, status } });
+    } catch {
+      load();
+    }
+  };
+
   return (
     <Card
       title="Reservation requests"
-      note="Requests will land here once storage is switched on. Statuses: Pending, Confirmed, Declined, Completed, Cancelled."
+      note="Statuses: Pending, Confirmed, Declined, Completed, Cancelled."
     >
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[720px] text-left text-sm">
-          <thead>
-            <tr className="border-b border-border">
-              {["Guest", "Phone", "Date", "Time", "Guests", "Request", "Status"].map((h) => (
-                <th key={h} scope="col" className="eyebrow py-3 pr-4 text-muted-foreground">
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td colSpan={7} className="py-12 text-center text-muted-foreground">
-                No reservation requests are stored. The public form currently tells guests to confirm by phone.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {!bookings ? (
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      ) : bookings.length === 0 ? (
+        <div className="border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+          No reservation requests yet.
+        </div>
+      ) : (
+        <BookingsTable bookings={bookings} onStatusChange={onStatusChange} />
+      )}
     </Card>
   );
 }
 
 function EnquiriesAdmin() {
+  const [enquiries, setEnquiries] = useState<EnquiryRow[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = () => {
+    listEnquiries()
+      .then(setEnquiries)
+      .catch((err) => setError(err instanceof Error ? err.message : "Could not load enquiries."));
+  };
+  useEffect(load, []);
+
+  const statuses: EnquiryStatus[] = ["new", "read", "responded", "closed"];
+
   return (
-    <Card title="Contact enquiries" note="Statuses: New, Read, Responded, Closed. Guest details stay private.">
-      <div className="border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-        No enquiries stored yet. The contact and event forms currently direct guests to phone, WhatsApp or email.
-      </div>
+    <Card
+      title="Contact enquiries"
+      note="Statuses: New, Read, Responded, Closed. Guest details stay private."
+    >
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {!enquiries ? (
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      ) : enquiries.length === 0 ? (
+        <div className="border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+          No enquiries yet. The contact form saves directly here.
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[680px] text-left text-sm">
+            <thead>
+              <tr className="border-b border-border">
+                {["Name", "Contact", "Message", "Received", "Status"].map((h) => (
+                  <th key={h} scope="col" className="eyebrow py-3 pr-4 text-muted-foreground">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {enquiries.map((e) => (
+                <tr key={e.id} className="border-b border-border/60 align-top">
+                  <td className="py-4 pr-4">{e.name}</td>
+                  <td className="py-4 pr-4 text-muted-foreground">
+                    {[e.phone, e.email].filter(Boolean).join(" · ") || "—"}
+                  </td>
+                  <td className="max-w-sm py-4 pr-4 text-muted-foreground">{e.message}</td>
+                  <td className="py-4 pr-4 text-xs text-muted-foreground">
+                    {formatDate(e.created_at)}
+                  </td>
+                  <td className="py-4">
+                    <select
+                      value={e.status}
+                      onChange={async (ev) => {
+                        const status = ev.target.value as EnquiryStatus;
+                        setEnquiries((prev) =>
+                          prev!.map((x) => (x.id === e.id ? { ...x, status } : x)),
+                        );
+                        try {
+                          await updateEnquiryStatus({ data: { id: e.id, status } });
+                        } catch {
+                          load();
+                        }
+                      }}
+                      className="border border-input bg-background px-3 py-2 text-sm capitalize"
+                    >
+                      {statuses.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </Card>
   );
 }
@@ -360,7 +742,10 @@ function HoursAdmin() {
     <Card title="Opening hours" note="These appear on the contact page and in the footer.">
       <ul className="space-y-4">
         {openingHours.map((h) => (
-          <li key={h.day} className="grid gap-3 border-b border-border pb-4 sm:grid-cols-[10rem_minmax(0,1fr)_auto] sm:items-center">
+          <li
+            key={h.day}
+            className="grid gap-3 border-b border-border pb-4 sm:grid-cols-[10rem_minmax(0,1fr)_auto] sm:items-center"
+          >
             <span className="eyebrow text-muted-foreground">{h.day}</span>
             <input
               defaultValue={h.hours}
@@ -390,7 +775,10 @@ function ContactAdmin() {
     ["TikTok", "Not provided — add if the restaurant has one", false],
   ];
   return (
-    <Card title="Contact & links" note="Verified details are pre-filled. Social links are empty — none were invented.">
+    <Card
+      title="Contact & links"
+      note="Verified details are pre-filled. Social links are empty — none were invented."
+    >
       <ul className="space-y-5">
         {fields.map(([label, value, verified]) => (
           <li key={label}>
