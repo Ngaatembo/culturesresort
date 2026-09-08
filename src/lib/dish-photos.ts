@@ -32,6 +32,17 @@ import malawianShandy from "@/assets/dishes/malawian-shandy.jpg";
 import longIsland from "@/assets/dishes/long-island.jpg";
 import tequilaGinSunrise from "@/assets/dishes/tequila-gin-sunrise.jpg";
 import blueLagoon from "@/assets/dishes/blue-lagoon.jpg";
+import chips from "@/assets/dishes/chips.jpg";
+import muriwoUneDovi from "@/assets/dishes/muriwo-une-dovi.jpg";
+import jollofRice from "@/assets/dishes/jollof-rice.jpg";
+import chapati from "@/assets/dishes/chapati.jpg";
+import friedPotatoWedges from "@/assets/dishes/fried-potato-wedges.jpg";
+import mpungaUneDovi from "@/assets/dishes/mpunga-une-dovi.jpg";
+import sadzaUgali from "@/assets/dishes/sadza-ugali.jpg";
+import plainRice from "@/assets/dishes/plain-rice.jpg";
+import homemadeCake from "@/assets/dishes/homemade-cake.jpg";
+import wildDriedFruits from "@/assets/dishes/wild-dried-fruits.jpg";
+import zimTeaCoffee from "@/assets/dishes/zim-tea-coffee.jpg";
 
 export const dishPhotos: Record<string, string> = {
   "Kuku Choma": kukuChoma,
@@ -65,4 +76,15 @@ export const dishPhotos: Record<string, string> = {
   "Long Island": longIsland,
   "Tequila/Gin Sunrise": tequilaGinSunrise,
   "Blue Lagoon": blueLagoon,
+  Chips: chips,
+  "Muriwo Une Dovi": muriwoUneDovi,
+  "Pilau / Jollof Rice": jollofRice,
+  Chapati: chapati,
+  "Fried Potatoes": friedPotatoWedges,
+  "Mpunga Une Dovi": mpungaUneDovi,
+  "Sadza / Ugali (Isitshwala)": sadzaUgali,
+  "Plain Rice (Wali)": plainRice,
+  "Homemade Cake Slice": homemadeCake,
+  "Wild Dried Fruits": wildDriedFruits,
+  "Best Zimbabwean Tea / Coffee": zimTeaCoffee,
 };

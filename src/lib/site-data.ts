@@ -58,14 +58,15 @@ export function whatsappLink(message: string = whatsappMessages.general) {
 }
 
 /** Placeholder — owner to confirm real trading hours in the dashboard. */
+/** VERIFIED — as stated on the business's own WhatsApp Business profile. */
 export const openingHours = [
-  { day: "Monday", hours: "To be confirmed" },
-  { day: "Tuesday", hours: "To be confirmed" },
-  { day: "Wednesday", hours: "To be confirmed" },
-  { day: "Thursday", hours: "To be confirmed" },
-  { day: "Friday", hours: "To be confirmed" },
-  { day: "Saturday", hours: "To be confirmed" },
-  { day: "Sunday", hours: "To be confirmed" },
+  { day: "Monday", hours: "Open 24 hours" },
+  { day: "Tuesday", hours: "Open 24 hours" },
+  { day: "Wednesday", hours: "Open 24 hours" },
+  { day: "Thursday", hours: "Open 24 hours" },
+  { day: "Friday", hours: "Open 24 hours" },
+  { day: "Saturday", hours: "Open 24 hours" },
+  { day: "Sunday", hours: "Open 24 hours" },
 ];
 
 export type ImageKey = "garden" | "food" | "craft" | "drums";
@@ -316,6 +317,7 @@ export const visitDetails = [
   { label: "Largest group seated", value: "To be confirmed" },
   { label: "Parking", value: "To be confirmed" },
   { label: "Children", value: "Yes — there's a kids' play area on the grounds" },
+  { label: "Alcohol license", value: "Fully licensed restaurant" },
   { label: "Vegetarian options", value: "To be confirmed" },
   { label: "Card payments", value: "To be confirmed" },
   { label: "Advance notice for groups", value: "To be confirmed" },
