@@ -16,8 +16,8 @@ export const business = {
   /** Same number as the phone line until a separate WhatsApp number is supplied. */
   whatsappNumber: "263772951308",
   whatsappHref: "https://wa.me/263772951308",
-  email: "culturesresortzimbabwe@gmail.com",
-  emailAlt: "culturesresort@gmail.com",
+  email: "culturesresort@gmail.com",
+  emailAlt: "culturesresortzimbabwe@gmail.com",
   /** VERIFIED — exact GPS pin for the venue, confirmed by the owner. */
   mapsHref: "https://www.google.com/maps/search/?api=1&query=-17.8362078%2C31.0696115",
   mapsEmbedHref:
@@ -36,7 +36,7 @@ export const business = {
  * whose value here is null rather than rendering a placeholder/fake one.
  */
 export const socialLinks: { facebook: string | null; instagram: string | null } = {
-  facebook: null,
+  facebook: "https://www.facebook.com/100057503797633",
   instagram: "https://www.instagram.com/culturesresort/",
 };
 
