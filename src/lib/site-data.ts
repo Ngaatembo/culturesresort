@@ -47,8 +47,8 @@ export type MenuCategory = {
 };
 
 /**
- * Menu structure only. Dish names and prices are placeholders for the
- * owner's real menu — no prices are invented, they read "On request".
+ * Kitchen menu structure only. Dish names and prices are placeholders for
+ * the owner's real menu — nothing is invented, prices read "On request".
  */
 export const menu: MenuCategory[] = [
   {
@@ -93,16 +93,66 @@ export const menu: MenuCategory[] = [
     ],
   },
   {
-    slug: "drinks",
-    title: "Traditional Drinks",
-    intro: "Traditional and contemporary refreshments.",
+    slug: "snacks",
+    title: "Snacks & Platters",
+    intro: "Lighter bites for the long afternoons.",
     items: [
-      { name: "Drink one", description: "Add the drink description here.", price: "On request" },
-      { name: "Drink two", description: "Add the drink description here.", price: "On request" },
-      { name: "Drink three", description: "Add the drink description here.", price: "On request" },
+      { name: "Snack one", description: "Add the dish description here.", price: "On request" },
+      { name: "Snack two", description: "Add the dish description here.", price: "On request" },
+      { name: "Sharing platter", description: "Add the platter description here.", price: "On request" },
     ],
   },
 ];
+
+/**
+ * Beverage list structure. Same rule as the kitchen menu — the names and
+ * prices below are placeholders for the restaurant's own drinks list.
+ */
+export const beverages: MenuCategory[] = [
+  {
+    slug: "traditional-drinks",
+    title: "Traditional Drinks",
+    intro: "Recipes carried through generations, served cold.",
+    items: [
+      { name: "Traditional drink one", description: "Add the drink description here.", price: "On request", featured: true },
+      { name: "Traditional drink two", description: "Add the drink description here.", price: "On request" },
+      { name: "Traditional drink three", description: "Add the drink description here.", price: "On request" },
+    ],
+  },
+  {
+    slug: "juices-shakes",
+    title: "Juices & Shakes",
+    intro: "Fresh, poured to order.",
+    items: [
+      { name: "Juice one", description: "Add the drink description here.", price: "On request" },
+      { name: "Juice two", description: "Add the drink description here.", price: "On request" },
+      { name: "Shake one", description: "Add the drink description here.", price: "On request" },
+    ],
+  },
+  {
+    slug: "hot-drinks",
+    title: "Hot Drinks",
+    intro: "For cool Harare evenings.",
+    items: [
+      { name: "Hot drink one", description: "Add the drink description here.", price: "On request" },
+      { name: "Hot drink two", description: "Add the drink description here.", price: "On request" },
+    ],
+  },
+  {
+    slug: "soft-drinks",
+    title: "Soft Drinks & Water",
+    intro: "Chilled and simple.",
+    items: [
+      { name: "Soft drink one", description: "Add the drink description here.", price: "On request" },
+      { name: "Still or sparkling water", description: "Add the description here.", price: "On request" },
+    ],
+  },
+];
+
+export const menuSections = [
+  { key: "food", label: "Food", categories: menu },
+  { key: "beverages", label: "Beverages", categories: beverages },
+] as const;
 
 export const experiences = [
   {
@@ -121,6 +171,39 @@ export const experiences = [
     title: "Family & Friends",
     body: "Long tables, space for children, and an unhurried pace. People come to stay a while, not only to eat.",
   },
+];
+
+/** The kinds of gathering guests can enquire about. Nothing is promised here. */
+export const eventTypes = [
+  "Birthday or celebration",
+  "Family gathering",
+  "Friends' outing",
+  "Business lunch or team function",
+  "Cultural event",
+  "Something else",
+] as const;
+
+/** Optional extras a guest can flag in an enquiry — the team confirms each one. */
+export const eventRequirements = [
+  "Reserved seating area",
+  "Set menu for the group",
+  "Cake or own décor",
+  "Music or performance",
+  "Children in the party",
+  "Accessibility needs",
+] as const;
+
+/**
+ * Practical visiting details. All answers are deliberately unconfirmed —
+ * the owner fills these in from the dashboard.
+ */
+export const visitDetails = [
+  { label: "Largest group seated", value: "To be confirmed" },
+  { label: "Parking", value: "To be confirmed" },
+  { label: "Children", value: "To be confirmed" },
+  { label: "Vegetarian options", value: "To be confirmed" },
+  { label: "Card payments", value: "To be confirmed" },
+  { label: "Advance notice for groups", value: "To be confirmed" },
 ];
 
 /** Gallery placeholders — replace with the owner's own photography. */

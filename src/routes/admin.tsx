@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { business, menu, openingHours } from "@/lib/site-data";
+import { beverages, business, eventRequirements, eventTypes, menu, openingHours, visitDetails } from "@/lib/site-data";
 import { gallery } from "@/lib/gallery";
 import { cn } from "@/lib/utils";
 
@@ -17,12 +17,14 @@ export const Route = createFileRoute("/admin")({
 
 const sections = [
   "Overview",
-  "Menu",
+  "Food menu",
+  "Beverages",
   "Gallery",
-  "Events",
+  "Events & functions",
   "Reservations",
   "Enquiries",
   "Hours",
+  "Visit details",
   "Contact & links",
 ] as const;
 type Section = (typeof sections)[number];
@@ -69,12 +71,14 @@ function Admin() {
 
         <div className="mt-10">
           {section === "Overview" && <Overview />}
-          {section === "Menu" && <MenuAdmin />}
+          {section === "Food menu" && <MenuAdmin kind="food" />}
+          {section === "Beverages" && <MenuAdmin kind="beverages" />}
           {section === "Gallery" && <GalleryAdmin />}
-          {section === "Events" && <EventsAdmin />}
+          {section === "Events & functions" && <EventsAdmin />}
           {section === "Reservations" && <ReservationsAdmin />}
           {section === "Enquiries" && <EnquiriesAdmin />}
           {section === "Hours" && <HoursAdmin />}
+          {section === "Visit details" && <VisitAdmin />}
           {section === "Contact & links" && <ContactAdmin />}
         </div>
       </div>
@@ -132,8 +136,8 @@ function Overview() {
   return (
     <div className="space-y-8">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat label="Menu categories" value={String(menu.length)} hint="Editable structure" />
-        <Stat label="Menu items" value={String(menu.reduce((n, c) => n + c.items.length, 0))} hint="Placeholder dishes" />
+        <Stat label="Food items" value={String(menu.reduce((n, c) => n + c.items.length, 0))} hint="Placeholder dishes" />
+        <Stat label="Beverages" value={String(beverages.reduce((n, c) => n + c.items.length, 0))} hint="Placeholder drinks" />
         <Stat label="Gallery images" value={String(gallery.length)} hint="Placeholder photography" />
         <Stat label="Pending requests" value="—" hint="Storage not connected" />
       </div>
@@ -141,7 +145,9 @@ function Overview() {
         <ul className="space-y-4 text-sm">
           {[
             "Upload real photography of the garden, food and events",
-            "Load the real menu, dish descriptions and prices",
+            "Load the real food menu, dish descriptions and prices",
+            "Load the real beverage list and prices",
+            "Answer the practical visit details (parking, group size, payments)",
             "Confirm trading hours for each day",
             "Add social media links (none have been invented)",
             "Turn on logins and storage so reservations and enquiries arrive here",
@@ -157,21 +163,27 @@ function Overview() {
   );
 }
 
-function MenuAdmin() {
+function MenuAdmin({ kind }: { kind: "food" | "beverages" }) {
+  const list = kind === "food" ? menu : beverages;
+  const noun = kind === "food" ? "dish" : "drink";
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap gap-3">
         <Btn tone="solid">Add category</Btn>
-        <Btn>Add item</Btn>
+        <Btn>Add {noun}</Btn>
         <Btn>Reorder</Btn>
       </div>
-      {menu.map((c) => (
+      <p className="text-sm text-muted-foreground">
+        Every {noun} name, description and price below is a placeholder. Nothing has been invented — load the
+        restaurant&apos;s real list here.
+      </p>
+      {list.map((c) => (
         <Card key={c.slug} title={c.title} note={c.intro}>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  {["Item", "Description", "Price", "Featured", "Status", ""].map((h) => (
+                  {["Item", "Description", "Price", "Signature", "Status", ""].map((h) => (
                     <th key={h} scope="col" className="eyebrow py-3 pr-4 text-muted-foreground">
                       {h}
                     </th>
@@ -233,15 +245,71 @@ function GalleryAdmin() {
 
 function EventsAdmin() {
   return (
+    <div className="space-y-8">
+      <Card
+        title="Published events"
+        note="No events have been published — nothing has been invented. Add real dates and details here when ready."
+      >
+        <div className="flex flex-wrap gap-3">
+          <Btn tone="solid">Add event</Btn>
+        </div>
+        <div className="mt-6 border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+          No events yet. Fields ready: title, date, time, description, image, entry note, published toggle.
+        </div>
+      </Card>
+      <Card title="Enquiry form options" note="These are the choices guests see on the events page.">
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div>
+            <p className="eyebrow text-muted-foreground">Types of event</p>
+            <ul className="mt-4 space-y-3 text-sm">
+              {eventTypes.map((t) => (
+                <li key={t} className="flex items-center justify-between gap-4 border-b border-border pb-3">
+                  <span className="text-muted-foreground">{t}</span>
+                  <Btn>Edit</Btn>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="eyebrow text-muted-foreground">Requests guests can tick</p>
+            <ul className="mt-4 space-y-3 text-sm">
+              {eventRequirements.map((t) => (
+                <li key={t} className="flex items-center justify-between gap-4 border-b border-border pb-3">
+                  <span className="text-muted-foreground">{t}</span>
+                  <Btn>Edit</Btn>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="mt-6">
+          <Btn tone="solid">Save options</Btn>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function VisitAdmin() {
+  return (
     <Card
-      title="Events"
-      note="No events have been published — nothing has been invented. Add real dates and details here when ready."
+      title="Visit details"
+      note="These answers show on the menu and events pages. All are unconfirmed until the restaurant fills them in."
     >
-      <div className="flex flex-wrap gap-3">
-        <Btn tone="solid">Add event</Btn>
-      </div>
-      <div className="mt-6 border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-        No events yet. Fields ready: title, date, time, description, image, ticket or entry note, published toggle.
+      <ul className="space-y-5">
+        {visitDetails.map((d) => (
+          <li key={d.label} className="grid gap-3 sm:grid-cols-[14rem_minmax(0,1fr)] sm:items-center">
+            <span className="eyebrow text-muted-foreground">{d.label}</span>
+            <input
+              defaultValue={d.value}
+              aria-label={d.label}
+              className="w-full border border-input bg-background px-4 py-3 text-sm"
+            />
+          </li>
+        ))}
+      </ul>
+      <div className="mt-6">
+        <Btn tone="solid">Save details</Btn>
       </div>
     </Card>
   );

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
-import { business } from "@/lib/site-data";
+import { business, eventRequirements, eventTypes, visitDetails } from "@/lib/site-data";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -12,24 +12,24 @@ export const Route = createFileRoute("/events")({
       {
         name: "description",
         content:
-          "Enquire about group bookings, celebrations and functions at Cultures Resort, Corner Chiremba & Southey Road, Hillside, Harare.",
+          "Enquire about birthdays, family gatherings, business lunches and functions at Cultures Resort, Corner Chiremba & Southey Road, Hillside, Harare.",
       },
       { property: "og:title", content: "Events & Functions | Cultures Resort" },
       {
         property: "og:description",
         content: "Group bookings and celebrations in an African garden setting in Harare.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Events,
 });
 
-const eventTypes = [
-  "Birthday or celebration",
-  "Family gathering",
-  "Corporate or team function",
-  "Cultural event",
-  "Something else",
+const steps = [
+  { n: "01", title: "Send your enquiry", body: "Tell us the occasion, the date you have in mind and roughly how many people." },
+  { n: "02", title: "The team replies", body: "Cultures Resort confirms what is possible for that date, seating and food." },
+  { n: "03", title: "Confirm by phone", body: "Nothing is held until the restaurant confirms it with you directly." },
 ];
 
 function Events() {
@@ -41,12 +41,29 @@ function Events() {
       <PageHeader
         eyebrow="Events & functions"
         title="Gatherings under the trees"
-        intro="Tell us what you have in mind and the team will come back to you directly."
+        intro="Birthdays, family gatherings, outings with friends or a business lunch. Tell us what you have in mind and the team will come back to you directly."
         image={images.drums}
         imageAlt="Guests gathered around a cultural performance in the courtyard"
       />
 
-      <section className="bg-background py-20 lg:py-28">
+      <section className="bg-background py-16 lg:py-20">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+          <Reveal>
+            <p className="eyebrow rule-ochre text-primary">How planning works</p>
+          </Reveal>
+          <ol className="mt-10 grid gap-8 md:grid-cols-3">
+            {steps.map((s, i) => (
+              <Reveal as="li" key={s.n} delay={i * 90} className="border-t border-border pt-6">
+                <span className="eyebrow text-ochre">{s.n}</span>
+                <h2 className="mt-3 font-display text-2xl">{s.title}</h2>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="bg-background pb-20 lg:pb-28">
         <div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-12 lg:px-10">
           <Reveal className="lg:col-span-5">
             <p className="eyebrow rule-ochre text-primary">What we can host</p>
@@ -57,11 +74,24 @@ function Events() {
                 </li>
               ))}
             </ul>
+
+            <div className="mt-10">
+              <p className="eyebrow rule-ochre text-primary">Practical details</p>
+              <dl className="mt-6 space-y-3 text-sm">
+                {visitDetails.map((d) => (
+                  <div key={d.label} className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-border pb-3">
+                    <dt className="text-muted-foreground">{d.label}</dt>
+                    <dd className="shrink-0 text-foreground">{d.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+
             <div className="mt-10 border border-border bg-secondary p-6 text-sm leading-relaxed text-muted-foreground">
-              <p className="eyebrow text-foreground">No published event calendar</p>
+              <p className="eyebrow text-foreground">No published calendar or packages</p>
               <p className="mt-3">
-                We don't list dates or packages here, because those change and we won't guess them. Send an enquiry or
-                call and the restaurant will confirm what's possible.
+                We don't list dates, prices or set packages here, because those change and we won't guess them. Send an
+                enquiry or call and the restaurant will confirm what's possible.
               </p>
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -127,6 +157,19 @@ function Events() {
                     <Field label="Approx. guests" name="guests" type="number" min={1} max={500} />
                   </div>
                   <Field label="Preferred date" name="date" type="date" />
+
+                  <fieldset>
+                    <legend className="eyebrow text-muted-foreground">Anything you need? (optional)</legend>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                      {eventRequirements.map((r) => (
+                        <label key={r} className="flex items-start gap-3 border border-border p-3 text-sm">
+                          <input type="checkbox" name="requirements" value={r} className="mt-1 accent-[var(--ochre)]" />
+                          <span className="text-muted-foreground">{r}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+
                   <label className="block">
                     <span className="eyebrow text-muted-foreground">Tell us more</span>
                     <textarea
