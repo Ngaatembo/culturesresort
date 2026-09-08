@@ -33,7 +33,7 @@ function Home() {
       <section className="relative flex min-h-[92svh] items-end overflow-hidden">
         <img
           src={images.garden}
-          alt="Long wooden tables set under trees, lit by lanterns and an open fire at dusk"
+          alt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
           width={1920}
           height={1280}
           className="absolute inset-0 h-full w-full object-cover"

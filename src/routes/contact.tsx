@@ -37,7 +37,7 @@ function Contact() {
         title="Corner Chiremba & Southey Road"
         intro="Hillside, Harare, Zimbabwe."
         image={images.garden}
-        imageAlt="Garden dining area at Cultures Resort at dusk"
+        imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
       />
 
       <section className="bg-background py-20 lg:py-28">

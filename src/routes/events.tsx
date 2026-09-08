@@ -57,7 +57,7 @@ function Events() {
         title="Gatherings under the trees"
         intro="Birthdays, family gatherings, outings with friends or a business lunch. Tell us what you have in mind and the team will come back to you directly."
         image={images.drums}
-        imageAlt="Guests gathered around a cultural performance in the courtyard"
+        imageAlt="The dining pavilion lit up at night with a leopard sculpture on the lawn"
       />
 
       <section className="bg-background py-16 lg:py-20">

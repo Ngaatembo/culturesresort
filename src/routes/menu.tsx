@@ -72,7 +72,7 @@ function Menu() {
         title="Traditional plates, served family style"
         intro="Add anything you'd like to try and check out online or on WhatsApp. Items, prices and availability are managed by the Cultures team, so a few are still marked On request while the full list is loaded."
         image={images.food}
-        imageAlt="Traditional African dishes in carved wooden and clay bowls"
+        imageAlt="A grilled meat platter with rosemary garnish and cocktails, served in the evening garden"
       />
 
       <section className="bg-background py-16 lg:py-24">

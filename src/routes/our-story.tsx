@@ -30,7 +30,7 @@ function OurStory() {
         title="Built around a table, not a trend"
         intro="Cultures Resort is a traditional African restaurant in Hillside, Harare — a place for food, craft and company."
         image={images.craft}
-        imageAlt="Carved wooden mask, woven basket and clay pot against an earth wall"
+        imageAlt="A staff member hand-painting a buffalo mural on the brick wall of the dining pavilion"
       />
 
       <section className="grain bg-background py-20 lg:py-32">

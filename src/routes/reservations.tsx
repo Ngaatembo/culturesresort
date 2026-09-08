@@ -80,7 +80,7 @@ function Reservations() {
           eyebrow="Reservations"
           title="Request received"
           image={images.garden}
-          imageAlt="Garden tables set for dinner at Cultures Resort"
+          imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
         />
         <section className="bg-background py-20 lg:py-28">
           <div className="mx-auto max-w-2xl px-5 lg:px-10">
@@ -144,7 +144,7 @@ function Reservations() {
         title="Request a table"
         intro="Tell us when you'd like to come. The restaurant confirms every booking personally."
         image={images.garden}
-        imageAlt="Garden tables set for dinner at Cultures Resort"
+        imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
       />
 
       <section className="bg-background py-20 lg:py-28">

@@ -85,11 +85,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: "Cultures Resort" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_ZW" },
-      { property: "og:image", content: "https://culturesresort.lovable.app/og-image.jpg" },
+      { property: "og:image", content: "https://culturesresort.ngaatendwew.workers.dev/og-image.jpg" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "https://culturesresort.lovable.app/og-image.jpg" },
+      { name: "twitter:image", content: "https://culturesresort.ngaatendwew.workers.dev/og-image.jpg" },
       { name: "theme-color", content: "#2a1d13" },
     ],
     links: [

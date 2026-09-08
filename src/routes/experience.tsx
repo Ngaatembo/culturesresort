@@ -31,7 +31,7 @@ function Experience() {
         title="Open air, open fire, open afternoon"
         intro="What the grounds feel like, and how a visit tends to unfold."
         image={images.garden}
-        imageAlt="Garden tables under trees lit with lanterns at dusk"
+        imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
       />
 
       <section className="bg-background py-20 lg:py-28">
@@ -45,7 +45,7 @@ function Experience() {
           <div className="min-h-[50vh]">
             <img
               src={images.drums}
-              alt="Drummer and dancers performing beside a fire in the courtyard"
+              alt="The dining pavilion lit up at night with a leopard sculpture on the lawn"
               width={1600}
               height={1067}
               loading="lazy"
