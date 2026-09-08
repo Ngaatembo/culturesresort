@@ -185,10 +185,9 @@ function Menu() {
                                     {item.price}
                                   </span>
                                 </div>
-                                <p className="eyebrow mt-1 text-ochre">{category.title}</p>
-                                {item.featured ? (
-                                  <span className="eyebrow mt-1 block text-primary">Signature</span>
-                                ) : null}
+                                <p className="eyebrow mt-1 text-primary">
+                                  {item.featured ? "Signature" : "\u00A0"}
+                                </p>
                               </div>
                             </div>
                             <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
@@ -229,7 +228,7 @@ function Menu() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
                   href={business.phoneHref}
-                  className="eyebrow bg-primary px-7 py-4 text-primary-foreground"
+                  className="eyebrow border border-border px-7 py-4"
                 >
                   Call {business.phoneDisplay}
                 </a>
@@ -237,7 +236,7 @@ function Menu() {
                   href={business.whatsappHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="eyebrow border border-border px-7 py-4"
+                  className="eyebrow flex items-center justify-center gap-2 bg-leaf px-7 py-4 text-bone"
                 >
                   WhatsApp us
                 </a>

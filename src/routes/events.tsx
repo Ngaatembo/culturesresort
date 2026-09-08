@@ -117,7 +117,7 @@ function Events() {
             <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href={business.phoneHref}
-                className="eyebrow bg-primary px-7 py-4 text-primary-foreground"
+                className="eyebrow border border-border px-7 py-4"
               >
                 Call {business.phoneDisplay}
               </a>
@@ -125,7 +125,7 @@ function Events() {
                 href={business.whatsappHref}
                 target="_blank"
                 rel="noreferrer"
-                className="eyebrow border border-border px-7 py-4"
+                className="eyebrow flex items-center justify-center gap-2 bg-leaf px-7 py-4 text-bone"
               >
                 WhatsApp
               </a>
