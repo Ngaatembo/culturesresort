@@ -124,8 +124,8 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: food,
-    alt: "Charcoal-grilled ribs fresh off the fire",
-    caption: "Straight off the charcoal",
+    alt: "A grilled meat platter with rosemary garnish and cocktails, served in the evening garden",
+    caption: "Dinner in the garden, after dark",
     category: "Food",
     tall: true,
   },

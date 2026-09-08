@@ -137,7 +137,7 @@ function Home() {
           <div className="order-1 min-h-[50vh] lg:order-2">
             <img
               src={images.food}
-              alt="Traditional African dishes served in carved wooden and clay bowls"
+              alt="A grilled meat platter with rosemary garnish and cocktails, served in the evening garden"
               width={1600}
               height={1200}
               loading="lazy"
