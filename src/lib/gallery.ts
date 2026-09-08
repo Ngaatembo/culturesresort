@@ -2,8 +2,11 @@ import garden from "@/assets/hero-garden.jpg";
 import food from "@/assets/food-platter.jpg";
 import craft from "@/assets/craft-detail.jpg";
 import drums from "@/assets/culture-drums.jpg";
+import interiorDeck from "@/assets/interior-deck.jpg";
+import sadzaPlate from "@/assets/sadza-plate.jpg";
+import jollofPlate from "@/assets/jollof-plate.jpg";
 
-export const images = { garden, food, craft, drums };
+export const images = { garden, food, craft, drums, interiorDeck, sadzaPlate, jollofPlate };
 
 export type GalleryEntry = {
   src: string;
@@ -13,56 +16,56 @@ export type GalleryEntry = {
   tall?: boolean;
 };
 
-/** Placeholder gallery — the owner replaces these with their own photographs. */
+/** Real photographs of Cultures Resort, Hillside, Harare. */
 export const gallery: GalleryEntry[] = [
   {
     src: garden,
-    alt: "Long wooden tables set under trees with lanterns at dusk",
-    caption: "Garden dining at dusk — placeholder image",
+    alt: "Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables",
+    caption: "The garden — zebra, giraffe and elephant among the trees",
     category: "Garden",
   },
   {
-    src: food,
-    alt: "Traditional African dishes served in carved wooden and clay bowls",
-    caption: "Traditional plates, served family style — placeholder image",
+    src: sadzaPlate,
+    alt: "Sadza and covo served on a white plate at an outdoor wooden table",
+    caption: "Sadza and covo, served at the table",
     category: "Food",
   },
   {
     src: craft,
-    alt: "Carved wooden mask, woven basket and clay pot against an earth wall",
-    caption: "Handcrafted décor — placeholder image",
+    alt: "Thatched roof of the dining pavilion against a blue sky",
+    caption: "The thatched dining pavilion",
     category: "Détail",
     tall: true,
   },
   {
     src: drums,
-    alt: "Drummer and dancers performing beside a fire in a courtyard",
-    caption: "Cultural performance in the courtyard — placeholder image",
+    alt: "The dining pavilion lit up at night with a leopard sculpture on the lawn",
+    caption: "The grounds after dark",
     category: "Culture",
   },
   {
-    src: garden,
-    alt: "Warm lantern light over garden seating",
-    caption: "Evening lantern light — placeholder image",
+    src: interiorDeck,
+    alt: "Covered wooden deck seating under a thatched roof",
+    caption: "Covered deck seating",
     category: "Garden",
   },
   {
     src: food,
-    alt: "Close view of grilled meat and relishes on a wooden platter",
-    caption: "From the fire — placeholder image",
+    alt: "Charcoal-grilled ribs fresh off the fire",
+    caption: "Straight off the charcoal",
     category: "Food",
     tall: true,
   },
   {
-    src: drums,
-    alt: "Guests watching a traditional dance performance",
-    caption: "Guests at a performance — placeholder image",
-    category: "Culture",
+    src: jollofPlate,
+    alt: "Jollof rice with greens on a white plate",
+    caption: "Jollof rice, served with greens",
+    category: "Food",
   },
   {
-    src: craft,
-    alt: "Detail of hand-dyed indigo and ochre cloth",
-    caption: "Cloth and colour — placeholder image",
+    src: garden,
+    alt: "Wooden signpost among the trees in the garden",
+    caption: "Signposts through the garden",
     category: "Détail",
   },
 ];
