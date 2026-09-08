@@ -5,8 +5,22 @@ import drums from "@/assets/culture-drums.jpg";
 import interiorDeck from "@/assets/interior-deck.jpg";
 import sadzaPlate from "@/assets/sadza-plate.jpg";
 import jollofPlate from "@/assets/jollof-plate.jpg";
+import thatchedRoof from "@/assets/thatched-roof.jpg";
+import craftBaskets from "@/assets/craft-art-baskets.jpg";
+import craftClayPot from "@/assets/craft-clay-pot.jpg";
 
-export const images = { garden, food, craft, drums, interiorDeck, sadzaPlate, jollofPlate };
+export const images = {
+  garden,
+  food,
+  craft,
+  drums,
+  interiorDeck,
+  sadzaPlate,
+  jollofPlate,
+  thatchedRoof,
+  craftBaskets,
+  craftClayPot,
+};
 
 export type GalleryEntry = {
   src: string;
@@ -32,8 +46,8 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: craft,
-    alt: "Thatched roof of the dining pavilion against a blue sky",
-    caption: "The thatched dining pavilion",
+    alt: "A staff member hand-painting a buffalo mural on the brick wall of the dining pavilion",
+    caption: "Hand-painted art on the pavilion walls",
     category: "Détail",
     tall: true,
   },
@@ -61,6 +75,25 @@ export const gallery: GalleryEntry[] = [
     alt: "Jollof rice with greens on a white plate",
     caption: "Jollof rice, served with greens",
     category: "Food",
+  },
+  {
+    src: craftBaskets,
+    alt: "Hand-painted canvases of African women and woven baskets on display",
+    caption: "Local art and woven baskets on display",
+    category: "Détail",
+    tall: true,
+  },
+  {
+    src: craftClayPot,
+    alt: "A staff member in traditional dress arranging a large clay pot",
+    caption: "Traditional dress and handcrafted clay pots",
+    category: "Culture",
+  },
+  {
+    src: thatchedRoof,
+    alt: "Thatched roof of the dining pavilion against a blue sky",
+    caption: "The thatched dining pavilion",
+    category: "Détail",
   },
   {
     src: garden,
