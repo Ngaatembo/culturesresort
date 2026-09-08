@@ -32,14 +32,12 @@ export const Route = createFileRoute("/menu")({
 
 /** Category slug -> placeholder photo, until the restaurant supplies real photography. */
 const CATEGORY_IMAGE: Record<string, keyof typeof images> = {
-  "to-begin": "food",
-  "traditional-plates": "food",
-  "from-the-fire": "garden",
+  starters: "craft",
+  "main-meals": "food",
+  grills: "garden",
   sides: "food",
-  snacks: "craft",
   "traditional-drinks": "craft",
-  "juices-shakes": "food",
-  "hot-drinks": "drums",
+  cocktails: "drums",
   "soft-drinks": "garden",
 };
 
