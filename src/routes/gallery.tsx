@@ -38,7 +38,7 @@ function Gallery() {
       <PageHeader
         eyebrow="Gallery"
         title="The garden, the plates, the evening"
-        intro="Placeholder photography stands in until the restaurant's own images are added."
+        intro="The garden, the grounds, the plates and the people — as they really are."
         image={images.craft}
         imageAlt="Carved mask, woven basket and clay pot"
       />
@@ -62,30 +62,52 @@ function Gallery() {
             ))}
           </div>
 
-          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {shown.map((img, i) => (
-              <Reveal as="li" key={`${img.caption}-${i}`} delay={(i % 3) * 80}>
-                <button
-                  type="button"
-                  onClick={() => setIndex(gallery.indexOf(img))}
-                  className="group block w-full overflow-hidden bg-secondary text-left"
-                  aria-label={`Open image: ${img.caption}`}
+          <ul className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:auto-rows-[220px]">
+            {shown.map((img, i) => {
+              // Editorial rhythm on desktop: every 7th item runs large (2x2),
+              // every 5th runs as a wide landscape (2x1) — everything else is
+              // a single cell. Mobile stays a simple two-column sequence.
+              const pattern = i % 7;
+              const spanClass =
+                pattern === 0
+                  ? "lg:col-span-2 lg:row-span-2"
+                  : pattern === 4
+                    ? "col-span-2 lg:col-span-2 lg:row-span-1"
+                    : "";
+              return (
+                <Reveal
+                  as="li"
+                  key={`${img.caption}-${i}`}
+                  delay={(i % 4) * 70}
+                  className={cn("h-full", spanClass)}
                 >
-                  <span className={cn("block overflow-hidden", img.tall ? "aspect-[3/4]" : "aspect-[4/3]")}>
-                    <img
-                      src={img.src}
-                      alt={img.alt}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </span>
-                  <span className="flex items-center justify-between gap-3 px-4 py-4">
+                  <button
+                    type="button"
+                    onClick={() => setIndex(gallery.indexOf(img))}
+                    className="group block h-full w-full overflow-hidden bg-secondary text-left"
+                    aria-label={`Open image: ${img.caption}`}
+                  >
+                    <span
+                      className={cn(
+                        "block h-full overflow-hidden",
+                        spanClass ? "" : img.tall ? "aspect-[3/4]" : "aspect-[4/3]",
+                      )}
+                    >
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </span>
+                  </button>
+                  <span className="mt-2 flex items-center justify-between gap-3">
                     <span className="min-w-0 truncate text-sm text-muted-foreground">{img.caption}</span>
                     <span className="eyebrow shrink-0 text-ochre">{img.category}</span>
                   </span>
-                </button>
-              </Reveal>
-            ))}
+                </Reveal>
+              );
+            })}
           </ul>
         </div>
       </section>

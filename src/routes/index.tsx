@@ -52,9 +52,9 @@ function Home() {
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/reservations"
-                className="eyebrow bg-ochre px-8 py-5 text-center text-ink transition-colors hover:bg-bone"
+                className="eyebrow bg-primary px-8 py-5 text-center text-primary-foreground transition-colors hover:opacity-90"
               >
-                Reserve a table
+                Reserve a table →
               </Link>
               <a
                 href={business.mapsHref}
@@ -67,10 +67,18 @@ function Home() {
             </div>
           </Reveal>
         </div>
+        <a
+          href="#story"
+          className="eyebrow absolute inset-x-0 bottom-6 z-10 hidden flex-col items-center gap-2 text-bone/70 transition-colors hover:text-bone sm:flex"
+          aria-label="Scroll to explore"
+        >
+          Scroll to explore
+          <span className="h-8 w-px animate-pulse bg-bone/50" aria-hidden="true" />
+        </a>
       </section>
 
       {/* Intro */}
-      <section className="grain bg-background py-20 lg:py-32">
+      <section id="story" className="grain bg-background py-20 lg:py-32">
         <div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-12 lg:px-10">
           <Reveal className="lg:col-span-5">
             <p className="eyebrow rule-ochre text-primary">Our table</p>
