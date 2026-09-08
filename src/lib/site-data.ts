@@ -315,7 +315,7 @@ export const eventRequirements = [
 export const visitDetails = [
   { label: "Largest group seated", value: "To be confirmed" },
   { label: "Parking", value: "To be confirmed" },
-  { label: "Children", value: "To be confirmed" },
+  { label: "Children", value: "Yes — there's a kids' play area on the grounds" },
   { label: "Vegetarian options", value: "To be confirmed" },
   { label: "Card payments", value: "To be confirmed" },
   { label: "Advance notice for groups", value: "To be confirmed" },

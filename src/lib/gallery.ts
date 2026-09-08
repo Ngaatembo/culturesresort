@@ -8,6 +8,14 @@ import jollofPlate from "@/assets/jollof-plate.jpg";
 import thatchedRoof from "@/assets/thatched-roof.jpg";
 import craftBaskets from "@/assets/craft-art-baskets.jpg";
 import craftClayPot from "@/assets/craft-clay-pot.jpg";
+import pavilionWide from "@/assets/pavilion-wide.jpg";
+import curioShop from "@/assets/curio-shop.jpg";
+import waterfall from "@/assets/waterfall.jpg";
+import elephantBridge from "@/assets/elephant-bridge.jpg";
+import staffWelcome from "@/assets/staff-welcome.jpg";
+import gardenLion from "@/assets/garden-lion.jpg";
+import picnicTables from "@/assets/picnic-tables.jpg";
+import porkSizzler from "@/assets/pork-sizzler.jpg";
 
 export const images = {
   garden,
@@ -20,6 +28,14 @@ export const images = {
   thatchedRoof,
   craftBaskets,
   craftClayPot,
+  pavilionWide,
+  curioShop,
+  waterfall,
+  elephantBridge,
+  staffWelcome,
+  gardenLion,
+  picnicTables,
+  porkSizzler,
 };
 
 export type GalleryEntry = {
@@ -32,6 +48,13 @@ export type GalleryEntry = {
 
 /** Real photographs of Cultures Resort, Hillside, Harare. */
 export const gallery: GalleryEntry[] = [
+  {
+    src: pavilionWide,
+    alt: "The thatched dining pavilion with guests seated, a stone path, and a crocodile sculpture on the lawn",
+    caption: "The dining pavilion and grounds",
+    category: "Garden",
+    tall: true,
+  },
   {
     src: garden,
     alt: "Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables",
@@ -52,9 +75,21 @@ export const gallery: GalleryEntry[] = [
     tall: true,
   },
   {
+    src: curioShop,
+    alt: "A curio stand selling beaded jewellery, woven bags and traditional cloth",
+    caption: "The curio shop, on site",
+    category: "Détail",
+  },
+  {
     src: drums,
     alt: "The dining pavilion lit up at night with a leopard sculpture on the lawn",
     caption: "The grounds after dark",
+    category: "Culture",
+  },
+  {
+    src: staffWelcome,
+    alt: "A staff member in branded uniform welcoming guests beside the curio display",
+    caption: "Friendly staff, ready to welcome you",
     category: "Culture",
   },
   {
@@ -64,11 +99,41 @@ export const gallery: GalleryEntry[] = [
     category: "Garden",
   },
   {
+    src: elephantBridge,
+    alt: "A life-size elephant sculpture beside a raised wooden walkway, with a signpost showing distances to African destinations",
+    caption: "The elephant, and the walkway through the grounds",
+    category: "Garden",
+  },
+  {
+    src: waterfall,
+    alt: "A rock-built water feature in the garden, with the thatched pavilion behind it",
+    caption: "The rock water feature",
+    category: "Détail",
+  },
+  {
+    src: gardenLion,
+    alt: "A lion sculpture and guinea fowl sculptures on the lawn among picnic tables",
+    caption: "Another corner of the garden",
+    category: "Garden",
+  },
+  {
+    src: picnicTables,
+    alt: "Numbered picnic tables in the garden with camel and cheetah sculptures nearby",
+    caption: "Table seating around the grounds",
+    category: "Garden",
+  },
+  {
     src: food,
     alt: "Charcoal-grilled ribs fresh off the fire",
     caption: "Straight off the charcoal",
     category: "Food",
     tall: true,
+  },
+  {
+    src: porkSizzler,
+    alt: "Sizzling grilled pork served on a hot plate with tomato and onion",
+    caption: "Sizzling grilled pork, straight to the table",
+    category: "Food",
   },
   {
     src: jollofPlate,
