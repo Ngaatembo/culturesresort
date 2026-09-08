@@ -3,7 +3,7 @@ import { getDb } from "./cf";
 
 export type MenuKind = "food" | "beverages";
 
-type MenuItemRow = {
+export type MenuItemRow = {
   id: number;
   kind: MenuKind;
   category_slug: string;
@@ -89,4 +89,20 @@ export const setMenuItemAvailability = createServerFn({ method: "POST" })
       .bind(data.available ? 1 : 0, data.id)
       .run();
     return { ok: true };
+  });
+
+/** Sets a real price (in whole currency units, e.g. 4.5 for $4.50). Pass 0 to mark it "On request". */
+export const setMenuItemPrice = createServerFn({ method: "POST" })
+  .validator((data: { id: number; price: number }) => data)
+  .handler(async ({ data }) => {
+    if (!Number.isFinite(data.price) || data.price < 0) {
+      throw new Error("Enter a valid price.");
+    }
+    const db = getDb();
+    const priceCents = Math.round(data.price * 100);
+    await db
+      .prepare("UPDATE menu_items SET price_cents = ?, updated_at = datetime('now') WHERE id = ?")
+      .bind(priceCents, data.id)
+      .run();
+    return { ok: true, priceCents };
   });

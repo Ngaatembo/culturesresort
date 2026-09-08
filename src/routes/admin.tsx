@@ -1,16 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  beverages,
   business,
   eventRequirements,
   eventTypes,
-  menu,
   openingHours,
   visitDetails,
 } from "@/lib/site-data";
 import { gallery } from "@/lib/gallery";
 import { getDashboardStats, type DashboardStats } from "@/lib/data/dashboard";
+import {
+  getMenuAdmin,
+  setMenuItemAvailability,
+  setMenuItemPrice,
+  type MenuItemRow,
+} from "@/lib/data/menu";
 import {
   listOrders,
   updateOrderStatus,
@@ -162,15 +166,19 @@ function Card({
 function Btn({
   children,
   tone = "quiet",
+  onClick,
 }: {
   children: React.ReactNode;
   tone?: "solid" | "quiet";
+  onClick?: () => void;
 }) {
+  const wired = Boolean(onClick);
   return (
     <button
       type="button"
-      disabled
-      title="Not connected yet"
+      disabled={!wired}
+      title={wired ? undefined : "Not connected yet"}
+      onClick={onClick}
       className={cn(
         "eyebrow px-4 py-3 disabled:cursor-not-allowed disabled:opacity-60",
         tone === "solid" ? "bg-primary text-primary-foreground" : "border border-border",
@@ -360,55 +368,134 @@ function OrdersAdmin() {
 }
 
 function MenuAdmin({ kind }: { kind: "food" | "beverages" }) {
-  const list = kind === "food" ? menu : beverages;
   const noun = kind === "food" ? "dish" : "drink";
+  const [items, setItems] = useState<MenuItemRow[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [drafts, setDrafts] = useState<Record<number, string>>({});
+  const [savingId, setSavingId] = useState<number | null>(null);
+
+  const load = () => {
+    getMenuAdmin()
+      .then((all) => setItems(all.filter((i) => i.kind === kind)))
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : `Could not load the ${noun} list.`),
+      );
+  };
+  useEffect(load, [kind]);
+
+  const categories = items
+    ? Array.from(new Map(items.map((i) => [i.category_slug, i.category_title])).entries())
+    : [];
+
+  const savePrice = async (item: MenuItemRow) => {
+    const raw =
+      drafts[item.id] ?? (item.price_cents > 0 ? (item.price_cents / 100).toFixed(2) : "");
+    const price = raw.trim() === "" ? 0 : Number(raw);
+    if (!Number.isFinite(price) || price < 0) {
+      setError("Enter a valid price (or leave blank for On request).");
+      return;
+    }
+    setSavingId(item.id);
+    setError(null);
+    try {
+      await setMenuItemPrice({ data: { id: item.id, price } });
+      setItems((prev) =>
+        prev!.map((i) => (i.id === item.id ? { ...i, price_cents: Math.round(price * 100) } : i)),
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not save the price.");
+    } finally {
+      setSavingId(null);
+    }
+  };
+
+  const toggleAvailable = async (item: MenuItemRow) => {
+    const next = item.available ? false : true;
+    setItems((prev) =>
+      prev!.map((i) => (i.id === item.id ? { ...i, available: next ? 1 : 0 } : i)),
+    );
+    try {
+      await setMenuItemAvailability({ data: { id: item.id, available: next } });
+    } catch {
+      load();
+    }
+  };
+
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap gap-3">
-        <Btn tone="solid">Add category</Btn>
-        <Btn>Add {noun}</Btn>
-        <Btn>Reorder</Btn>
-      </div>
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <p className="text-sm text-muted-foreground">
-        Every {noun} name, description and price below is a placeholder. Nothing has been invented —
-        load the restaurant&apos;s real list here.
+        Prices save straight to the live menu — type a number and hit Save, or leave it blank for
+        "On request".
       </p>
-      {list.map((c) => (
-        <Card key={c.slug} title={c.title} note={c.intro}>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] text-left text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  {["Item", "Description", "Price", "Signature", "Status", ""].map((h) => (
-                    <th key={h} scope="col" className="eyebrow py-3 pr-4 text-muted-foreground">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {c.items.map((item) => (
-                  <tr key={item.name} className="border-b border-border/60">
-                    <td className="py-4 pr-4 font-display text-base">{item.name}</td>
-                    <td className="max-w-xs py-4 pr-4 text-muted-foreground">{item.description}</td>
-                    <td className="py-4 pr-4">{item.price}</td>
-                    <td className="py-4 pr-4">{item.featured ? "Yes" : "—"}</td>
-                    <td className="py-4 pr-4">
-                      <span className="eyebrow bg-secondary px-2 py-1">Available</span>
-                    </td>
-                    <td className="py-4">
-                      <div className="flex gap-2">
-                        <Btn>Edit</Btn>
-                        <Btn>Sold out</Btn>
-                      </div>
-                    </td>
+      {!items ? (
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      ) : (
+        categories.map(([slug, title]) => (
+          <Card key={slug} title={title}>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] text-left text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    {["Item", "Description", "Price ($)", "Status", ""].map((h) => (
+                      <th key={h} scope="col" className="eyebrow py-3 pr-4 text-muted-foreground">
+                        {h}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-      ))}
+                </thead>
+                <tbody>
+                  {items
+                    .filter((i) => i.category_slug === slug)
+                    .map((item) => (
+                      <tr key={item.id} className="border-b border-border/60">
+                        <td className="py-4 pr-4 font-display text-base">{item.name}</td>
+                        <td className="max-w-xs py-4 pr-4 text-muted-foreground">
+                          {item.description}
+                        </td>
+                        <td className="py-4 pr-4">
+                          <input
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            placeholder="On request"
+                            defaultValue={
+                              item.price_cents > 0 ? (item.price_cents / 100).toFixed(2) : ""
+                            }
+                            onChange={(e) =>
+                              setDrafts((d) => ({ ...d, [item.id]: e.target.value }))
+                            }
+                            className="w-28 border border-input bg-background px-3 py-2 text-sm"
+                          />
+                        </td>
+                        <td className="py-4 pr-4">
+                          <span className="eyebrow bg-secondary px-2 py-1">
+                            {item.available ? "Available" : "Sold out"}
+                          </span>
+                        </td>
+                        <td className="py-4">
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => savePrice(item)}
+                              disabled={savingId === item.id}
+                              className="eyebrow bg-primary px-4 py-3 text-primary-foreground disabled:opacity-60"
+                            >
+                              {savingId === item.id ? "Saving…" : "Save"}
+                            </button>
+                            <Btn onClick={() => toggleAvailable(item)}>
+                              {item.available ? "Sold out" : "Available"}
+                            </Btn>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        ))
+      )}
     </div>
   );
 }
