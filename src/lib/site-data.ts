@@ -37,7 +37,7 @@ export const business = {
  */
 export const socialLinks: { facebook: string | null; instagram: string | null } = {
   facebook: null,
-  instagram: null,
+  instagram: "https://www.instagram.com/culturesresort/",
 };
 
 /**
