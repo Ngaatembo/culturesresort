@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { business, navLinks, openingHours } from "@/lib/site-data";
+import { WhatsAppIcon } from "@/components/whatsapp-icon";
+import { business, navLinks, openingHours, whatsappLink, whatsappMessages } from "@/lib/site-data";
 
 export function SiteFooter() {
   return (
@@ -15,6 +16,18 @@ export function SiteFooter() {
             <Link to="/reservations" className="eyebrow bg-ochre px-5 py-3 text-ink">
               Reserve a table
             </Link>
+            <a
+              href={whatsappLink(whatsappMessages.general)}
+              target="_blank"
+              rel="noreferrer"
+              className="eyebrow flex items-center gap-2 bg-leaf px-5 py-3 text-bone"
+            >
+              <WhatsAppIcon className="h-4 w-4" aria-hidden="true" />
+              WhatsApp
+            </a>
+            <a href={business.phoneHref} className="eyebrow border border-bone/30 px-5 py-3">
+              Call us
+            </a>
             <a
               href={business.mapsHref}
               target="_blank"

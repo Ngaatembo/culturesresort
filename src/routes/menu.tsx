@@ -3,6 +3,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
+import { useOrder } from "@/lib/order";
 import { beverages, business, menu, visitDetails } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +33,7 @@ type Course = "food" | "beverages";
 function Menu() {
   const [course, setCourse] = useState<Course>("food");
   const [active, setActive] = useState<string>("all");
+  const { add, has } = useOrder();
 
   const categories = course === "food" ? menu : beverages;
   const shown = active === "all" ? categories : categories.filter((c) => c.slug === active);
@@ -116,21 +118,40 @@ function Menu() {
                   </p>
                 </div>
 
-                <ul className="mt-8 grid gap-x-14 gap-y-8 lg:grid-cols-2">
-                  {category.items.map((item) => (
-                    <li key={item.name} className="border-b border-dashed border-border pb-6">
-                      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-4">
-                        <h3 className="min-w-0 font-display text-xl">
-                          {item.name}
-                          {item.featured ? (
-                            <span className="eyebrow ml-3 align-middle text-ochre">Signature</span>
-                          ) : null}
-                        </h3>
-                        <span className="shrink-0 text-sm text-muted-foreground">{item.price}</span>
-                      </div>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-                    </li>
-                  ))}
+                <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {category.items.map((item) => {
+                    const id = `${category.slug}:${item.name}`;
+                    return (
+                      <li key={item.name} className="flex flex-col border border-border bg-card">
+                        <span className="block aspect-[4/3] overflow-hidden bg-secondary">
+                          <img
+                            src={images[item.imageKey ?? category.imageKey]}
+                            alt={`Placeholder image for ${item.name}`}
+                            loading="lazy"
+                            className="h-full w-full object-cover"
+                          />
+                        </span>
+                        <div className="flex min-w-0 flex-1 flex-col p-5">
+                          <span className="eyebrow text-ochre">{category.title}</span>
+                          <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3">
+                            <h3 className="min-w-0 font-display text-xl leading-tight">{item.name}</h3>
+                            <span className="shrink-0 text-sm text-muted-foreground">{item.price}</span>
+                          </div>
+                          {item.featured ? <span className="eyebrow mt-2 text-primary">Signature</span> : null}
+                          <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                            {item.description}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => add({ id, name: item.name, category: category.title, price: item.price })}
+                            className="eyebrow mt-5 border border-border px-4 py-3 transition-colors hover:bg-secondary"
+                          >
+                            {has(id) ? "Added — add another" : "Add to enquiry"}
+                          </button>
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
               </Reveal>
             ))}
