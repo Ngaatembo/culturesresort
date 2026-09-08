@@ -18,11 +18,27 @@ export const business = {
   whatsappHref: "https://wa.me/263772951308",
   email: "culturesresortzimbabwe@gmail.com",
   emailAlt: "culturesresort@gmail.com",
-  mapsHref:
-    "https://www.google.com/maps/search/?api=1&query=Cnr+Chiremba+and+Southey+Rd+Hillside+Harare+Zimbabwe",
+  /** VERIFIED — exact GPS pin for the venue, confirmed by the owner. */
+  mapsHref: "https://www.google.com/maps/search/?api=1&query=-17.8362078%2C31.0696115",
   mapsEmbedHref:
-    "https://www.google.com/maps?q=Corner+Chiremba+Road+and+Southey+Road+Hillside+Harare+Zimbabwe&output=embed",
+    "https://www.google.com/maps?q=-17.8362078,31.0696115&output=embed",
+  /** VERIFIED — the restaurant's real, live TripAdvisor listing. */
+  tripadvisorHref:
+    "https://www.tripadvisor.com/Restaurant_Review-g293760-d26802869-Reviews-Cultures_Resort-Harare_Harare_Province.html",
 } as const;
+
+/**
+ * Social links shown in the Trust & Reviews section and footer.
+ *
+ * IMPORTANT: leave a field `null` until the owner confirms the real,
+ * official URL. Never fill these with a guessed or constructed handle —
+ * a wrong social link is worse than no link. The UI hides any button
+ * whose value here is null rather than rendering a placeholder/fake one.
+ */
+export const socialLinks: { facebook: string | null; instagram: string | null } = {
+  facebook: null,
+  instagram: null,
+};
 
 /**
  * Prefilled WhatsApp openers. Editable from the dashboard — they only ask

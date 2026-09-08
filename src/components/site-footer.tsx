@@ -1,6 +1,14 @@
 import { Link } from "@tanstack/react-router";
+import { ExternalLink, Facebook, Instagram } from "lucide-react";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
-import { business, navLinks, openingHours, whatsappLink, whatsappMessages } from "@/lib/site-data";
+import {
+  business,
+  navLinks,
+  openingHours,
+  socialLinks,
+  whatsappLink,
+  whatsappMessages,
+} from "@/lib/site-data";
 
 export function SiteFooter() {
   return (
@@ -19,7 +27,7 @@ export function SiteFooter() {
             <a
               href={whatsappLink(whatsappMessages.general)}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="eyebrow flex items-center gap-2 bg-leaf px-5 py-3 text-bone"
             >
               <WhatsAppIcon className="h-4 w-4" aria-hidden="true" />
@@ -31,7 +39,7 @@ export function SiteFooter() {
             <a
               href={business.mapsHref}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="eyebrow border border-bone/30 px-5 py-3"
             >
               Get directions
@@ -42,7 +50,7 @@ export function SiteFooter() {
         <div>
           <h2 className="eyebrow text-ochre">Find us</h2>
           <address className="mt-5 space-y-3 text-sm not-italic leading-relaxed text-bone/80">
-            <a href={business.mapsHref} target="_blank" rel="noreferrer" className="block hover:text-ochre">
+            <a href={business.mapsHref} target="_blank" rel="noopener noreferrer" className="block hover:text-ochre">
               {business.addressLine}
             </a>
             <a href={business.phoneHref} className="block hover:text-ochre">
@@ -66,6 +74,39 @@ export function SiteFooter() {
               </Link>
             </li>
           </ul>
+          <div className="mt-8 flex flex-wrap items-center gap-4 text-sm text-bone/80">
+            <a
+              href={business.tripadvisorHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 hover:text-ochre"
+            >
+              TripAdvisor
+              <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+            </a>
+            {socialLinks.facebook && (
+              <a
+                href={socialLinks.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Cultures Resort on Facebook"
+                className="hover:text-ochre"
+              >
+                <Facebook className="h-4 w-4" aria-hidden="true" />
+              </a>
+            )}
+            {socialLinks.instagram && (
+              <a
+                href={socialLinks.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Cultures Resort on Instagram"
+                className="hover:text-ochre"
+              >
+                <Instagram className="h-4 w-4" aria-hidden="true" />
+              </a>
+            )}
+          </div>
         </div>
 
         <nav aria-label="Footer">
@@ -92,8 +133,7 @@ export function SiteFooter() {
         </nav>
       </div>
       <div className="border-t border-bone/10 px-5 py-6 text-center text-xs text-bone/50 lg:px-10">
-        © {new Date().getFullYear()} Cultures Resort, Harare. Photography shown is placeholder imagery pending the
-        restaurant's own photographs.
+        © {new Date().getFullYear()} Cultures Resort, Harare.
       </div>
     </footer>
   );

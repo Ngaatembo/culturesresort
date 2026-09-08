@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/reveal";
 import { ExperienceGrid } from "@/components/experience-grid";
+import { TrustReviews } from "@/components/trust-reviews";
 import { business, menu, testimonials } from "@/lib/site-data";
 import { images } from "@/lib/gallery";
 
@@ -58,7 +59,7 @@ function Home() {
               <a
                 href={business.mapsHref}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="eyebrow border border-bone/40 px-8 py-5 text-center transition-colors hover:bg-bone/10"
               >
                 Get directions
@@ -191,6 +192,8 @@ function Home() {
         </div>
       </section>
 
+      <TrustReviews />
+
       {/* Culture band */}
       <section className="relative overflow-hidden">
         <img
@@ -236,7 +239,7 @@ function Home() {
                   <a
                     href={business.mapsHref}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="text-sm leading-relaxed hover:text-primary"
                   >
                     {business.addressLine}
@@ -273,7 +276,7 @@ function Home() {
               <a
                 href={business.whatsappHref}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="eyebrow border border-border px-7 py-4"
               >
                 WhatsApp us
