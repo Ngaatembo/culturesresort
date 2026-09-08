@@ -3,7 +3,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
-import { business, openingHours } from "@/lib/site-data";
+import { business, openingHours, whatsappLink, whatsappMessages } from "@/lib/site-data";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -78,13 +78,31 @@ function Contact() {
               </div>
             </dl>
 
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a href={business.mapsHref} target="_blank" rel="noreferrer" className="eyebrow bg-primary px-7 py-4 text-primary-foreground">
-                Get directions
+            <div className="mt-10 grid gap-3 sm:grid-cols-3">
+              <a href={business.phoneHref} className="eyebrow bg-primary px-5 py-4 text-center text-primary-foreground">
+                Call
               </a>
-              <a href={business.whatsappHref} target="_blank" rel="noreferrer" className="eyebrow border border-border px-7 py-4">
+              <a
+                href={whatsappLink(whatsappMessages.general)}
+                target="_blank"
+                rel="noreferrer"
+                className="eyebrow flex items-center justify-center gap-2 bg-leaf px-5 py-4 text-bone"
+              >
                 WhatsApp
               </a>
+              <a href={business.mapsHref} target="_blank" rel="noreferrer" className="eyebrow border border-border px-5 py-4 text-center">
+                Directions
+              </a>
+            </div>
+
+            <div className="mt-8 border border-border">
+              <iframe
+                src={business.mapsEmbedHref}
+                title="Map showing Cultures Resort, Hillside, Harare"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="h-72 w-full"
+              />
             </div>
 
             <div className="mt-12 border border-border bg-secondary p-6">

@@ -14,6 +14,10 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { MobileActionBar } from "@/components/mobile-action-bar";
+import { WhatsAppFab } from "@/components/whatsapp-fab";
+import { OrderDrawer } from "@/components/order-drawer";
+import { OrderProvider } from "@/lib/order";
 
 function NotFoundComponent() {
   return (
@@ -145,7 +149,7 @@ function RootComponent() {
         /* Required: nested routes render here. */
         <Outlet />
       ) : (
-        <>
+        <OrderProvider>
           <a
             href="#main"
             className="eyebrow sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-primary focus:px-4 focus:py-3 focus:text-primary-foreground"
@@ -157,7 +161,12 @@ function RootComponent() {
             <Outlet />
           </main>
           <SiteFooter />
-        </>
+          {/* Bottom bar covers the last strip of the page on mobile. */}
+          <div className="h-16 lg:hidden" aria-hidden="true" />
+          <MobileActionBar />
+          <WhatsAppFab />
+          <OrderDrawer />
+        </OrderProvider>
       )}
     </QueryClientProvider>
   );

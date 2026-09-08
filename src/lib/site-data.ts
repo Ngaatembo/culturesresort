@@ -13,12 +13,33 @@ export const business = {
   addressShort: "Cnr Chiremba & Southey Rd, Hillside, Harare",
   phoneDisplay: "+263 77 295 1308",
   phoneHref: "tel:+263772951308",
+  /** Same number as the phone line until a separate WhatsApp number is supplied. */
+  whatsappNumber: "263772951308",
   whatsappHref: "https://wa.me/263772951308",
   email: "culturesresortzimbabwe@gmail.com",
   emailAlt: "culturesresort@gmail.com",
   mapsHref:
     "https://www.google.com/maps/search/?api=1&query=Cnr+Chiremba+and+Southey+Rd+Hillside+Harare+Zimbabwe",
+  mapsEmbedHref:
+    "https://www.google.com/maps?q=Corner+Chiremba+Road+and+Southey+Road+Hillside+Harare+Zimbabwe&output=embed",
 } as const;
+
+/**
+ * Prefilled WhatsApp openers. Editable from the dashboard — they only ask
+ * questions, they never promise availability, pricing or a placed order.
+ */
+export const whatsappMessages = {
+  general: "Hello Cultures Resort, I'd like to ask about visiting. ",
+  menu: "Hello Cultures Resort, I'd like to ask what's on the menu today and the prices. ",
+  reservation: "Hello Cultures Resort, I'd like to ask about booking a table. ",
+  event: "Hello Cultures Resort, I'd like to ask about hosting an event with you. ",
+  order: "Hello Cultures Resort, I'd like to ask about the following items: ",
+} as const;
+
+/** Builds a one-tap WhatsApp link with a prefilled message. */
+export function whatsappLink(message: string = whatsappMessages.general) {
+  return `https://wa.me/${business.whatsappNumber}?text=${encodeURIComponent(message)}`;
+}
 
 /** Placeholder — owner to confirm real trading hours in the dashboard. */
 export const openingHours = [
@@ -31,18 +52,23 @@ export const openingHours = [
   { day: "Sunday", hours: "To be confirmed" },
 ];
 
+export type ImageKey = "garden" | "food" | "craft" | "drums";
+
 export type MenuItem = {
   name: string;
   description: string;
   price: string;
   featured?: boolean;
   available?: boolean;
+  /** Placeholder photography key — owner replaces with their own image. */
+  imageKey?: ImageKey;
 };
 
 export type MenuCategory = {
   slug: string;
   title: string;
   intro: string;
+  imageKey: ImageKey;
   items: MenuItem[];
 };
 
@@ -55,6 +81,7 @@ export const menu: MenuCategory[] = [
     slug: "to-begin",
     title: "To Begin",
     intro: "Small plates to share while the fire settles.",
+    imageKey: "food",
     items: [
       { name: "Starter one", description: "Add the dish description here.", price: "On request", featured: true },
       { name: "Starter two", description: "Add the dish description here.", price: "On request" },
@@ -65,6 +92,7 @@ export const menu: MenuCategory[] = [
     slug: "traditional-plates",
     title: "Traditional Plates",
     intro: "The heart of the kitchen — slow cooking, wood smoke, patience.",
+    imageKey: "food",
     items: [
       { name: "Traditional plate one", description: "Add the dish description here.", price: "On request", featured: true },
       { name: "Traditional plate two", description: "Add the dish description here.", price: "On request" },
@@ -76,6 +104,7 @@ export const menu: MenuCategory[] = [
     slug: "from-the-fire",
     title: "From The Fire",
     intro: "Grilled over open flame in the garden.",
+    imageKey: "garden",
     items: [
       { name: "Grill one", description: "Add the dish description here.", price: "On request", featured: true },
       { name: "Grill two", description: "Add the dish description here.", price: "On request" },
@@ -86,6 +115,7 @@ export const menu: MenuCategory[] = [
     slug: "sides",
     title: "Sides & Relishes",
     intro: "Served family style.",
+    imageKey: "food",
     items: [
       { name: "Side one", description: "Add the dish description here.", price: "On request" },
       { name: "Side two", description: "Add the dish description here.", price: "On request" },
@@ -96,6 +126,7 @@ export const menu: MenuCategory[] = [
     slug: "snacks",
     title: "Snacks & Platters",
     intro: "Lighter bites for the long afternoons.",
+    imageKey: "craft",
     items: [
       { name: "Snack one", description: "Add the dish description here.", price: "On request" },
       { name: "Snack two", description: "Add the dish description here.", price: "On request" },
@@ -113,6 +144,7 @@ export const beverages: MenuCategory[] = [
     slug: "traditional-drinks",
     title: "Traditional Drinks",
     intro: "Recipes carried through generations, served cold.",
+    imageKey: "craft",
     items: [
       { name: "Traditional drink one", description: "Add the drink description here.", price: "On request", featured: true },
       { name: "Traditional drink two", description: "Add the drink description here.", price: "On request" },
@@ -123,6 +155,7 @@ export const beverages: MenuCategory[] = [
     slug: "juices-shakes",
     title: "Juices & Shakes",
     intro: "Fresh, poured to order.",
+    imageKey: "food",
     items: [
       { name: "Juice one", description: "Add the drink description here.", price: "On request" },
       { name: "Juice two", description: "Add the drink description here.", price: "On request" },
@@ -133,6 +166,7 @@ export const beverages: MenuCategory[] = [
     slug: "hot-drinks",
     title: "Hot Drinks",
     intro: "For cool Harare evenings.",
+    imageKey: "drums",
     items: [
       { name: "Hot drink one", description: "Add the drink description here.", price: "On request" },
       { name: "Hot drink two", description: "Add the drink description here.", price: "On request" },
@@ -142,6 +176,7 @@ export const beverages: MenuCategory[] = [
     slug: "soft-drinks",
     title: "Soft Drinks & Water",
     intro: "Chilled and simple.",
+    imageKey: "garden",
     items: [
       { name: "Soft drink one", description: "Add the drink description here.", price: "On request" },
       { name: "Still or sparkling water", description: "Add the description here.", price: "On request" },
