@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/reveal";
 import { ExperienceGrid } from "@/components/experience-grid";
-import { business, menu } from "@/lib/site-data";
+import { business, menu, testimonials } from "@/lib/site-data";
 import { images } from "@/lib/gallery";
 
 export const Route = createFileRoute("/")({
@@ -158,6 +158,36 @@ function Home() {
               Explore the grounds
             </Link>
           </Reveal>
+        </div>
+      </section>
+
+      {/* Reviews */}
+      <section className="bg-background py-20 lg:py-32">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+          <Reveal>
+            <p className="eyebrow rule-ochre text-primary">What guests say</p>
+            <h2 className="mt-6 max-w-2xl font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
+              Straight from Google reviews
+            </h2>
+          </Reveal>
+          <div className="mt-14 grid gap-8 lg:grid-cols-3">
+            {testimonials.map((t, i) => (
+              <Reveal key={t.name} delay={i * 100}>
+                <div className="grain h-full bg-secondary p-8">
+                  <div className="eyebrow text-ochre" aria-hidden="true">
+                    {"★".repeat(t.rating)}
+                    {"☆".repeat(5 - t.rating)}
+                  </div>
+                  <p className="mt-5 text-base leading-relaxed text-foreground/85">
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                  <p className="eyebrow mt-6 text-muted-foreground">
+                    {t.name} · {t.meta}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 

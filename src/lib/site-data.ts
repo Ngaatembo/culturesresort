@@ -305,7 +305,32 @@ export const visitDetails = [
   { label: "Advance notice for groups", value: "To be confirmed" },
 ];
 
-/** Gallery placeholders — replace with the owner's own photography. */
+/** Real Google reviews for Cultures Resort — used as testimonials on the site. */
+export const testimonials = [
+  {
+    name: "Thobile Mkhonta",
+    meta: "Local Guide · Google review",
+    rating: 5,
+    quote:
+      "This place offers a variety of African dishes. We went for the goat leg, village chicken and fish and it was delicious. The staff is friendly and it's in a good location. Would definitely visit again.",
+  },
+  {
+    name: "Tatenda Musundire",
+    meta: "Google review",
+    rating: 5,
+    quote:
+      "The environment is so peaceful and their African cuisine menu is so wide and the portions are more than generous. I would revisit over and over again.",
+  },
+  {
+    name: "acg mbi",
+    meta: "Local Guide · Google review",
+    rating: 5,
+    quote:
+      "Their goat dishes are incredible! I can still taste it a day later and wanting to go back. It has a good vibe that delivers a rich African feel. Friendly staff, fair portions and picturesque. Hidden gem.",
+  },
+] as const;
+
+
 export const galleryCaptions = [
   "Garden dining at dusk — placeholder image",
   "Traditional plates, served family style — placeholder image",
