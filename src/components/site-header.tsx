@@ -1,11 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { business, navLinks } from "@/lib/site-data";
+import { ShoppingBag } from "lucide-react";
+import { WhatsAppIcon } from "@/components/whatsapp-icon";
+import { useOrder } from "@/lib/order";
+import { business, navLinks, whatsappLink, whatsappMessages } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { count, openDrawer } = useOrder();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -59,6 +63,23 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          <button
+            type="button"
+            onClick={openDrawer}
+            className={cn(
+              "eyebrow flex items-center gap-2 border px-4 py-3 transition-colors",
+              scrolled ? "border-border text-foreground" : "border-bone/40 text-bone",
+            )}
+            aria-label="Open your enquiry list"
+          >
+            <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+            Order
+            {count > 0 ? (
+              <span className="grid h-5 min-w-5 place-items-center rounded-full bg-ochre px-1 text-[0.6rem] text-ink">
+                {count}
+              </span>
+            ) : null}
+          </button>
           <Link
             to="/reservations"
             className="eyebrow bg-primary px-5 py-3 text-primary-foreground transition-colors hover:bg-ember"
