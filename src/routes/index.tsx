@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/reveal";
-import { business, experiences, menu } from "@/lib/site-data";
+import { ExperienceGrid } from "@/components/experience-grid";
+import { business, menu } from "@/lib/site-data";
 import { images } from "@/lib/gallery";
 
 export const Route = createFileRoute("/")({
@@ -44,7 +45,8 @@ function Home() {
               <span className="block italic text-ochre">An experience of Africa.</span>
             </h1>
             <p className="mt-7 max-w-xl text-base leading-relaxed text-bone/80 sm:text-lg">
-              Traditional African cooking served in an open garden, among carved wood, woven fibre and open flame.
+              Traditional African cooking served in an open garden, among carved wood, woven fibre
+              and open flame.
             </p>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -78,14 +80,18 @@ function Home() {
           <Reveal delay={120} className="lg:col-span-6 lg:col-start-7">
             <div className="space-y-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
               <p>
-                Cultures Resort sits on the corner of Chiremba and Southey Road in Hillside, Harare. It was built
-                around a simple idea: that African food is best shared slowly, outdoors, with people you like.
+                Cultures Resort sits on the corner of Chiremba and Southey Road in Hillside, Harare.
+                It was built around a simple idea: that African food is best shared slowly,
+                outdoors, with people you like.
               </p>
               <p>
-                The kitchen cooks traditional dishes. The grounds hold African art, handcrafted objects and shade
-                trees. Families come for lunch and stay through the afternoon.
+                The kitchen cooks traditional dishes. The grounds hold African art, handcrafted
+                objects and shade trees. Families come for lunch and stay through the afternoon.
               </p>
-              <Link to="/our-story" className="eyebrow inline-block border-b border-primary pb-2 text-primary">
+              <Link
+                to="/our-story"
+                className="eyebrow inline-block border-b border-primary pb-2 text-primary"
+              >
                 Read our story
               </Link>
             </div>
@@ -103,8 +109,8 @@ function Home() {
                 Traditional plates, cooked without hurry
               </h2>
               <p className="mt-6 max-w-md leading-relaxed text-bone/75">
-                Slow-cooked relishes, grains, greens and meat from the open fire — served family style on wood and
-                clay.
+                Slow-cooked relishes, grains, greens and meat from the open fire — served family
+                style on wood and clay.
               </p>
               <ul className="mt-10 space-y-4 border-t border-bone/15 pt-8">
                 {menu.slice(0, 4).map((c) => (
@@ -141,17 +147,14 @@ function Home() {
               Four things people come back for
             </h2>
           </Reveal>
-          <ul className="mt-14 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
-            {experiences.map((e, i) => (
-              <Reveal as="li" key={e.title} delay={i * 90} className="bg-card p-8 lg:p-12">
-                <p className="eyebrow text-ochre">0{i + 1}</p>
-                <h3 className="mt-5 font-display text-2xl">{e.title}</h3>
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{e.body}</p>
-              </Reveal>
-            ))}
-          </ul>
+          <div className="mt-14">
+            <ExperienceGrid />
+          </div>
           <Reveal className="mt-12">
-            <Link to="/experience" className="eyebrow inline-block border-b border-primary pb-2 text-primary">
+            <Link
+              to="/experience"
+              className="eyebrow inline-block border-b border-primary pb-2 text-primary"
+            >
               Explore the grounds
             </Link>
           </Reveal>
@@ -175,7 +178,10 @@ function Home() {
               <blockquote className="mt-6 max-w-2xl font-display text-[clamp(1.8rem,4vw,3rem)] italic leading-tight">
                 Food, music, craft and company — held in one place.
               </blockquote>
-              <Link to="/gallery" className="eyebrow mt-9 inline-block border border-bone/40 px-7 py-4">
+              <Link
+                to="/gallery"
+                className="eyebrow mt-9 inline-block border border-bone/40 px-7 py-4"
+              >
                 See the gallery
               </Link>
             </Reveal>
@@ -188,14 +194,21 @@ function Home() {
         <div className="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-3 lg:px-10">
           <Reveal>
             <p className="eyebrow rule-ochre text-primary">Visit</p>
-            <h2 className="mt-6 font-display text-3xl leading-tight">Come and find us in Hillside</h2>
+            <h2 className="mt-6 font-display text-3xl leading-tight">
+              Come and find us in Hillside
+            </h2>
           </Reveal>
           <Reveal delay={100} className="lg:col-span-2">
             <dl className="grid gap-8 sm:grid-cols-3">
               <div>
                 <dt className="eyebrow text-muted-foreground">Address</dt>
                 <dd className="mt-3">
-                  <a href={business.mapsHref} target="_blank" rel="noreferrer" className="text-sm leading-relaxed hover:text-primary">
+                  <a
+                    href={business.mapsHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm leading-relaxed hover:text-primary"
+                  >
                     {business.addressLine}
                   </a>
                 </dd>
@@ -211,17 +224,28 @@ function Home() {
               <div>
                 <dt className="eyebrow text-muted-foreground">Email</dt>
                 <dd className="mt-3">
-                  <a href={`mailto:${business.email}`} className="break-all text-sm hover:text-primary">
+                  <a
+                    href={`mailto:${business.email}`}
+                    className="break-all text-sm hover:text-primary"
+                  >
                     {business.email}
                   </a>
                 </dd>
               </div>
             </dl>
             <div className="mt-10 flex flex-wrap gap-3">
-              <Link to="/reservations" className="eyebrow bg-primary px-7 py-4 text-primary-foreground">
+              <Link
+                to="/reservations"
+                className="eyebrow bg-primary px-7 py-4 text-primary-foreground"
+              >
                 Reserve a table
               </Link>
-              <a href={business.whatsappHref} target="_blank" rel="noreferrer" className="eyebrow border border-border px-7 py-4">
+              <a
+                href={business.whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+                className="eyebrow border border-border px-7 py-4"
+              >
                 WhatsApp us
               </a>
               <Link to="/events" className="eyebrow border border-border px-7 py-4">

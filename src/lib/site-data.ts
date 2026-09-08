@@ -83,7 +83,12 @@ export const menu: MenuCategory[] = [
     intro: "Small plates to share while the fire settles.",
     imageKey: "food",
     items: [
-      { name: "Starter one", description: "Add the dish description here.", price: "On request", featured: true },
+      {
+        name: "Starter one",
+        description: "Add the dish description here.",
+        price: "On request",
+        featured: true,
+      },
       { name: "Starter two", description: "Add the dish description here.", price: "On request" },
       { name: "Starter three", description: "Add the dish description here.", price: "On request" },
     ],
@@ -94,10 +99,27 @@ export const menu: MenuCategory[] = [
     intro: "The heart of the kitchen — slow cooking, wood smoke, patience.",
     imageKey: "food",
     items: [
-      { name: "Traditional plate one", description: "Add the dish description here.", price: "On request", featured: true },
-      { name: "Traditional plate two", description: "Add the dish description here.", price: "On request" },
-      { name: "Traditional plate three", description: "Add the dish description here.", price: "On request" },
-      { name: "Traditional plate four", description: "Add the dish description here.", price: "On request" },
+      {
+        name: "Traditional plate one",
+        description: "Add the dish description here.",
+        price: "On request",
+        featured: true,
+      },
+      {
+        name: "Traditional plate two",
+        description: "Add the dish description here.",
+        price: "On request",
+      },
+      {
+        name: "Traditional plate three",
+        description: "Add the dish description here.",
+        price: "On request",
+      },
+      {
+        name: "Traditional plate four",
+        description: "Add the dish description here.",
+        price: "On request",
+      },
     ],
   },
   {
@@ -106,7 +128,12 @@ export const menu: MenuCategory[] = [
     intro: "Grilled over open flame in the garden.",
     imageKey: "garden",
     items: [
-      { name: "Grill one", description: "Add the dish description here.", price: "On request", featured: true },
+      {
+        name: "Grill one",
+        description: "Add the dish description here.",
+        price: "On request",
+        featured: true,
+      },
       { name: "Grill two", description: "Add the dish description here.", price: "On request" },
       { name: "Grill three", description: "Add the dish description here.", price: "On request" },
     ],
@@ -130,7 +157,11 @@ export const menu: MenuCategory[] = [
     items: [
       { name: "Snack one", description: "Add the dish description here.", price: "On request" },
       { name: "Snack two", description: "Add the dish description here.", price: "On request" },
-      { name: "Sharing platter", description: "Add the platter description here.", price: "On request" },
+      {
+        name: "Sharing platter",
+        description: "Add the platter description here.",
+        price: "On request",
+      },
     ],
   },
 ];
@@ -146,9 +177,22 @@ export const beverages: MenuCategory[] = [
     intro: "Recipes carried through generations, served cold.",
     imageKey: "craft",
     items: [
-      { name: "Traditional drink one", description: "Add the drink description here.", price: "On request", featured: true },
-      { name: "Traditional drink two", description: "Add the drink description here.", price: "On request" },
-      { name: "Traditional drink three", description: "Add the drink description here.", price: "On request" },
+      {
+        name: "Traditional drink one",
+        description: "Add the drink description here.",
+        price: "On request",
+        featured: true,
+      },
+      {
+        name: "Traditional drink two",
+        description: "Add the drink description here.",
+        price: "On request",
+      },
+      {
+        name: "Traditional drink three",
+        description: "Add the drink description here.",
+        price: "On request",
+      },
     ],
   },
   {
@@ -168,8 +212,16 @@ export const beverages: MenuCategory[] = [
     intro: "For cool Harare evenings.",
     imageKey: "drums",
     items: [
-      { name: "Hot drink one", description: "Add the drink description here.", price: "On request" },
-      { name: "Hot drink two", description: "Add the drink description here.", price: "On request" },
+      {
+        name: "Hot drink one",
+        description: "Add the drink description here.",
+        price: "On request",
+      },
+      {
+        name: "Hot drink two",
+        description: "Add the drink description here.",
+        price: "On request",
+      },
     ],
   },
   {
@@ -178,8 +230,16 @@ export const beverages: MenuCategory[] = [
     intro: "Chilled and simple.",
     imageKey: "garden",
     items: [
-      { name: "Soft drink one", description: "Add the drink description here.", price: "On request" },
-      { name: "Still or sparkling water", description: "Add the description here.", price: "On request" },
+      {
+        name: "Soft drink one",
+        description: "Add the drink description here.",
+        price: "On request",
+      },
+      {
+        name: "Still or sparkling water",
+        description: "Add the description here.",
+        price: "On request",
+      },
     ],
   },
 ];
@@ -193,20 +253,24 @@ export const experiences = [
   {
     title: "The Garden",
     body: "Tables set beneath mature trees, lanterns in the branches, open air and shade. Seating is spread across the grounds so groups can gather without crowding.",
+    imageKey: "garden",
   },
   {
     title: "Open Fire Cooking",
     body: "Much of the kitchen happens outdoors, over flame and coals, where guests can see and smell what is being prepared.",
+    imageKey: "food",
   },
   {
     title: "African Art & Décor",
     body: "Carved wood, woven fibre, clay and hand-dyed cloth are part of the building itself rather than decoration hung on a wall.",
+    imageKey: "craft",
   },
   {
     title: "Family & Friends",
     body: "Long tables, space for children, and an unhurried pace. People come to stay a while, not only to eat.",
+    imageKey: "drums",
   },
-];
+] satisfies Array<{ title: string; body: string; imageKey: ImageKey }>;
 
 /** The kinds of gathering guests can enquire about. Nothing is promised here. */
 export const eventTypes = [

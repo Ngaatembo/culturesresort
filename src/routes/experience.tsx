@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
+import { ExperienceGrid } from "@/components/experience-grid";
 import { images } from "@/lib/gallery";
-import { experiences } from "@/lib/site-data";
 
 export const Route = createFileRoute("/experience")({
   head: () => ({
@@ -36,17 +36,7 @@ function Experience() {
 
       <section className="bg-background py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
-          <div className="space-y-px border border-border bg-border">
-            {experiences.map((e, i) => (
-              <Reveal key={e.title} delay={i * 80} className="grid gap-6 bg-card p-8 lg:grid-cols-12 lg:p-14">
-                <p className="eyebrow text-ochre lg:col-span-2">0{i + 1}</p>
-                <h2 className="font-display text-[clamp(1.6rem,3vw,2.25rem)] leading-tight lg:col-span-4">
-                  {e.title}
-                </h2>
-                <p className="leading-relaxed text-muted-foreground lg:col-span-6">{e.body}</p>
-              </Reveal>
-            ))}
-          </div>
+          <ExperienceGrid />
         </div>
       </section>
 
@@ -69,9 +59,9 @@ function Experience() {
                 A social place, not a quiet one
               </h2>
               <p className="mt-6 max-w-md leading-relaxed text-bone/75">
-                Evenings tend to be livelier than afternoons. Cultural performances and live entertainment are part of
-                the character of the place — schedules are not published here because they vary, so call ahead if you
-                are coming for a particular night.
+                Evenings tend to be livelier than afternoons. Cultural performances and live
+                entertainment are part of the character of the place — schedules are not published
+                here because they vary, so call ahead if you are coming for a particular night.
               </p>
               <div className="mt-10 flex flex-wrap gap-3">
                 <Link to="/events" className="eyebrow bg-ochre px-7 py-4 text-ink">
@@ -93,7 +83,10 @@ function Experience() {
             <h2 className="mt-6 font-display text-[clamp(1.9rem,4vw,3rem)] leading-tight">
               Bring the family. Bring time.
             </h2>
-            <Link to="/reservations" className="eyebrow mt-10 inline-block bg-primary px-8 py-5 text-primary-foreground">
+            <Link
+              to="/reservations"
+              className="eyebrow mt-10 inline-block bg-primary px-8 py-5 text-primary-foreground"
+            >
               Reserve a table
             </Link>
           </Reveal>
