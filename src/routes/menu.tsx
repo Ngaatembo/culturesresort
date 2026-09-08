@@ -6,6 +6,7 @@ import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
 import { useOrder } from "@/lib/order";
 import { getMenu, type MenuCategoryOut, type MenuKind } from "@/lib/data/menu";
+import { dishPhotos } from "@/lib/dish-photos";
 import { business, visitDetails } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
@@ -162,6 +163,7 @@ function Menu() {
                       {category.items.map((item) => {
                         const id = String(item.id);
                         const imageKey = CATEGORY_IMAGE[category.slug] ?? "food";
+                        const photo = dishPhotos[item.name] ?? images[imageKey];
                         return (
                           <li
                             key={item.id}
@@ -169,8 +171,8 @@ function Menu() {
                           >
                             <div className="flex gap-4">
                               <img
-                                src={images[imageKey]}
-                                alt={`Placeholder image for ${item.name}`}
+                                src={photo}
+                                alt={item.name}
                                 loading="lazy"
                                 className="h-20 w-20 shrink-0 rounded-xl object-cover"
                               />
