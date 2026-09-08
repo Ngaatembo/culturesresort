@@ -152,6 +152,15 @@ export function SiteHeader() {
             Reserve a table
           </Link>
           <a
+            href={whatsappLink(whatsappMessages.general)}
+            target="_blank"
+            rel="noreferrer"
+            className="eyebrow mt-3 flex items-center justify-center gap-3 bg-leaf px-5 py-4 text-bone"
+          >
+            <WhatsAppIcon className="h-4 w-4" aria-hidden="true" />
+            Chat on WhatsApp
+          </a>
+          <a
             href={business.mapsHref}
             target="_blank"
             rel="noreferrer"
