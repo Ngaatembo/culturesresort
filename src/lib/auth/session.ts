@@ -1,5 +1,5 @@
 import { useSession } from "@tanstack/react-start/server";
-import { getEnvVar } from "@/lib/data/cf";
+import { getOrCreateSecret } from "./secret-store";
 
 export type AdminSessionData = {
   userId: number;
@@ -7,29 +7,25 @@ export type AdminSessionData = {
 };
 
 /**
- * SESSION_SECRET must be set as a Cloudflare Worker secret (Workers & Pages
- * → culturesresort → Settings → Variables and Secrets → Add → type
- * "Secret"), NOT committed to the repo. Read per-request, never at module
- * scope — env is injected fresh for every request on Workers.
+ * The session-signing key is self-provisioned in D1 the first time it's
+ * needed (see secret-store.ts) rather than read from a Cloudflare Worker
+ * secret — dashboard-added secrets can get wiped out by the next deploy
+ * when the GitHub-integration auto-deploy fires, which made login
+ * unreliable. The database is the one thing that reliably persists
+ * across deploys here.
  */
-function sessionSecret(): string {
-  const secret = getEnvVar("SESSION_SECRET");
-  if (!secret || secret.length < 32) {
-    throw new Error(
-      "SESSION_SECRET is missing or too short. Set it as a Cloudflare Worker secret (32+ random characters) before admin login can work.",
-    );
-  }
-  return secret;
+async function sessionSecret(): Promise<string> {
+  return getOrCreateSecret("session_secret", 48);
 }
 
-export function adminSession() {
+export async function adminSession() {
   // Not a React hook — this is TanStack Start's server-only session
   // primitive, which happens to be named like one. It only ever runs
   // inside server functions, never during render.
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useSession<AdminSessionData>({
-    password: sessionSecret(),
-    name: "__Host-cr-admin-session",
+    password: await sessionSecret(),
+    name: "cr_admin_session",
     cookie: { secure: true, sameSite: "lax" },
     maxAge: 60 * 60 * 24, // 24 hours — re-login daily
   });

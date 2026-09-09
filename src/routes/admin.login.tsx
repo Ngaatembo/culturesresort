@@ -25,7 +25,7 @@ function LoginPage() {
         setConfigError(
           err instanceof Error
             ? err.message
-            : "Can't reach the admin backend. Check that SESSION_SECRET is set in Cloudflare and the admin_users migration has run.",
+            : "Can't reach the admin backend yet — the admin_users/app_secrets tables probably haven't been created. Run the migration 0003 SQL in the D1 console, then reload this page.",
         );
       });
   }, []);
