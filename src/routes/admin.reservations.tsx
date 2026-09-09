@@ -145,8 +145,17 @@ function ReservationsPage() {
                 {filtered.map((b) => (
                   <tr
                     key={b.id}
-                    className="cursor-pointer border-b border-border/60 align-top hover:bg-secondary/60"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View reservation for ${b.guest_name}`}
+                    className="cursor-pointer border-b border-border/60 align-top outline-none hover:bg-secondary/60 focus-visible:bg-secondary/60 focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => setActive(b)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setActive(b);
+                      }
+                    }}
                   >
                     <td className="py-3.5 pr-4">
                       <p className="font-semibold">{b.guest_name}</p>

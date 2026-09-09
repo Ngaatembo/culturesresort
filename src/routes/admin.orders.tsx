@@ -157,8 +157,17 @@ function OrdersPage() {
                 {filtered.map((o) => (
                   <tr
                     key={o.id}
-                    className="cursor-pointer border-b border-border/60 align-top hover:bg-secondary/60"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View order #${o.id}`}
+                    className="cursor-pointer border-b border-border/60 align-top outline-none hover:bg-secondary/60 focus-visible:bg-secondary/60 focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => setActive(o)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setActive(o);
+                      }
+                    }}
                   >
                     <td className="py-3.5 pr-4 font-semibold">#{o.id}</td>
                     <td className="py-3.5 pr-4">
