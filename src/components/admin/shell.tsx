@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { useState } from "react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   Activity,
   ChefHat,
@@ -7,6 +8,7 @@ import {
   Contact2,
   Image as ImageIcon,
   LayoutGrid,
+  LogOut,
   MapPin,
   MessageSquare,
   Settings as SettingsIcon,
@@ -34,6 +36,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { adminLogout } from "@/lib/auth/functions";
 
 type NavItem = {
   to: string;
@@ -117,6 +120,27 @@ function NavLink({ item, pathname }: { item: NavItem; pathname: string }) {
   );
 }
 
+function LogoutButton() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const onLogout = async () => {
+    setLoading(true);
+    try {
+      await adminLogout();
+    } finally {
+      navigate({ to: "/admin/login" });
+    }
+  };
+
+  return (
+    <SidebarMenuButton onClick={onLogout} disabled={loading} tooltip="Log out">
+      <LogOut />
+      <span>{loading ? "Logging out…" : "Log out"}</span>
+    </SidebarMenuButton>
+  );
+}
+
 export function AdminSidebar({
   counts = {},
 }: {
@@ -161,6 +185,9 @@ export function AdminSidebar({
                 <span>View public site</span>
               </Link>
             </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <LogoutButton />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

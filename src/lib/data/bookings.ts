@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
+import { authMiddleware } from "@/lib/auth/functions";
 
 export type BookingStatus = "pending" | "confirmed" | "declined" | "completed" | "cancelled";
 
@@ -57,15 +58,18 @@ export type BookingRow = {
   created_at: string;
 };
 
-export const listBookings = createServerFn({ method: "GET" }).handler(async () => {
-  const db = getDb();
-  const { results } = await db
-    .prepare("SELECT * FROM bookings ORDER BY created_at DESC LIMIT 100")
-    .all<BookingRow>();
-  return results;
-});
+export const listBookings = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .handler(async () => {
+    const db = getDb();
+    const { results } = await db
+      .prepare("SELECT * FROM bookings ORDER BY created_at DESC LIMIT 100")
+      .all<BookingRow>();
+    return results;
+  });
 
 export const updateBookingStatus = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
   .validator((data: { id: number; status: BookingStatus }) => data)
   .handler(async ({ data }) => {
     const db = getDb();

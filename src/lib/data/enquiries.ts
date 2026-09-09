@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
+import { authMiddleware } from "@/lib/auth/functions";
 
 export type EnquiryStatus = "new" | "read" | "responded" | "closed";
 
@@ -42,15 +43,18 @@ export type EnquiryRow = {
   created_at: string;
 };
 
-export const listEnquiries = createServerFn({ method: "GET" }).handler(async () => {
-  const db = getDb();
-  const { results } = await db
-    .prepare("SELECT * FROM enquiries ORDER BY created_at DESC LIMIT 100")
-    .all<EnquiryRow>();
-  return results;
-});
+export const listEnquiries = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .handler(async () => {
+    const db = getDb();
+    const { results } = await db
+      .prepare("SELECT * FROM enquiries ORDER BY created_at DESC LIMIT 100")
+      .all<EnquiryRow>();
+    return results;
+  });
 
 export const updateEnquiryStatus = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
   .validator((data: { id: number; status: EnquiryStatus }) => data)
   .handler(async ({ data }) => {
     const db = getDb();

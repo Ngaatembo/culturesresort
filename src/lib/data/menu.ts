@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
+import { authMiddleware } from "@/lib/auth/functions";
 
 export type MenuKind = "food" | "beverages";
 
@@ -72,15 +73,18 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
 });
 
 /** Full row list for the admin menu editor — includes unavailable items. */
-export const getMenuAdmin = createServerFn({ method: "GET" }).handler(async () => {
-  const db = getDb();
-  const { results } = await db
-    .prepare("SELECT * FROM menu_items ORDER BY kind, category_slug, sort_order, id")
-    .all<MenuItemRow>();
-  return results;
-});
+export const getMenuAdmin = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .handler(async () => {
+    const db = getDb();
+    const { results } = await db
+      .prepare("SELECT * FROM menu_items ORDER BY kind, category_slug, sort_order, id")
+      .all<MenuItemRow>();
+    return results;
+  });
 
 export const setMenuItemAvailability = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
   .validator((data: { id: number; available: boolean }) => data)
   .handler(async ({ data }) => {
     const db = getDb();
@@ -93,6 +97,7 @@ export const setMenuItemAvailability = createServerFn({ method: "POST" })
 
 /** Sets a real price (in whole currency units, e.g. 4.5 for $4.50). Pass 0 to mark it "On request". */
 export const setMenuItemPrice = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
   .validator((data: { id: number; price: number }) => data)
   .handler(async ({ data }) => {
     if (!Number.isFinite(data.price) || data.price < 0) {

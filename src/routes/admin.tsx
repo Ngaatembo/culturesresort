@@ -1,7 +1,10 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AdminShell } from "@/components/admin/shell";
 import { getDashboardStats, type DashboardStats } from "@/lib/data/dashboard";
+import { getAdminSession } from "@/lib/auth/functions";
+
+const PUBLIC_ADMIN_PATHS = new Set(["/admin/login", "/admin/setup"]);
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -11,6 +14,13 @@ export const Route = createFileRoute("/admin")({
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
+  beforeLoad: async ({ location }) => {
+    if (PUBLIC_ADMIN_PATHS.has(location.pathname)) return;
+    const session = await getAdminSession();
+    if (!session) {
+      throw redirect({ to: "/admin/login" });
+    }
+  },
   component: AdminLayout,
 });
 
@@ -18,11 +28,18 @@ export const Route = createFileRoute("/admin")({
  * Layout route for everything under /admin. Owns the shell (sidebar +
  * topbar) and the one shared poll for sidebar badge counts; each child
  * route fetches its own page data independently via Outlet.
+ *
+ * /admin/login and /admin/setup render their own full-page layout and are
+ * exempt from both the auth check above and the shell below — they're how
+ * you get a session in the first place.
  */
 function AdminLayout() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isPublicPage = PUBLIC_ADMIN_PATHS.has(pathname);
   const [stats, setStats] = useState<DashboardStats | null>(null);
 
   useEffect(() => {
+    if (isPublicPage) return;
     let cancelled = false;
     getDashboardStats()
       .then((s) => {
@@ -34,7 +51,11 @@ function AdminLayout() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isPublicPage]);
+
+  if (isPublicPage) {
+    return <Outlet />;
+  }
 
   return (
     <AdminShell

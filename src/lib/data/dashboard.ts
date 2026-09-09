@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
+import { authMiddleware } from "@/lib/auth/functions";
 
 export type DashboardStats = {
   todaysOrders: number;
@@ -14,8 +15,9 @@ export type DashboardStats = {
 };
 
 /** Powers the admin Overview cards (today's orders, revenue, pending bookings, etc). */
-export const getDashboardStats = createServerFn({ method: "GET" }).handler(
-  async (): Promise<DashboardStats> => {
+export const getDashboardStats = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .handler(async (): Promise<DashboardStats> => {
     const db = getDb();
 
     const [today, pending, preparing, completed, bookings, enquiries, items, unavailable] =
@@ -61,5 +63,4 @@ export const getDashboardStats = createServerFn({ method: "GET" }).handler(
       menuItemsCount: items?.n ?? 0,
       unavailableItems: unavailable?.n ?? 0,
     };
-  },
-);
+  });

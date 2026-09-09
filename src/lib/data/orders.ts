@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
+import { authMiddleware } from "@/lib/auth/functions";
 
 export type OrderStatus = "pending" | "preparing" | "completed" | "cancelled";
 
@@ -75,8 +76,9 @@ type OrderItemRow = {
 export type OrderWithItems = OrderRow & { items: OrderItemRow[] };
 
 /** Recent orders for the admin dashboard, most recent first. */
-export const listOrders = createServerFn({ method: "GET" }).handler(
-  async (): Promise<OrderWithItems[]> => {
+export const listOrders = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .handler(async (): Promise<OrderWithItems[]> => {
     const db = getDb();
     const { results: orders } = await db
       .prepare("SELECT * FROM orders ORDER BY created_at DESC LIMIT 100")
@@ -92,10 +94,10 @@ export const listOrders = createServerFn({ method: "GET" }).handler(
       .all<OrderItemRow>();
 
     return orders.map((o) => ({ ...o, items: items.filter((i) => i.order_id === o.id) }));
-  },
-);
+  });
 
 export const updateOrderStatus = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
   .validator((data: { id: number; status: OrderStatus }) => data)
   .handler(async ({ data }) => {
     const db = getDb();

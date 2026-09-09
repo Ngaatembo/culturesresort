@@ -27,10 +27,12 @@ import { Route as AdminEventsRouteImport } from './routes/admin.events'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminHoursRouteImport } from './routes/admin.hours'
 import { Route as AdminKitchenRouteImport } from './routes/admin.kitchen'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminMenuRouteImport } from './routes/admin.menu'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminReservationsRouteImport } from './routes/admin.reservations'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminSetupRouteImport } from './routes/admin.setup'
 import { Route as AdminStaffRouteImport } from './routes/admin.staff'
 import { Route as AdminVisitDetailsRouteImport } from './routes/admin.visit-details'
 
@@ -124,6 +126,11 @@ const AdminKitchenRoute = AdminKitchenRouteImport.update({
   path: '/kitchen',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminMenuRoute = AdminMenuRouteImport.update({
   id: '/menu',
   path: '/menu',
@@ -142,6 +149,11 @@ const AdminReservationsRoute = AdminReservationsRouteImport.update({
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSetupRoute = AdminSetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminStaffRoute = AdminStaffRouteImport.update({
@@ -173,10 +185,12 @@ export interface FileRoutesByFullPath {
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/hours': typeof AdminHoursRoute
   '/admin/kitchen': typeof AdminKitchenRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/reservations': typeof AdminReservationsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/setup': typeof AdminSetupRoute
   '/admin/staff': typeof AdminStaffRoute
   '/admin/visit-details': typeof AdminVisitDetailsRoute
   '/admin/': typeof AdminIndexRoute
@@ -198,10 +212,12 @@ export interface FileRoutesByTo {
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/hours': typeof AdminHoursRoute
   '/admin/kitchen': typeof AdminKitchenRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/reservations': typeof AdminReservationsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/setup': typeof AdminSetupRoute
   '/admin/staff': typeof AdminStaffRoute
   '/admin/visit-details': typeof AdminVisitDetailsRoute
   '/admin': typeof AdminIndexRoute
@@ -225,10 +241,12 @@ export interface FileRoutesById {
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/hours': typeof AdminHoursRoute
   '/admin/kitchen': typeof AdminKitchenRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/reservations': typeof AdminReservationsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/setup': typeof AdminSetupRoute
   '/admin/staff': typeof AdminStaffRoute
   '/admin/visit-details': typeof AdminVisitDetailsRoute
   '/admin/': typeof AdminIndexRoute
@@ -253,10 +271,12 @@ export interface FileRouteTypes {
     | '/admin/gallery'
     | '/admin/hours'
     | '/admin/kitchen'
+    | '/admin/login'
     | '/admin/menu'
     | '/admin/orders'
     | '/admin/reservations'
     | '/admin/settings'
+    | '/admin/setup'
     | '/admin/staff'
     | '/admin/visit-details'
     | '/admin/'
@@ -278,10 +298,12 @@ export interface FileRouteTypes {
     | '/admin/gallery'
     | '/admin/hours'
     | '/admin/kitchen'
+    | '/admin/login'
     | '/admin/menu'
     | '/admin/orders'
     | '/admin/reservations'
     | '/admin/settings'
+    | '/admin/setup'
     | '/admin/staff'
     | '/admin/visit-details'
     | '/admin'
@@ -304,10 +326,12 @@ export interface FileRouteTypes {
     | '/admin/gallery'
     | '/admin/hours'
     | '/admin/kitchen'
+    | '/admin/login'
     | '/admin/menu'
     | '/admin/orders'
     | '/admin/reservations'
     | '/admin/settings'
+    | '/admin/setup'
     | '/admin/staff'
     | '/admin/visit-details'
     | '/admin/'
@@ -453,6 +477,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminKitchenRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/menu': {
       id: '/admin/menu'
       path: '/menu'
@@ -481,6 +512,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/setup': {
+      id: '/admin/setup'
+      path: '/setup'
+      fullPath: '/admin/setup'
+      preLoaderRoute: typeof AdminSetupRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/staff': {
       id: '/admin/staff'
       path: '/staff'
@@ -507,10 +545,12 @@ interface AdminRouteChildren {
   AdminGalleryRoute: typeof AdminGalleryRoute
   AdminHoursRoute: typeof AdminHoursRoute
   AdminKitchenRoute: typeof AdminKitchenRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   AdminMenuRoute: typeof AdminMenuRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminReservationsRoute: typeof AdminReservationsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSetupRoute: typeof AdminSetupRoute
   AdminStaffRoute: typeof AdminStaffRoute
   AdminVisitDetailsRoute: typeof AdminVisitDetailsRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -525,10 +565,12 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminGalleryRoute: AdminGalleryRoute,
   AdminHoursRoute: AdminHoursRoute,
   AdminKitchenRoute: AdminKitchenRoute,
+  AdminLoginRoute: AdminLoginRoute,
   AdminMenuRoute: AdminMenuRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminReservationsRoute: AdminReservationsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminSetupRoute: AdminSetupRoute,
   AdminStaffRoute: AdminStaffRoute,
   AdminVisitDetailsRoute: AdminVisitDetailsRoute,
   AdminIndexRoute: AdminIndexRoute,

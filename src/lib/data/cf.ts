@@ -42,3 +42,14 @@ export function getDb(): D1Database {
   }
   return db;
 }
+
+/**
+ * Reads a plain Worker env var / secret (e.g. SESSION_SECRET) the same way
+ * `getDb()` reads the D1 binding — via the per-request env Nitro stashes on
+ * `globalThis.__env__`. Falls back to `process.env` so it also resolves
+ * under `wrangler dev`'s Node-compat layer and any local `.dev.vars`.
+ */
+export function getEnvVar(name: string): string | undefined {
+  const env = (globalThis as unknown as { __env__?: Record<string, string | undefined> }).__env__;
+  return env?.[name] ?? (typeof process !== "undefined" ? process.env[name] : undefined);
+}
