@@ -98,10 +98,10 @@ function Events() {
                 {visitDetails.map((d) => (
                   <div
                     key={d.label}
-                    className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-border pb-3"
+                    className="flex flex-col gap-1 border-b border-border pb-3 sm:grid sm:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] sm:gap-4"
                   >
                     <dt className="text-muted-foreground">{d.label}</dt>
-                    <dd className="shrink-0 text-foreground">{d.value}</dd>
+                    <dd className="text-foreground">{d.value}</dd>
                   </div>
                 ))}
               </dl>

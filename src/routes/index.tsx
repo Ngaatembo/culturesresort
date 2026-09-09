@@ -188,7 +188,7 @@ function Home() {
       </section>
 
       {/* Experience */}
-      <section className="bg-background py-20 lg:py-32">
+      <section className="bg-background pb-10 pt-20 lg:py-32">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
             <p className="eyebrow rule-ochre text-primary">The experience</p>
@@ -211,7 +211,7 @@ function Home() {
       </section>
 
       {/* Reviews */}
-      <section className="bg-background py-20 lg:py-32">
+      <section className="bg-background pb-20 pt-10 lg:py-32">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
             <p className="eyebrow rule-ochre text-primary">What guests say</p>
