@@ -5,7 +5,7 @@
  * Web Crypto is the one strong KDF available everywhere this app runs.
  */
 
-const ITERATIONS = 210_000; // OWASP-recommended minimum for PBKDF2-SHA256 (2023+)
+const ITERATIONS = 100_000; // Cloudflare Workers' Web Crypto caps PBKDF2 at 100,000 iterations
 const KEY_LENGTH_BITS = 256;
 
 function toHex(buffer: ArrayBuffer): string {
