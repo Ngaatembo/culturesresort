@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { Lightbox } from "@/components/lightbox";
-import { gallery, images } from "@/lib/gallery";
+import { gallery as bundledGallery, images, type GalleryEntry } from "@/lib/gallery";
+import { listGalleryPhotos } from "@/lib/data/gallery-photos";
 import { cn } from "@/lib/utils";
 
 const categories = ["All", "Garden", "Food", "Culture", "Détail"] as const;
@@ -30,10 +31,31 @@ export const Route = createFileRoute("/gallery")({
 function Gallery() {
   const [filter, setFilter] = useState<(typeof categories)[number]>("All");
   const [index, setIndex] = useState<number | null>(null);
+  const [uploaded, setUploaded] = useState<GalleryEntry[]>([]);
+
+  useEffect(() => {
+    listGalleryPhotos()
+      .then((rows) =>
+        setUploaded(
+          rows.map((r) => ({
+            src: `/gallery-image/${r.r2_key}`,
+            alt: r.alt,
+            caption: r.caption,
+            category: r.category as GalleryEntry["category"],
+          })),
+        ),
+      )
+      .catch(() => {
+        // Uploaded photos are additive — if this fails, the page still
+        // works fine with the bundled launch photos below.
+      });
+  }, []);
+
+  const gallery = useMemo(() => [...uploaded, ...bundledGallery], [uploaded]);
 
   const shown = useMemo(
     () => (filter === "All" ? gallery : gallery.filter((g) => g.category === filter)),
-    [filter],
+    [gallery, filter],
   );
 
   return (

@@ -1,9 +1,11 @@
 import { useSession } from "@tanstack/react-start/server";
 import { getOrCreateSecret } from "./secret-store";
+import type { AdminRole } from "./admin-users";
 
 export type AdminSessionData = {
   userId: number;
   email: string;
+  role: AdminRole;
 };
 
 /**

@@ -8,5 +8,11 @@
       "database_name": "culturesresort",
       "database_id": "3122abb2-edb0-4d3e-bb9f-7639ffa7fb49"
     }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "GALLERY",
+      "bucket_name": "culturesresort-gallery"
+    }
   ]
 }

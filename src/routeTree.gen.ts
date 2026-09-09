@@ -35,6 +35,7 @@ import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminSetupRouteImport } from './routes/admin.setup'
 import { Route as AdminStaffRouteImport } from './routes/admin.staff'
 import { Route as AdminVisitDetailsRouteImport } from './routes/admin.visit-details'
+import { Route as GalleryImageSplatRouteImport } from './routes/gallery-image.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -166,6 +167,11 @@ const AdminVisitDetailsRoute = AdminVisitDetailsRouteImport.update({
   path: '/visit-details',
   getParentRoute: () => AdminRoute,
 } as any)
+const GalleryImageSplatRoute = GalleryImageSplatRouteImport.update({
+  id: '/gallery-image/$',
+  path: '/gallery-image/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/admin/setup': typeof AdminSetupRoute
   '/admin/staff': typeof AdminStaffRoute
   '/admin/visit-details': typeof AdminVisitDetailsRoute
+  '/gallery-image/$': typeof GalleryImageSplatRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -220,6 +227,7 @@ export interface FileRoutesByTo {
   '/admin/setup': typeof AdminSetupRoute
   '/admin/staff': typeof AdminStaffRoute
   '/admin/visit-details': typeof AdminVisitDetailsRoute
+  '/gallery-image/$': typeof GalleryImageSplatRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -249,6 +257,7 @@ export interface FileRoutesById {
   '/admin/setup': typeof AdminSetupRoute
   '/admin/staff': typeof AdminStaffRoute
   '/admin/visit-details': typeof AdminVisitDetailsRoute
+  '/gallery-image/$': typeof GalleryImageSplatRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -279,6 +288,7 @@ export interface FileRouteTypes {
     | '/admin/setup'
     | '/admin/staff'
     | '/admin/visit-details'
+    | '/gallery-image/$'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/admin/setup'
     | '/admin/staff'
     | '/admin/visit-details'
+    | '/gallery-image/$'
     | '/admin'
   id:
     | '__root__'
@@ -334,6 +345,7 @@ export interface FileRouteTypes {
     | '/admin/setup'
     | '/admin/staff'
     | '/admin/visit-details'
+    | '/gallery-image/$'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -347,6 +359,7 @@ export interface RootRouteChildren {
   MenuRoute: typeof MenuRoute
   OurStoryRoute: typeof OurStoryRoute
   ReservationsRoute: typeof ReservationsRoute
+  GalleryImageSplatRoute: typeof GalleryImageSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -533,6 +546,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminVisitDetailsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/gallery-image/$': {
+      id: '/gallery-image/$'
+      path: '/gallery-image/$'
+      fullPath: '/gallery-image/$'
+      preLoaderRoute: typeof GalleryImageSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -588,6 +608,7 @@ const rootRouteChildren: RootRouteChildren = {
   MenuRoute: MenuRoute,
   OurStoryRoute: OurStoryRoute,
   ReservationsRoute: ReservationsRoute,
+  GalleryImageSplatRoute: GalleryImageSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
