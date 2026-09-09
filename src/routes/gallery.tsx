@@ -79,18 +79,18 @@ function Gallery() {
                   as="li"
                   key={`${img.caption}-${i}`}
                   delay={(i % 4) * 70}
-                  className={cn("h-full", spanClass)}
+                  className={cn("h-full min-w-0", spanClass)}
                 >
                   <button
                     type="button"
                     onClick={() => setIndex(gallery.indexOf(img))}
-                    className="group block h-full w-full overflow-hidden bg-secondary text-left"
+                    className="group block w-full overflow-hidden bg-secondary text-left lg:h-full"
                     aria-label={`Open image: ${img.caption}`}
                   >
                     <span
                       className={cn(
-                        "block h-full overflow-hidden",
-                        spanClass ? "" : img.tall ? "aspect-[3/4]" : "aspect-[4/3]",
+                        "block w-full overflow-hidden lg:h-full lg:aspect-auto",
+                        spanClass ? "aspect-[4/3]" : img.tall ? "aspect-[3/4]" : "aspect-[4/3]",
                       )}
                     >
                       <img

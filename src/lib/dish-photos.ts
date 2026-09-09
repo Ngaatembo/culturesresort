@@ -79,6 +79,8 @@ export const dishPhotos: Record<string, string> = {
   Chips: chips,
   "Muriwo Une Dovi": muriwoUneDovi,
   "Pilau / Jollof Rice": jollofRice,
+  "Jollof Rice": jollofRice,
+  Pilau: jollofRice,
   Chapati: chapati,
   "Fried Potatoes": friedPotatoWedges,
   "Mpunga Une Dovi": mpungaUneDovi,

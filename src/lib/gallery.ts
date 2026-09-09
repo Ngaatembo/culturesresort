@@ -5,7 +5,6 @@ import drums from "@/assets/culture-drums.jpg";
 import interiorDeck from "@/assets/interior-deck.jpg";
 import sadzaPlate from "@/assets/sadza-plate.jpg";
 import jollofPlate from "@/assets/jollof-plate.jpg";
-import thatchedRoof from "@/assets/thatched-roof.jpg";
 import craftBaskets from "@/assets/craft-art-baskets.jpg";
 import craftClayPot from "@/assets/craft-clay-pot.jpg";
 import pavilionWide from "@/assets/pavilion-wide.jpg";
@@ -25,7 +24,6 @@ export const images = {
   interiorDeck,
   sadzaPlate,
   jollofPlate,
-  thatchedRoof,
   craftBaskets,
   craftClayPot,
   pavilionWide,
@@ -153,12 +151,6 @@ export const gallery: GalleryEntry[] = [
     alt: "A staff member in traditional dress arranging a large clay pot",
     caption: "Traditional dress and handcrafted clay pots",
     category: "Culture",
-  },
-  {
-    src: thatchedRoof,
-    alt: "Thatched roof of the dining pavilion against a blue sky",
-    caption: "The thatched dining pavilion",
-    category: "Détail",
   },
   {
     src: garden,
