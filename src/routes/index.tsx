@@ -4,7 +4,7 @@ import { ExperienceGrid } from "@/components/experience-grid";
 import { TrustReviews } from "@/components/trust-reviews";
 import { business, menu, testimonials } from "@/lib/site-data";
 import { images } from "@/lib/gallery";
-import fireGrill from "@/assets/fire-grill.jpg";
+import fireGrill from "@/assets/fire-nyama-choma.jpg";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({

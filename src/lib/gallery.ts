@@ -15,6 +15,7 @@ import staffWelcome from "@/assets/staff-welcome.jpg";
 import gardenLion from "@/assets/garden-lion.jpg";
 import picnicTables from "@/assets/picnic-tables.jpg";
 import porkSizzler from "@/assets/pork-sizzler.jpg";
+import playArea from "@/assets/play-area.jpg";
 
 export const images = {
   garden,
@@ -34,6 +35,7 @@ export const images = {
   gardenLion,
   picnicTables,
   porkSizzler,
+  playArea,
 };
 
 export type GalleryEntry = {
@@ -157,5 +159,11 @@ export const gallery: GalleryEntry[] = [
     alt: "Wooden signpost among the trees in the garden",
     caption: "Signposts through the garden",
     category: "Détail",
+  },
+  {
+    src: playArea,
+    alt: "A colourful two-storey wooden play tower with a slide, in the garden",
+    caption: "The kids' play area",
+    category: "Garden",
   },
 ];
