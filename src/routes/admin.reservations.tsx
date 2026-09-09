@@ -1,7 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { listBookings, updateBookingStatus, type BookingRow, type BookingStatus } from "@/lib/data/bookings";
+import {
+  listBookings,
+  updateBookingStatus,
+  type BookingRow,
+  type BookingStatus,
+} from "@/lib/data/bookings";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -93,7 +98,10 @@ function ReservationsPage() {
               aria-label="Search reservations"
             />
           </div>
-          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as BookingStatus | "all")}>
+          <Select
+            value={statusFilter}
+            onValueChange={(v) => setStatusFilter(v as BookingStatus | "all")}
+          >
             <SelectTrigger className="w-full sm:w-48" aria-label="Filter by status">
               <SelectValue placeholder="All statuses" />
             </SelectTrigger>

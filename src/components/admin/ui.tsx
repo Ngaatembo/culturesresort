@@ -103,9 +103,7 @@ export function StatCard({
 }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
-      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        {label}
-      </p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
       <p
         className={cn(
           "mt-2 text-3xl font-bold tabular-nums",
@@ -211,7 +209,13 @@ export function StatusBadge({ status }: { status: string }) {
 }
 
 /** Small dot + label used for the system-status strip on Overview. */
-export function StatusDot({ tone, children }: { tone: "ok" | "warn" | "off"; children: ReactNode }) {
+export function StatusDot({
+  tone,
+  children,
+}: {
+  tone: "ok" | "warn" | "off";
+  children: ReactNode;
+}) {
   return (
     <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
       <span

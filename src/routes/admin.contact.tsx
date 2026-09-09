@@ -26,15 +26,18 @@ function ContactPage() {
 
       <SectionCard title="Setup required" className="border-accent/40">
         <StatusDot tone="warn">
-          Set in code (src/lib/site-data.ts), not the database — read-only here for now. Tell me
-          the change and I'll update it directly.
+          Set in code (src/lib/site-data.ts), not the database — read-only here for now. Tell me the
+          change and I'll update it directly.
         </StatusDot>
       </SectionCard>
 
       <SectionCard title="Current details">
         <ul className="divide-y divide-border">
           {fields.map((f) => (
-            <li key={f.label} className="flex flex-col gap-1 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+            <li
+              key={f.label}
+              className="flex flex-col gap-1 py-3.5 sm:flex-row sm:items-center sm:justify-between"
+            >
               <span className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                 {f.label}
                 {f.verified ? (

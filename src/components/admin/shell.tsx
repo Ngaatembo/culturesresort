@@ -64,7 +64,12 @@ function buildNav(counts: Partial<Record<string, number>>): NavGroup[] {
           icon: CalendarCheck2,
           badge: counts["reservations"],
         },
-        { to: "/admin/enquiries", label: "Enquiries", icon: MessageSquare, badge: counts["enquiries"] },
+        {
+          to: "/admin/enquiries",
+          label: "Enquiries",
+          icon: MessageSquare,
+          badge: counts["enquiries"],
+        },
       ],
     },
     {
@@ -112,7 +117,11 @@ function NavLink({ item, pathname }: { item: NavItem; pathname: string }) {
   );
 }
 
-export function AdminSidebar({ counts = {} }: { counts?: Partial<Record<string, number>> | undefined }) {
+export function AdminSidebar({
+  counts = {},
+}: {
+  counts?: Partial<Record<string, number>> | undefined;
+}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const groups = buildNav(counts);
 

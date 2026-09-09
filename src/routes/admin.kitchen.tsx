@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { listOrders, updateOrderStatus, type OrderStatus, type OrderWithItems } from "@/lib/data/orders";
+import {
+  listOrders,
+  updateOrderStatus,
+  type OrderStatus,
+  type OrderWithItems,
+} from "@/lib/data/orders";
 import { Button } from "@/components/ui/button";
 import { EmptyState, ErrorState, LoadingRows, PageHeader } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
@@ -9,7 +14,11 @@ export const Route = createFileRoute("/admin/kitchen")({
   component: KitchenPage,
 });
 
-const COLUMNS: { status: OrderStatus; title: string; action?: { label: string; next: OrderStatus } }[] = [
+const COLUMNS: {
+  status: OrderStatus;
+  title: string;
+  action?: { label: string; next: OrderStatus };
+}[] = [
   { status: "pending", title: "New", action: { label: "Start preparing", next: "preparing" } },
   { status: "preparing", title: "Preparing", action: { label: "Mark ready", next: "completed" } },
   { status: "completed", title: "Ready / Done" },
@@ -23,7 +32,9 @@ function KitchenPage() {
     setError(null);
     listOrders()
       .then(setOrders)
-      .catch((err) => setError(err instanceof Error ? err.message : "Couldn't load the kitchen queue."));
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Couldn't load the kitchen queue."),
+      );
   };
 
   useEffect(() => {
@@ -46,7 +57,10 @@ function KitchenPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Kitchen" description="Live order queue — refreshes automatically every 20s." />
+      <PageHeader
+        title="Kitchen"
+        description="Live order queue — refreshes automatically every 20s."
+      />
 
       {error ? (
         <ErrorState message={error} onRetry={load} />
@@ -56,19 +70,27 @@ function KitchenPage() {
         <div className="grid gap-4 lg:grid-cols-3">
           {COLUMNS.map((col) => {
             const items = orders.filter(
-              (o) => o.status === col.status && (col.status !== "completed" || isToday(o.created_at)),
+              (o) =>
+                o.status === col.status && (col.status !== "completed" || isToday(o.created_at)),
             );
             return (
-              <div key={col.status} className="rounded-2xl border border-border bg-card shadow-card">
+              <div
+                key={col.status}
+                className="rounded-2xl border border-border bg-card shadow-card"
+              >
                 <div className="flex items-center justify-between border-b border-border px-4 py-3">
-                  <p className="text-sm font-bold uppercase tracking-wide text-foreground">{col.title}</p>
+                  <p className="text-sm font-bold uppercase tracking-wide text-foreground">
+                    {col.title}
+                  </p>
                   <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-semibold text-secondary-foreground">
                     {items.length}
                   </span>
                 </div>
                 <div className="space-y-3 p-3">
                   {items.length === 0 ? (
-                    <p className="px-2 py-6 text-center text-sm text-muted-foreground">Nothing here</p>
+                    <p className="px-2 py-6 text-center text-sm text-muted-foreground">
+                      Nothing here
+                    </p>
                   ) : (
                     items.map((o) => (
                       <div
@@ -109,7 +131,10 @@ function KitchenPage() {
       )}
 
       {orders && orders.length === 0 ? (
-        <EmptyState title="No orders yet" description="New orders will appear here the moment they're placed." />
+        <EmptyState
+          title="No orders yet"
+          description="New orders will appear here the moment they're placed."
+        />
       ) : null}
     </div>
   );

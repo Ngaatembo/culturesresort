@@ -32,7 +32,9 @@ function build(orders: OrderWithItems[], bookings: BookingRow[], enquiries: Enqu
       key: `booking-${b.id}`,
       time: b.created_at,
       title:
-        b.event_type === "Table reservation" ? "New reservation requested" : `New ${b.event_type} enquiry`,
+        b.event_type === "Table reservation"
+          ? "New reservation requested"
+          : `New ${b.event_type} enquiry`,
       detail: `${b.guest_name} · ${b.guests ?? "?"} guests`,
       href: b.event_type === "Table reservation" ? "/admin/reservations" : "/admin/events",
     })),
@@ -55,7 +57,9 @@ function ActivityPage() {
     setError(null);
     Promise.all([listOrders(), listBookings(), listEnquiries()])
       .then(([orders, bookings, enquiries]) => setEntries(build(orders, bookings, enquiries)))
-      .catch((err) => setError(err instanceof Error ? err.message : "Couldn't load the activity log."));
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Couldn't load the activity log."),
+      );
   };
   useEffect(load, []);
 
@@ -72,7 +76,10 @@ function ActivityPage() {
         ) : !entries ? (
           <LoadingRows rows={8} />
         ) : entries.length === 0 ? (
-          <EmptyState title="Nothing yet" description="Activity will appear here as guests place orders, book tables or send enquiries." />
+          <EmptyState
+            title="Nothing yet"
+            description="Activity will appear here as guests place orders, book tables or send enquiries."
+          />
         ) : (
           <ul className="divide-y divide-border">
             {entries.map((a) => (

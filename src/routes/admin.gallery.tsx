@@ -53,8 +53,16 @@ function GalleryPage() {
 
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {shown.map((g, i) => (
-          <li key={`${g.caption}-${i}`} className="overflow-hidden rounded-2xl border border-border bg-card">
-            <img src={g.src} alt={g.alt} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+          <li
+            key={`${g.caption}-${i}`}
+            className="overflow-hidden rounded-2xl border border-border bg-card"
+          >
+            <img
+              src={g.src}
+              alt={g.alt}
+              loading="lazy"
+              className="aspect-[4/3] w-full object-cover"
+            />
             <div className="p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
                 {g.category}

@@ -33,7 +33,9 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
     setError(null);
     getMenuAdmin()
       .then((all) => setItems(all.filter((i) => i.kind === kind)))
-      .catch((err) => setError(err instanceof Error ? err.message : `Couldn't load the ${noun} list.`));
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : `Couldn't load the ${noun} list.`),
+      );
   };
   useEffect(load, [kind]);
 
@@ -42,7 +44,8 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
     : [];
 
   const savePrice = async (item: MenuItemRow) => {
-    const raw = drafts[item.id] ?? (item.price_cents > 0 ? (item.price_cents / 100).toFixed(2) : "");
+    const raw =
+      drafts[item.id] ?? (item.price_cents > 0 ? (item.price_cents / 100).toFixed(2) : "");
     const price = raw.trim() === "" ? 0 : Number(raw);
     if (!Number.isFinite(price) || price < 0) {
       setError("Enter a valid price (or leave blank for On request).");
@@ -66,7 +69,9 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
 
   const toggleAvailable = async (item: MenuItemRow) => {
     const next = !item.available;
-    setItems((prev) => prev!.map((i) => (i.id === item.id ? { ...i, available: next ? 1 : 0 } : i)));
+    setItems((prev) =>
+      prev!.map((i) => (i.id === item.id ? { ...i, available: next ? 1 : 0 } : i)),
+    );
     try {
       await setMenuItemAvailability({ data: { id: item.id, available: next } });
     } catch {
@@ -86,7 +91,10 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
       {!items ? (
         <LoadingRows rows={6} />
       ) : items.length === 0 ? (
-        <EmptyState title={`No ${noun}s yet`} description="Items will appear here once they're seeded into the menu." />
+        <EmptyState
+          title={`No ${noun}s yet`}
+          description="Items will appear here once they're seeded into the menu."
+        />
       ) : (
         <div className="space-y-6">
           {categories.map(([slug, title]) => (
@@ -117,8 +125,12 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
                               min={0}
                               step="0.01"
                               placeholder="On request"
-                              defaultValue={item.price_cents > 0 ? (item.price_cents / 100).toFixed(2) : ""}
-                              onChange={(e) => setDrafts((d) => ({ ...d, [item.id]: e.target.value }))}
+                              defaultValue={
+                                item.price_cents > 0 ? (item.price_cents / 100).toFixed(2) : ""
+                              }
+                              onChange={(e) =>
+                                setDrafts((d) => ({ ...d, [item.id]: e.target.value }))
+                              }
                               className="w-28"
                               aria-label={`${item.name} price`}
                             />
@@ -137,10 +149,22 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
                           </td>
                           <td className="py-3.5">
                             <div className="flex flex-wrap gap-2">
-                              <Button size="sm" disabled={savingId === item.id} onClick={() => savePrice(item)}>
-                                {savingId === item.id ? "Saving…" : savedId === item.id ? "Saved ✓" : "Save"}
+                              <Button
+                                size="sm"
+                                disabled={savingId === item.id}
+                                onClick={() => savePrice(item)}
+                              >
+                                {savingId === item.id
+                                  ? "Saving…"
+                                  : savedId === item.id
+                                    ? "Saved ✓"
+                                    : "Save"}
                               </Button>
-                              <Button size="sm" variant="outline" onClick={() => toggleAvailable(item)}>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => toggleAvailable(item)}
+                              >
                                 {item.available ? "Mark sold out" : "Mark available"}
                               </Button>
                             </div>

@@ -1,7 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Mail, Phone, Search } from "lucide-react";
-import { listEnquiries, updateEnquiryStatus, type EnquiryRow, type EnquiryStatus } from "@/lib/data/enquiries";
+import {
+  listEnquiries,
+  updateEnquiryStatus,
+  type EnquiryRow,
+  type EnquiryStatus,
+} from "@/lib/data/enquiries";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -61,7 +66,10 @@ function EnquiriesPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Enquiries" description="Messages from the contact form. Guest details stay private." />
+      <PageHeader
+        title="Enquiries"
+        description="Messages from the contact form. Guest details stay private."
+      />
 
       <SectionCard>
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -78,7 +86,10 @@ function EnquiriesPage() {
               aria-label="Search enquiries"
             />
           </div>
-          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as EnquiryStatus | "all")}>
+          <Select
+            value={statusFilter}
+            onValueChange={(v) => setStatusFilter(v as EnquiryStatus | "all")}
+          >
             <SelectTrigger className="w-full sm:w-48" aria-label="Filter by status">
               <SelectValue placeholder="All statuses" />
             </SelectTrigger>
@@ -109,22 +120,33 @@ function EnquiriesPage() {
         ) : (
           <ul className="divide-y divide-border">
             {filtered.map((e) => (
-              <li key={e.id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-start sm:justify-between">
+              <li
+                key={e.id}
+                className="flex flex-col gap-3 py-4 sm:flex-row sm:items-start sm:justify-between"
+              >
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-semibold text-foreground">{e.name}</p>
                     <StatusBadge status={e.status} />
-                    <span className="text-xs text-muted-foreground">{formatDateTime(e.created_at)}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {formatDateTime(e.created_at)}
+                    </span>
                   </div>
                   <p className="mt-1.5 text-sm text-muted-foreground">{e.message}</p>
                   <div className="mt-2 flex flex-wrap gap-3 text-xs">
                     {e.phone ? (
-                      <a href={`tel:${e.phone}`} className="inline-flex items-center gap-1 font-medium text-accent-foreground hover:underline">
+                      <a
+                        href={`tel:${e.phone}`}
+                        className="inline-flex items-center gap-1 font-medium text-accent-foreground hover:underline"
+                      >
                         <Phone className="h-3.5 w-3.5" aria-hidden="true" /> {e.phone}
                       </a>
                     ) : null}
                     {e.email ? (
-                      <a href={`mailto:${e.email}`} className="inline-flex items-center gap-1 font-medium text-accent-foreground hover:underline">
+                      <a
+                        href={`mailto:${e.email}`}
+                        className="inline-flex items-center gap-1 font-medium text-accent-foreground hover:underline"
+                      >
                         <Mail className="h-3.5 w-3.5" aria-hidden="true" /> {e.email}
                       </a>
                     ) : null}

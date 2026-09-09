@@ -1,7 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { listOrders, updateOrderStatus, type OrderStatus, type OrderWithItems } from "@/lib/data/orders";
+import {
+  listOrders,
+  updateOrderStatus,
+  type OrderStatus,
+  type OrderWithItems,
+} from "@/lib/data/orders";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -103,7 +108,10 @@ function OrdersPage() {
               aria-label="Search orders"
             />
           </div>
-          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as OrderStatus | "all")}>
+          <Select
+            value={statusFilter}
+            onValueChange={(v) => setStatusFilter(v as OrderStatus | "all")}
+          >
             <SelectTrigger className="w-full sm:w-48" aria-label="Filter by status">
               <SelectValue placeholder="All statuses" />
             </SelectTrigger>
@@ -208,7 +216,10 @@ function OrdersPage() {
                 <div className="rounded-lg border border-border">
                   <ul className="divide-y divide-border">
                     {active.items.map((i) => (
-                      <li key={i.id} className="flex items-center justify-between px-3 py-2.5 text-sm">
+                      <li
+                        key={i.id}
+                        className="flex items-center justify-between px-3 py-2.5 text-sm"
+                      >
                         <span>
                           {i.qty} × {i.name}
                         </span>
@@ -236,7 +247,13 @@ function OrdersPage() {
                 {ORDER_STATUSES.filter((s) => s !== active.status).map((s) => (
                   <Button
                     key={s}
-                    variant={s === "cancelled" ? "destructive" : s === "completed" ? "success" : "secondary"}
+                    variant={
+                      s === "cancelled"
+                        ? "destructive"
+                        : s === "completed"
+                          ? "success"
+                          : "secondary"
+                    }
                     size="sm"
                     onClick={() => setStatus(active.id, s)}
                     className="capitalize"

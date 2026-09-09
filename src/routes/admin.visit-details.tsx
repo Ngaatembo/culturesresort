@@ -16,15 +16,18 @@ function VisitDetailsPage() {
 
       <SectionCard title="Setup required" className="border-accent/40">
         <StatusDot tone="warn">
-          Set in code (src/lib/site-data.ts), not the database — read-only here for now. Tell me
-          the change and I'll update it directly.
+          Set in code (src/lib/site-data.ts), not the database — read-only here for now. Tell me the
+          change and I'll update it directly.
         </StatusDot>
       </SectionCard>
 
       <SectionCard title="Current answers">
         <ul className="divide-y divide-border">
           {visitDetails.map((d) => (
-            <li key={d.label} className="flex flex-col gap-1 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+            <li
+              key={d.label}
+              className="flex flex-col gap-1 py-3.5 sm:flex-row sm:items-center sm:justify-between"
+            >
               <span className="text-sm font-medium text-muted-foreground">{d.label}</span>
               <span className="text-sm font-medium text-foreground sm:text-right">{d.value}</span>
             </li>

@@ -45,7 +45,8 @@ function buildActivity(
     ...bookings.map((b) => ({
       key: `booking-${b.id}`,
       time: b.created_at,
-      title: b.event_type === "Table reservation" ? "New reservation" : `New ${b.event_type} enquiry`,
+      title:
+        b.event_type === "Table reservation" ? "New reservation" : `New ${b.event_type} enquiry`,
       detail: `${b.guest_name} · ${b.guests ?? "?"} guests`,
       href: b.event_type === "Table reservation" ? "/admin/reservations" : "/admin/events",
     })),
@@ -72,7 +73,9 @@ function Overview() {
         setStats(s);
         setActivity(buildActivity(orders.slice(0, 8), bookings.slice(0, 8), enquiries.slice(0, 8)));
       })
-      .catch((err) => setError(err instanceof Error ? err.message : "Could not load the dashboard."));
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Could not load the dashboard."),
+      );
   };
 
   useEffect(load, []);
@@ -93,7 +96,9 @@ function Overview() {
         <StatCard
           label="Today's orders"
           value={stats ? String(stats.todaysOrders) : "…"}
-          hint={stats ? `${stats.pendingOrders} pending · ${stats.beingPrepared} in kitchen` : undefined}
+          hint={
+            stats ? `${stats.pendingOrders} pending · ${stats.beingPrepared} in kitchen` : undefined
+          }
         />
         <StatCard
           label="Reservations"

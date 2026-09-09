@@ -1,7 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { listBookings, updateBookingStatus, type BookingRow, type BookingStatus } from "@/lib/data/bookings";
+import {
+  listBookings,
+  updateBookingStatus,
+  type BookingRow,
+  type BookingStatus,
+} from "@/lib/data/bookings";
 import { eventRequirements, eventTypes } from "@/lib/site-data";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -48,7 +53,9 @@ function EventsPage() {
     setError(null);
     listBookings()
       .then((all) => setBookings(all.filter((b) => b.event_type !== "Table reservation")))
-      .catch((err) => setError(err instanceof Error ? err.message : "Couldn't load event enquiries."));
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Couldn't load event enquiries."),
+      );
   };
   useEffect(load, []);
 
@@ -94,7 +101,10 @@ function EventsPage() {
               aria-label="Search event enquiries"
             />
           </div>
-          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as BookingStatus | "all")}>
+          <Select
+            value={statusFilter}
+            onValueChange={(v) => setStatusFilter(v as BookingStatus | "all")}
+          >
             <SelectTrigger className="w-full sm:w-48" aria-label="Filter by status">
               <SelectValue placeholder="All statuses" />
             </SelectTrigger>

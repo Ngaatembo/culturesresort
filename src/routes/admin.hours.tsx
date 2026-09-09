@@ -9,13 +9,16 @@ export const Route = createFileRoute("/admin/hours")({
 function HoursPage() {
   return (
     <div className="space-y-6">
-      <PageHeader title="Opening Hours" description="These hours appear on the contact page and in the footer." />
+      <PageHeader
+        title="Opening Hours"
+        description="These hours appear on the contact page and in the footer."
+      />
 
       <SectionCard title="Setup required" className="border-accent/40">
         <StatusDot tone="warn">
-          Hours are currently set in code (src/lib/site-data.ts), not the database, so this page
-          is read-only for now. Tell me the change and I'll update it directly, or ask and I can
-          wire this to a real settings table so it's editable here.
+          Hours are currently set in code (src/lib/site-data.ts), not the database, so this page is
+          read-only for now. Tell me the change and I'll update it directly, or ask and I can wire
+          this to a real settings table so it's editable here.
         </StatusDot>
       </SectionCard>
 

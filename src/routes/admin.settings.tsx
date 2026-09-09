@@ -12,8 +12,8 @@ function SettingsPage() {
 
       <SectionCard title="Security" className="border-destructive/30">
         <StatusDot tone="off">
-          No login is configured — /admin is currently open to anyone with the URL. This needs
-          real authentication before the business relies on this dashboard day to day.
+          No login is configured — /admin is currently open to anyone with the URL. This needs real
+          authentication before the business relies on this dashboard day to day.
         </StatusDot>
       </SectionCard>
 
@@ -34,8 +34,8 @@ function SettingsPage() {
 
       <SectionCard title="Business, notifications & appearance" className="border-accent/40">
         <StatusDot tone="warn">
-          Not built yet — there's nothing behind these settings to configure until they're
-          actually needed. Ask if you'd like any of these added.
+          Not built yet — there's nothing behind these settings to configure until they're actually
+          needed. Ask if you'd like any of these added.
         </StatusDot>
       </SectionCard>
     </div>
