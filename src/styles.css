@@ -40,9 +40,21 @@
   --color-bone: var(--bone);
   --color-ink: var(--ink);
   --color-leaf: var(--leaf);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
   --font-display: "Playfair Display", ui-serif, Georgia, serif;
   --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-admin: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --shadow-lift: 0 24px 60px -24px oklch(0.22 0.02 60 / 0.45);
+  --shadow-card: 0 1px 2px oklch(0.22 0.02 60 / 0.06), 0 1px 1px oklch(0.22 0.02 60 / 0.04);
 }
 
 :root {
@@ -73,6 +85,71 @@
   --bone: oklch(0.943 0.021 79);
   --ink: oklch(0.219 0.008 85);
   --leaf: oklch(0.5 0.1 134);
+  --success: oklch(0.5 0.1 145);
+  --success-foreground: oklch(0.98 0.01 82);
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--secondary);
+  --sidebar-accent-foreground: var(--secondary-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+/*
+ * Admin dashboard design system — deliberately separate from the public
+ * site's warm, photographic palette. Neutral ivory/charcoal with earthy
+ * accents, Manrope instead of the display serif, tighter radius scale.
+ * Scoped to `.admin` so it only affects /admin routes; overriding the
+ * shared shadcn tokens here means every existing `bg-background`,
+ * `text-muted-foreground`, `border-border`, `bg-sidebar` etc. utility
+ * automatically repaints for the dashboard without new utility classes.
+ */
+.admin {
+  --background: oklch(0.97 0.012 80);
+  --foreground: oklch(0.24 0.02 55);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.24 0.02 55);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.24 0.02 55);
+  --primary: oklch(0.24 0.02 55);
+  --primary-foreground: oklch(0.98 0.01 82);
+  --secondary: oklch(0.94 0.014 78);
+  --secondary-foreground: oklch(0.24 0.02 55);
+  --muted: oklch(0.94 0.014 78);
+  --muted-foreground: oklch(0.53 0.02 60);
+  --accent: oklch(0.7 0.09 62);
+  --accent-foreground: oklch(0.22 0.03 55);
+  --destructive: oklch(0.53 0.16 25);
+  --destructive-foreground: oklch(0.98 0.01 82);
+  --success: oklch(0.52 0.08 145);
+  --success-foreground: oklch(0.98 0.01 82);
+  --border: oklch(0.9 0.014 75);
+  --input: oklch(0.9 0.014 75);
+  --ring: oklch(0.7 0.09 62);
+  --radius: 14px;
+
+  --sidebar: oklch(0.22 0.025 55);
+  --sidebar-foreground: oklch(0.92 0.014 78);
+  --sidebar-primary: oklch(0.7 0.09 62);
+  --sidebar-primary-foreground: oklch(0.22 0.03 55);
+  --sidebar-accent: oklch(0.29 0.025 55);
+  --sidebar-accent-foreground: oklch(0.97 0.012 80);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.7 0.09 62);
+
+  font-family: var(--font-admin);
+}
+
+.admin h1,
+.admin h2,
+.admin h3,
+.admin h4 {
+  font-family: var(--font-admin);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .dark {
