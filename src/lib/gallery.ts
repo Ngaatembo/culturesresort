@@ -16,6 +16,7 @@ import gardenLion from "@/assets/garden-lion.jpg";
 import picnicTables from "@/assets/picnic-tables.jpg";
 import porkSizzler from "@/assets/pork-sizzler.jpg";
 import playArea from "@/assets/play-area.jpg";
+import goatChopsPlate from "@/assets/goat-chops-plate.jpg";
 
 export const images = {
   garden,
@@ -36,6 +37,7 @@ export const images = {
   picnicTables,
   porkSizzler,
   playArea,
+  goatChopsPlate,
 };
 
 export type GalleryEntry = {
@@ -165,5 +167,11 @@ export const gallery: GalleryEntry[] = [
     alt: "A colourful two-storey wooden play tower with a slide, in the garden",
     caption: "The kids' play area",
     category: "Garden",
+  },
+  {
+    src: goatChopsPlate,
+    alt: "Char-grilled ribs and chops with a slice of tomato, served sizzling on a black platter",
+    caption: "Char-grilled ribs, straight off the fire",
+    category: "Food",
   },
 ];
