@@ -16,7 +16,16 @@ export const Route = createFileRoute("/admin")({
   }),
   beforeLoad: async ({ location }) => {
     if (PUBLIC_ADMIN_PATHS.has(location.pathname)) return;
-    const session = await getAdminSession();
+    // A misconfigured SESSION_SECRET (or a migration that hasn't run yet)
+    // must never crash the page — fail safe by sending the visitor to
+    // login, where the real error surfaces as a readable inline message
+    // instead of the generic error boundary.
+    let session: Awaited<ReturnType<typeof getAdminSession>> | null = null;
+    try {
+      session = await getAdminSession();
+    } catch {
+      session = null;
+    }
     if (!session) {
       throw redirect({ to: "/admin/login" });
     }

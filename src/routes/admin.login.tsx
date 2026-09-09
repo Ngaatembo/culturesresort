@@ -15,11 +15,19 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [needsSetup, setNeedsSetup] = useState<boolean | null>(null);
+  const [configError, setConfigError] = useState<string | null>(null);
 
   useEffect(() => {
     adminSetupStatus()
       .then((s) => setNeedsSetup(s.needsSetup))
-      .catch(() => setNeedsSetup(false));
+      .catch((err) => {
+        setNeedsSetup(false);
+        setConfigError(
+          err instanceof Error
+            ? err.message
+            : "Can't reach the admin backend. Check that SESSION_SECRET is set in Cloudflare and the admin_users migration has run.",
+        );
+      });
   }, []);
 
   useEffect(() => {
@@ -54,6 +62,11 @@ function LoginPage() {
         <p className="mt-1 text-sm text-muted-foreground">Sign in to manage the dashboard.</p>
 
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
+          {configError ? (
+            <p className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              Admin isn't fully set up on the server yet: {configError}
+            </p>
+          ) : null}
           {error ? (
             <p className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {error}
