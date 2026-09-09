@@ -18,7 +18,10 @@ export const Route = createFileRoute("/gallery")({
           "Photographs of the garden, the food, the craft and the cultural atmosphere at Cultures Resort in Hillside, Harare.",
       },
       { property: "og:title", content: "Gallery | Cultures Resort" },
-      { property: "og:description", content: "A look at the garden, the plates and the atmosphere." },
+      {
+        property: "og:description",
+        content: "A look at the garden, the plates and the atmosphere.",
+      },
     ],
   }),
   component: Gallery,
@@ -54,7 +57,9 @@ function Gallery() {
                 aria-pressed={filter === c}
                 className={cn(
                   "eyebrow border px-5 py-3 transition-colors",
-                  filter === c ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-secondary",
+                  filter === c
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border hover:bg-secondary",
                 )}
               >
                 {c}
@@ -101,7 +106,9 @@ function Gallery() {
                       />
                     </span>
                     <span className="mt-2 flex items-center justify-between gap-3 rounded-xl border border-border bg-secondary px-3 py-2">
-                      <span className="min-w-0 truncate text-sm text-muted-foreground">{img.caption}</span>
+                      <span className="min-w-0 truncate text-sm text-muted-foreground">
+                        {img.caption}
+                      </span>
                       <span className="eyebrow shrink-0 text-ochre">{img.category}</span>
                     </span>
                   </button>

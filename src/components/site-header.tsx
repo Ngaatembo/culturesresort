@@ -54,7 +54,9 @@ export function SiteHeader() {
             className="h-10 w-10 shrink-0 rounded-full"
           />
           <span className="min-w-0">
-            <span className="block font-display text-lg tracking-tight sm:text-xl">Cultures Resort</span>
+            <span className="block font-display text-lg tracking-tight sm:text-xl">
+              Cultures Resort
+            </span>
             <span className="eyebrow mt-1 block text-[0.6rem] opacity-70">Harare · Zimbabwe</span>
           </span>
         </Link>
@@ -69,7 +71,10 @@ export function SiteHeader() {
                 "eyebrow transition-opacity hover:opacity-100",
                 scrolled ? "text-foreground/80" : "text-bone/85",
               )}
-              activeProps={{ className: "!opacity-100 underline decoration-ochre decoration-2 underline-offset-8" }}
+              activeProps={{
+                className:
+                  "!opacity-100 underline decoration-ochre decoration-2 underline-offset-8",
+              }}
             >
               {l.label}
             </Link>

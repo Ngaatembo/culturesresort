@@ -106,10 +106,7 @@ function Reservations() {
               </dl>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href={business.phoneHref}
-                  className="eyebrow border border-border px-7 py-4"
-                >
+                <a href={business.phoneHref} className="eyebrow border border-border px-7 py-4">
                   Call {business.phoneDisplay}
                 </a>
                 <a

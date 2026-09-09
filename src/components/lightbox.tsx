@@ -52,7 +52,12 @@ export function Lightbox({
         <p className="eyebrow text-bone/60">
           {index + 1} / {images.length}
         </p>
-        <button type="button" onClick={onClose} className="eyebrow px-3 py-2 hover:text-ochre" autoFocus>
+        <button
+          type="button"
+          onClick={onClose}
+          className="eyebrow px-3 py-2 hover:text-ochre"
+          autoFocus
+        >
           Close ✕
         </button>
       </div>

@@ -20,8 +20,7 @@ export const business = {
   emailAlt: "culturesresortzimbabwe@gmail.com",
   /** VERIFIED — exact GPS pin for the venue, confirmed by the owner. */
   mapsHref: "https://www.google.com/maps/search/?api=1&query=-17.8362078%2C31.0696115",
-  mapsEmbedHref:
-    "https://www.google.com/maps?q=-17.8362078,31.0696115&output=embed",
+  mapsEmbedHref: "https://www.google.com/maps?q=-17.8362078,31.0696115&output=embed",
   /** VERIFIED — the restaurant's real, live TripAdvisor listing. */
   tripadvisorHref:
     "https://www.tripadvisor.com/Restaurant_Review-g293760-d26802869-Reviews-Cultures_Resort-Harare_Harare_Province.html",
@@ -347,7 +346,6 @@ export const testimonials = [
       "Their goat dishes are incredible! I can still taste it a day later and wanting to go back. It has a good vibe that delivers a rich African feel. Friendly staff, fair portions and picturesque. Hidden gem.",
   },
 ] as const;
-
 
 export const galleryCaptions = [
   "Garden dining at dusk — placeholder image",

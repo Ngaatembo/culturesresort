@@ -34,7 +34,12 @@ export function SiteFooter() {
         <address className="not-italic lg:col-span-1">
           <h2 className="eyebrow text-ochre">Contact</h2>
           <div className="mt-5 space-y-2 text-sm leading-relaxed text-bone/75">
-            <a href={business.mapsHref} target="_blank" rel="noopener noreferrer" className="block hover:text-ochre">
+            <a
+              href={business.mapsHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block hover:text-ochre"
+            >
               {business.addressLine}
             </a>
             <a href={business.phoneHref} className="block hover:text-ochre">

@@ -16,7 +16,10 @@ export function WhatsAppFab() {
     >
       <WhatsAppIcon className="h-6 w-6 shrink-0" />
       <span className="eyebrow">Chat on WhatsApp</span>
-      <span className="absolute -right-1 -top-1 h-3 w-3 animate-pulse rounded-full bg-ochre" aria-hidden="true" />
+      <span
+        className="absolute -right-1 -top-1 h-3 w-3 animate-pulse rounded-full bg-ochre"
+        aria-hidden="true"
+      />
     </a>
   );
 }

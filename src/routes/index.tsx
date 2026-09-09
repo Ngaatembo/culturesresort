@@ -149,8 +149,8 @@ function Home() {
               Traditional plates, cooked without hurry
             </h2>
             <p className="mx-auto mt-6 max-w-md leading-relaxed text-bone/75">
-              Slow-cooked relishes, grains, greens and meat from the open fire — served family
-              style on wood and clay.
+              Slow-cooked relishes, grains, greens and meat from the open fire — served family style
+              on wood and clay.
             </p>
             <ul className="mx-auto mt-10 flex max-w-md flex-wrap justify-center gap-x-8 gap-y-4 border-t border-bone/15 pt-8 text-sm">
               {menu.slice(0, 4).map((c) => (
@@ -160,7 +160,10 @@ function Home() {
                 </li>
               ))}
             </ul>
-            <Link to="/menu" className="eyebrow mt-10 inline-block bg-primary px-7 py-4 text-primary-foreground">
+            <Link
+              to="/menu"
+              className="eyebrow mt-10 inline-block bg-primary px-7 py-4 text-primary-foreground"
+            >
               Explore the menu →
             </Link>
           </Reveal>
@@ -221,8 +224,18 @@ function Home() {
           </Reveal>
           <div className="mt-16 grid gap-12 lg:grid-cols-3 lg:gap-10">
             {testimonials.map((t, i) => (
-              <Reveal key={t.name} delay={i * 100} className={cn(i > 0 && "border-t border-border pt-10 lg:border-t-0 lg:border-l lg:pl-10 lg:pt-0")}>
-                <span className="font-display text-5xl italic leading-none text-accent" aria-hidden="true">
+              <Reveal
+                key={t.name}
+                delay={i * 100}
+                className={cn(
+                  i > 0 &&
+                    "border-t border-border pt-10 lg:border-t-0 lg:border-l lg:pl-10 lg:pt-0",
+                )}
+              >
+                <span
+                  className="font-display text-5xl italic leading-none text-accent"
+                  aria-hidden="true"
+                >
                   &ldquo;
                 </span>
                 <p className="-mt-3 font-display text-xl italic leading-snug text-foreground">
