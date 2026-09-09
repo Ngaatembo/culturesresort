@@ -84,12 +84,12 @@ function Gallery() {
                   <button
                     type="button"
                     onClick={() => setIndex(gallery.indexOf(img))}
-                    className="group block w-full overflow-hidden bg-secondary text-left lg:h-full"
+                    className="group flex w-full flex-col rounded-2xl border border-border bg-card p-2 text-left shadow-sm transition-shadow duration-300 hover:shadow-lift lg:h-full"
                     aria-label={`Open image: ${img.caption}`}
                   >
                     <span
                       className={cn(
-                        "block w-full overflow-hidden lg:h-full lg:aspect-auto",
+                        "block w-full flex-1 overflow-hidden rounded-xl lg:aspect-auto",
                         spanClass ? "aspect-[4/3]" : img.tall ? "aspect-[3/4]" : "aspect-[4/3]",
                       )}
                     >
@@ -100,11 +100,11 @@ function Gallery() {
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     </span>
+                    <span className="mt-2 flex items-center justify-between gap-3 rounded-xl border border-border bg-secondary px-3 py-2">
+                      <span className="min-w-0 truncate text-sm text-muted-foreground">{img.caption}</span>
+                      <span className="eyebrow shrink-0 text-ochre">{img.category}</span>
+                    </span>
                   </button>
-                  <span className="mt-2 flex items-center justify-between gap-3">
-                    <span className="min-w-0 truncate text-sm text-muted-foreground">{img.caption}</span>
-                    <span className="eyebrow shrink-0 text-ochre">{img.category}</span>
-                  </span>
                 </Reveal>
               );
             })}
