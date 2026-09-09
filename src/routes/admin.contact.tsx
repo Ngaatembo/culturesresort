@@ -1,58 +1,155 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { business, socialLinks } from "@/lib/site-data";
-import { PageHeader, SectionCard, StatusDot } from "@/components/admin/ui";
+import { useEffect, useState } from "react";
+import {
+  getSiteSettings,
+  updateSiteSetting,
+  type BusinessInfo,
+  type SocialLinks,
+} from "@/lib/data/settings";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ErrorState, LoadingRows, PageHeader, SectionCard } from "@/components/admin/ui";
 
 export const Route = createFileRoute("/admin/contact")({
   component: ContactPage,
 });
 
+type FieldDef = { key: keyof BusinessInfo; label: string };
+
+const BUSINESS_FIELDS: FieldDef[] = [
+  { key: "phoneDisplay", label: "Phone (displayed)" },
+  { key: "phoneHref", label: "Phone link (tel:...)" },
+  { key: "whatsappNumber", label: "WhatsApp number (digits only, e.g. 263...)" },
+  { key: "email", label: "Email" },
+  { key: "emailAlt", label: "Alternate email" },
+  { key: "addressLine", label: "Address (full)" },
+  { key: "addressShort", label: "Address (short)" },
+  { key: "mapsHref", label: "Google Maps link" },
+  { key: "tripadvisorHref", label: "TripAdvisor link" },
+];
+
 function ContactPage() {
-  const fields: Array<{ label: string; value: string | null; verified: boolean }> = [
-    { label: "Phone", value: business.phoneDisplay, verified: true },
-    { label: "Email", value: business.email, verified: true },
-    { label: "Address", value: business.addressLine, verified: true },
-    { label: "Google Maps link", value: business.mapsHref, verified: true },
-    { label: "WhatsApp number", value: business.phoneDisplay, verified: true },
-    { label: "Facebook", value: socialLinks.facebook, verified: !!socialLinks.facebook },
-    { label: "Instagram", value: socialLinks.instagram, verified: !!socialLinks.instagram },
-  ];
+  const [business, setBusiness] = useState<BusinessInfo | null>(null);
+  const [socialLinks, setSocialLinks] = useState<SocialLinks | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState<"business" | "social" | null>(null);
+  const [saved, setSaved] = useState<"business" | "social" | null>(null);
+
+  const load = () => {
+    setError(null);
+    getSiteSettings()
+      .then((s) => {
+        setBusiness(s.business);
+        setSocialLinks(s.socialLinks);
+      })
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Couldn't load contact details."),
+      );
+  };
+  useEffect(load, []);
+
+  const saveBusiness = async () => {
+    if (!business) return;
+    setSaving("business");
+    setError(null);
+    try {
+      await updateSiteSetting({ data: { key: "business", value: business } });
+      setSaved("business");
+      setTimeout(() => setSaved(null), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't save contact details.");
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const saveSocial = async () => {
+    if (!socialLinks) return;
+    setSaving("social");
+    setError(null);
+    try {
+      await updateSiteSetting({ data: { key: "socialLinks", value: socialLinks } });
+      setSaved("social");
+      setTimeout(() => setSaved(null), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't save social links.");
+    } finally {
+      setSaving(null);
+    }
+  };
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Contact & Socials"
-        description="Verified details are shown below. Nothing here was invented — empty fields mean the restaurant hasn't provided that link."
+        description="Changes here go live immediately across the site — header, footer, contact page and event pages all read from this."
       />
 
-      <SectionCard title="Setup required" className="border-accent/40">
-        <StatusDot tone="warn">
-          Set in code (src/lib/site-data.ts), not the database — read-only here for now. Tell me the
-          change and I'll update it directly.
-        </StatusDot>
-      </SectionCard>
+      {error ? <ErrorState message={error} onRetry={load} /> : null}
 
-      <SectionCard title="Current details">
-        <ul className="divide-y divide-border">
-          {fields.map((f) => (
-            <li
-              key={f.label}
-              className="flex flex-col gap-1 py-3.5 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <span className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                {f.label}
-                {f.verified ? (
-                  <span className="rounded-full bg-success/15 px-2 py-0.5 text-[11px] font-semibold text-success">
-                    verified
-                  </span>
-                ) : null}
-              </span>
-              <span className="break-all text-sm font-medium text-foreground sm:text-right">
-                {f.value ?? "Not provided"}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </SectionCard>
+      {!business || !socialLinks ? (
+        <LoadingRows rows={6} />
+      ) : (
+        <>
+          <SectionCard title="Business details">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {BUSINESS_FIELDS.map((f) => (
+                <div key={f.key} className="space-y-1.5">
+                  <label className="text-xs font-medium text-muted-foreground">{f.label}</label>
+                  <Input
+                    value={business[f.key]}
+                    onChange={(e) =>
+                      setBusiness((b) => (b ? { ...b, [f.key]: e.target.value } : b))
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-5">
+              <Button onClick={saveBusiness} disabled={saving === "business"}>
+                {saving === "business"
+                  ? "Saving…"
+                  : saved === "business"
+                    ? "Saved ✓"
+                    : "Save changes"}
+              </Button>
+            </div>
+          </SectionCard>
+
+          <SectionCard
+            title="Social links"
+            description="Leave blank until there's a real, confirmed URL — an empty field hides that button on the site rather than showing a broken one."
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground">Facebook</label>
+                <Input
+                  value={socialLinks.facebook ?? ""}
+                  onChange={(e) =>
+                    setSocialLinks((s) => (s ? { ...s, facebook: e.target.value || null } : s))
+                  }
+                  placeholder="https://facebook.com/..."
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground">Instagram</label>
+                <Input
+                  value={socialLinks.instagram ?? ""}
+                  onChange={(e) =>
+                    setSocialLinks((s) => (s ? { ...s, instagram: e.target.value || null } : s))
+                  }
+                  placeholder="https://instagram.com/..."
+                />
+              </div>
+            </div>
+            <div className="mt-5">
+              <Button onClick={saveSocial} disabled={saving === "social"}>
+                {saving === "social" ? "Saving…" : saved === "social" ? "Saved ✓" : "Save changes"}
+              </Button>
+            </div>
+          </SectionCard>
+        </>
+      )}
     </div>
   );
 }

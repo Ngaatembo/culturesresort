@@ -52,8 +52,11 @@ export const whatsappMessages = {
 } as const;
 
 /** Builds a one-tap WhatsApp link with a prefilled message. */
-export function whatsappLink(message: string = whatsappMessages.general) {
-  return `https://wa.me/${business.whatsappNumber}?text=${encodeURIComponent(message)}`;
+export function whatsappLink(
+  message: string = whatsappMessages.general,
+  number: string = business.whatsappNumber,
+) {
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
 /** Placeholder — owner to confirm real trading hours in the dashboard. */

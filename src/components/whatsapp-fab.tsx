@@ -1,14 +1,16 @@
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { whatsappLink, whatsappMessages } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 
 /**
  * Persistent WhatsApp button. Always visible on larger screens; on mobile the
  * fixed bottom action bar carries the same one-tap WhatsApp action.
  */
 export function WhatsAppFab() {
+  const { business } = useSiteSettings();
   return (
     <a
-      href={whatsappLink(whatsappMessages.general)}
+      href={whatsappLink(whatsappMessages.general, business.whatsappNumber)}
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with Cultures Resort on WhatsApp"

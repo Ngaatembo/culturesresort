@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { whatsappLink, whatsappMessages } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 import { placeOrder as placeOrderServerFn } from "@/lib/data/orders";
 
 /**
@@ -49,6 +50,7 @@ type OrderContextValue = {
 const OrderContext = createContext<OrderContextValue | null>(null);
 
 export function OrderProvider({ children }: { children: ReactNode }) {
+  const { business } = useSiteSettings();
   const [lines, setLines] = useState<OrderLine[]>([]);
   const [open, setOpen] = useState(false);
   const [placing, setPlacing] = useState(false);
@@ -118,11 +120,11 @@ export function OrderProvider({ children }: { children: ReactNode }) {
       remove,
       clear,
       has: (id: string) => lines.some((l) => l.id === id),
-      whatsappHref: whatsappLink(body),
+      whatsappHref: whatsappLink(body, business.whatsappNumber),
       placeOrder,
       placing,
     };
-  }, [lines, open, add, setQty, remove, clear, placeOrder, placing]);
+  }, [lines, open, add, setQty, remove, clear, placeOrder, placing, business.whatsappNumber]);
 
   return <OrderContext.Provider value={value}>{children}</OrderContext.Provider>;
 }

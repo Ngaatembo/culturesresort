@@ -3,12 +3,14 @@ import { CalendarHeart, Home, ShoppingBag, UtensilsCrossed } from "lucide-react"
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { useOrder } from "@/lib/order";
 import { whatsappLink, whatsappMessages } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 
 const itemClass =
   "flex flex-col items-center justify-center gap-1.5 py-3 text-[0.6rem] uppercase tracking-[0.16em] font-semibold";
 
 export function MobileActionBar() {
   const { count, openDrawer } = useOrder();
+  const { business } = useSiteSettings();
 
   return (
     <nav
@@ -48,7 +50,7 @@ export function MobileActionBar() {
         Events
       </Link>
       <a
-        href={whatsappLink(whatsappMessages.general)}
+        href={whatsappLink(whatsappMessages.general, business.whatsappNumber)}
         target="_blank"
         rel="noreferrer"
         className={`${itemClass} bg-leaf text-bone`}

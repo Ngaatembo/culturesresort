@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/reveal";
 import { ExperienceGrid } from "@/components/experience-grid";
 import { TrustReviews } from "@/components/trust-reviews";
-import { business, menu, testimonials } from "@/lib/site-data";
+import { menu, testimonials } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 import { images } from "@/lib/gallery";
 import fireGrill from "@/assets/fire-nyama-choma.jpg";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const { business } = useSiteSettings();
   return (
     <>
       {/* Hero */}

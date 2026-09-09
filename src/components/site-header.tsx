@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { ShoppingBag } from "lucide-react";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { useOrder } from "@/lib/order";
-import { business, navLinks, whatsappLink, whatsappMessages } from "@/lib/site-data";
+import { navLinks, whatsappLink, whatsappMessages } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 import { cn } from "@/lib/utils";
 import logoMark from "@/assets/logo-mark.png";
 
 export function SiteHeader() {
+  const { business } = useSiteSettings();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { count, openDrawer } = useOrder();
@@ -168,7 +170,7 @@ export function SiteHeader() {
             Reserve a table
           </Link>
           <a
-            href={whatsappLink(whatsappMessages.general)}
+            href={whatsappLink(whatsappMessages.general, business.whatsappNumber)}
             target="_blank"
             rel="noreferrer"
             className="eyebrow mt-3 flex items-center justify-center gap-3 bg-leaf px-5 py-4 text-bone"

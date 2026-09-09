@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
 import { createBooking } from "@/lib/data/bookings";
-import { business } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 
 export const Route = createFileRoute("/reservations")({
   head: () => ({
@@ -47,6 +47,7 @@ const empty: Values = {
 };
 
 function Reservations() {
+  const { business } = useSiteSettings();
   const [values, setValues] = useState<Values>(empty);
   const [errors, setErrors] = useState<Partial<Record<keyof Values, string>>>({});
   const [submitted, setSubmitted] = useState<Values | null>(null);

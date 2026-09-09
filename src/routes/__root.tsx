@@ -8,7 +8,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { Suspense, useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -18,6 +18,7 @@ import { MobileActionBar } from "@/components/mobile-action-bar";
 import { WhatsAppFab } from "@/components/whatsapp-fab";
 import { OrderDrawer } from "@/components/order-drawer";
 import { OrderProvider } from "@/lib/order";
+import { siteSettingsQueryOptions } from "@/lib/site-settings-query";
 
 function NotFoundComponent() {
   return (
@@ -72,6 +73,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  loader: async ({ context }) => {
+    // Prefetched once here so SiteHeader/SiteFooter/etc. (which all read
+    // business info, hours, and contact details) never show a loading
+    // flash — by the time they render, this is already sitting in the
+    // query cache.
+    await context.queryClient.ensureQueryData(siteSettingsQueryOptions);
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -160,24 +168,26 @@ function RootComponent() {
         /* Required: nested routes render here. */
         <Outlet />
       ) : (
-        <OrderProvider>
-          <a
-            href="#main"
-            className="eyebrow sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-primary focus:px-4 focus:py-3 focus:text-primary-foreground"
-          >
-            Skip to content
-          </a>
-          <SiteHeader />
-          <main id="main">
-            <Outlet />
-          </main>
-          <SiteFooter />
-          {/* Bottom bar covers the last strip of the page on mobile. */}
-          <div className="h-16 lg:hidden" aria-hidden="true" />
-          <MobileActionBar />
-          <WhatsAppFab />
-          <OrderDrawer />
-        </OrderProvider>
+        <Suspense fallback={null}>
+          <OrderProvider>
+            <a
+              href="#main"
+              className="eyebrow sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-primary focus:px-4 focus:py-3 focus:text-primary-foreground"
+            >
+              Skip to content
+            </a>
+            <SiteHeader />
+            <main id="main">
+              <Outlet />
+            </main>
+            <SiteFooter />
+            {/* Bottom bar covers the last strip of the page on mobile. */}
+            <div className="h-16 lg:hidden" aria-hidden="true" />
+            <MobileActionBar />
+            <WhatsAppFab />
+            <OrderDrawer />
+          </OrderProvider>
+        </Suspense>
       )}
     </QueryClientProvider>
   );

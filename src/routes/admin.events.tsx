@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Plus, Search, Trash2 } from "lucide-react";
 import {
   listBookings,
   updateBookingStatus,
   type BookingRow,
   type BookingStatus,
 } from "@/lib/data/bookings";
-import { eventRequirements, eventTypes } from "@/lib/site-data";
+import { getSiteSettings, updateSiteSetting } from "@/lib/data/settings";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,6 +48,10 @@ function EventsPage() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<BookingStatus | "all">("all");
   const [active, setActive] = useState<BookingRow | null>(null);
+  const [eventTypes, setEventTypes] = useState<string[] | null>(null);
+  const [eventRequirements, setEventRequirements] = useState<string[] | null>(null);
+  const [savingList, setSavingList] = useState<"eventTypes" | "eventRequirements" | null>(null);
+  const [savedList, setSavedList] = useState<"eventTypes" | "eventRequirements" | null>(null);
 
   const load = () => {
     setError(null);
@@ -56,8 +60,30 @@ function EventsPage() {
       .catch((err) =>
         setError(err instanceof Error ? err.message : "Couldn't load event enquiries."),
       );
+    getSiteSettings()
+      .then((s) => {
+        setEventTypes(s.eventTypes);
+        setEventRequirements(s.eventRequirements);
+      })
+      .catch(() => {
+        // The bookings table above already surfaces a load error; the
+        // options lists just stay in their loading state if this fails.
+      });
   };
   useEffect(load, []);
+
+  const saveList = async (key: "eventTypes" | "eventRequirements", value: string[]) => {
+    setSavingList(key);
+    try {
+      await updateSiteSetting({ data: { key, value } });
+      setSavedList(key);
+      setTimeout(() => setSavedList(null), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't save that list.");
+    } finally {
+      setSavingList(null);
+    }
+  };
 
   const setStatus = async (id: number, status: BookingStatus) => {
     setBookings((prev) => (prev ? prev.map((b) => (b.id === id ? { ...b, status } : b)) : prev));
@@ -182,33 +208,25 @@ function EventsPage() {
 
       <SectionCard
         title="Enquiry form options"
-        description="The choices guests see on the events page. Set in code (src/lib/site-data.ts) — not yet editable from here."
+        description="The choices guests see on the events page — changes here go live immediately."
       >
         <div className="grid gap-8 lg:grid-cols-2">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Types of event
-            </p>
-            <ul className="mt-3 divide-y divide-border">
-              {eventTypes.map((t) => (
-                <li key={t} className="py-2.5 text-sm text-foreground">
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Requests guests can tick
-            </p>
-            <ul className="mt-3 divide-y divide-border">
-              {eventRequirements.map((t) => (
-                <li key={t} className="py-2.5 text-sm text-foreground">
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <EditableStringList
+            heading="Types of event"
+            items={eventTypes}
+            onChange={setEventTypes}
+            onSave={(v) => saveList("eventTypes", v)}
+            saving={savingList === "eventTypes"}
+            saved={savedList === "eventTypes"}
+          />
+          <EditableStringList
+            heading="Requests guests can tick"
+            items={eventRequirements}
+            onChange={setEventRequirements}
+            onSave={(v) => saveList("eventRequirements", v)}
+            saving={savingList === "eventRequirements"}
+            saved={savedList === "eventRequirements"}
+          />
         </div>
       </SectionCard>
 
@@ -290,6 +308,77 @@ function EventsPage() {
           ) : null}
         </DrawerContent>
       </Drawer>
+    </div>
+  );
+}
+
+function EditableStringList({
+  heading,
+  items,
+  onChange,
+  onSave,
+  saving,
+  saved,
+}: {
+  heading: string;
+  items: string[] | null;
+  onChange: (items: string[]) => void;
+  onSave: (items: string[]) => void;
+  saving: boolean;
+  saved: boolean;
+}) {
+  if (!items) {
+    return (
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          {heading}
+        </p>
+        <div className="mt-3 space-y-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-9 animate-pulse rounded-lg bg-secondary" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const setAt = (i: number, value: string) => onChange(items.map((t, j) => (j === i ? value : t)));
+  const removeAt = (i: number) => onChange(items.filter((_, j) => j !== i));
+  const add = () => onChange([...items, ""]);
+
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        {heading}
+      </p>
+      <ul className="mt-3 space-y-2">
+        {items.map((t, i) => (
+          <li key={i} className="flex items-center gap-2">
+            <Input value={t} onChange={(e) => setAt(i, e.target.value)} />
+            <button
+              type="button"
+              onClick={() => removeAt(i)}
+              aria-label={`Remove "${t || "this item"}"`}
+              className="rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-3 flex items-center gap-2">
+        <Button type="button" variant="outline" size="sm" onClick={add}>
+          <Plus className="h-4 w-4" /> Add option
+        </Button>
+        <Button
+          type="button"
+          size="sm"
+          disabled={saving}
+          onClick={() => onSave(items.filter((t) => t.trim() !== ""))}
+        >
+          {saving ? "Saving…" : saved ? "Saved ✓" : "Save"}
+        </Button>
+      </div>
     </div>
   );
 }

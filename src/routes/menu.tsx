@@ -7,7 +7,7 @@ import { images } from "@/lib/gallery";
 import { useOrder } from "@/lib/order";
 import { getMenu, type MenuCategoryOut, type MenuKind } from "@/lib/data/menu";
 import { dishPhotos } from "@/lib/dish-photos";
-import { business, visitDetails } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/menu")({
@@ -45,6 +45,7 @@ const CATEGORY_IMAGE: Record<string, keyof typeof images> = {
 type Course = MenuKind;
 
 function Menu() {
+  const { business, visitDetails } = useSiteSettings();
   const [course, setCourse] = useState<Course>("food");
   const [active, setActive] = useState<string>("all");
   const [menuData, setMenuData] = useState<Record<MenuKind, MenuCategoryOut[]> | null>(null);

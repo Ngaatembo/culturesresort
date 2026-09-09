@@ -4,7 +4,8 @@ import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
 import { createEnquiry } from "@/lib/data/enquiries";
-import { business, openingHours, whatsappLink, whatsappMessages } from "@/lib/site-data";
+import { whatsappLink, whatsappMessages } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -26,6 +27,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Contact() {
+  const { business, openingHours } = useSiteSettings();
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -93,7 +95,7 @@ function Contact() {
                 Call
               </a>
               <a
-                href={whatsappLink(whatsappMessages.general)}
+                href={whatsappLink(whatsappMessages.general, business.whatsappNumber)}
                 target="_blank"
                 rel="noreferrer"
                 className="eyebrow flex items-center justify-center gap-2 bg-leaf px-5 py-4 text-bone"

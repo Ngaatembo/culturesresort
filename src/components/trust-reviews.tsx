@@ -1,6 +1,6 @@
 import { ExternalLink, Facebook, Instagram, MapPin, Star } from "lucide-react";
 import { Reveal } from "@/components/reveal";
-import { business, socialLinks } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 
 /**
  * External, verifiable trust links only. No rating or review count is
@@ -17,6 +17,7 @@ import { business, socialLinks } from "@/lib/site-data";
  * as one block instead of two back-to-back sections about the same topic.
  */
 export function TrustReviews() {
+  const { business, socialLinks } = useSiteSettings();
   const socials = [
     { key: "facebook", href: socialLinks.facebook, label: "Follow on Facebook", Icon: Facebook },
     {

@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { Minus, Plus, X } from "lucide-react";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { useOrder } from "@/lib/order";
-import { business } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 import { cn } from "@/lib/utils";
 
 export function OrderDrawer() {
+  const { business } = useSiteSettings();
   const {
     open,
     closeDrawer,

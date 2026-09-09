@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
 import { createBooking } from "@/lib/data/bookings";
-import { business, eventRequirements, eventTypes, visitDetails } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -46,6 +46,7 @@ const steps = [
 ];
 
 function Events() {
+  const { business, eventRequirements, eventTypes, visitDetails } = useSiteSettings();
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);

@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { ExternalLink, Facebook, Instagram } from "lucide-react";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
-import { business, navLinks, socialLinks, whatsappLink, whatsappMessages } from "@/lib/site-data";
+import { navLinks, whatsappLink, whatsappMessages } from "@/lib/site-data";
+import { useSiteSettings } from "@/lib/site-settings-query";
 import logoMark from "@/assets/logo-mark.png";
 
 export function SiteFooter() {
+  const { business, socialLinks } = useSiteSettings();
   return (
     <footer className="bg-ink text-bone">
       <div className="mx-auto grid max-w-7xl gap-14 px-5 py-20 lg:grid-cols-3 lg:px-10 lg:py-28">
@@ -54,7 +56,7 @@ export function SiteFooter() {
           </div>
           <div className="mt-8 flex items-center gap-4">
             <a
-              href={whatsappLink(whatsappMessages.general)}
+              href={whatsappLink(whatsappMessages.general, business.whatsappNumber)}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp Cultures Resort"
