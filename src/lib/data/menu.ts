@@ -13,6 +13,7 @@ export type MenuItemRow = {
   description: string;
   price_cents: number;
   image_url: string | null;
+  video_url: string | null;
   featured: number;
   available: number;
   sort_order: number;
@@ -25,6 +26,7 @@ export type MenuItemOut = {
   price: string;
   priceCents: number;
   imageUrl: string | null;
+  videoUrl: string | null;
   featured: boolean;
   available: boolean;
 };
@@ -64,6 +66,7 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
       price: formatPrice(row.price_cents),
       priceCents: row.price_cents,
       imageUrl: row.image_url,
+      videoUrl: row.video_url,
       featured: !!row.featured,
       available: !!row.available,
     });
@@ -177,7 +180,6 @@ export const clearMenuItemImage = createServerFn({ method: "POST" })
       .prepare("SELECT image_url FROM menu_items WHERE id = ?")
       .bind(data.id)
       .first<{ image_url: string | null }>();
-
     if (existing?.image_url) {
       const bucket = getGalleryBucket();
       await bucket.delete(existing.image_url).catch(() => {});
@@ -185,6 +187,84 @@ export const clearMenuItemImage = createServerFn({ method: "POST" })
 
     await db
       .prepare("UPDATE menu_items SET image_url = NULL, updated_at = datetime('now') WHERE id = ?")
+      .bind(data.id)
+      .run();
+
+    return { ok: true as const };
+  });
+
+/**
+ * Uploads a short hover-to-play video clip for one menu item (e.g. sizzling
+ * on the grill, steam off a fresh plate). Same bucket/route as photos, under
+ * a menu-video/ prefix. Kept small on purpose — this autoplays muted on
+ * hover, so a heavy file would stall instead of feeling instant.
+ */
+export const setMenuItemVideo = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((data: unknown) => {
+    if (!(data instanceof FormData)) {
+      throw new Error("Expected a file upload.");
+    }
+    const file = data.get("file");
+    const id = Number(data.get("id"));
+    if (!Number.isFinite(id)) {
+      throw new Error("Missing menu item id.");
+    }
+    if (!(file instanceof File) || file.size === 0) {
+      throw new Error("Choose a video file first.");
+    }
+    if (!file.type.startsWith("video/")) {
+      throw new Error("That file doesn't look like a video.");
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      throw new Error("Keep dish clips under 15MB so they play instantly on hover.");
+    }
+    return { id, file };
+  })
+  .handler(async ({ data }) => {
+    const db = getDb();
+    const bucket = getGalleryBucket();
+
+    const existing = await db
+      .prepare("SELECT video_url FROM menu_items WHERE id = ?")
+      .bind(data.id)
+      .first<{ video_url: string | null }>();
+
+    const ext = (data.file.name.split(".").pop() || "mp4").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const key = `menu-video/${data.id}-${Date.now()}-${crypto.randomUUID()}.${ext || "mp4"}`;
+
+    const bytes = await data.file.arrayBuffer();
+    await bucket.put(key, bytes, { httpMetadata: { contentType: data.file.type } });
+
+    await db
+      .prepare("UPDATE menu_items SET video_url = ?, updated_at = datetime('now') WHERE id = ?")
+      .bind(key, data.id)
+      .run();
+
+    if (existing?.video_url) {
+      await bucket.delete(existing.video_url).catch(() => {});
+    }
+
+    return { ok: true as const, videoUrl: key };
+  });
+
+/** Removes a menu item's hover clip — it falls back to the static photo. */
+export const clearMenuItemVideo = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((data: { id: number }) => data)
+  .handler(async ({ data }) => {
+    const db = getDb();
+    const existing = await db
+      .prepare("SELECT video_url FROM menu_items WHERE id = ?")
+      .bind(data.id)
+      .first<{ video_url: string | null }>();
+    if (existing?.video_url) {
+      const bucket = getGalleryBucket();
+      await bucket.delete(existing.video_url).catch(() => {});
+    }
+
+    await db
+      .prepare("UPDATE menu_items SET video_url = NULL, updated_at = datetime('now') WHERE id = ?")
       .bind(data.id)
       .run();
 

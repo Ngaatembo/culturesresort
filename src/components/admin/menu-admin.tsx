@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import {
   clearMenuItemImage,
+  clearMenuItemVideo,
   getMenuAdmin,
   setMenuItemAvailability,
   setMenuItemImage,
   setMenuItemPrice,
+  setMenuItemVideo,
   type MenuItemRow,
   type MenuKind,
 } from "@/lib/data/menu";
@@ -32,7 +34,10 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
   const [savedId, setSavedId] = useState<number | null>(null);
   const [imageBusyId, setImageBusyId] = useState<number | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
+  const [videoBusyId, setVideoBusyId] = useState<number | null>(null);
+  const [videoError, setVideoError] = useState<string | null>(null);
   const fileInputs = useRef<Record<number, HTMLInputElement | null>>({});
+  const videoInputs = useRef<Record<number, HTMLInputElement | null>>({});
 
   const load = () => {
     setError(null);
@@ -120,6 +125,42 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
     }
   };
 
+  const onPickVideo = (item: MenuItemRow, file: File | undefined) => {
+    if (!file) return;
+    setVideoError(null);
+    setVideoBusyId(item.id);
+    const form = new FormData();
+    form.set("id", String(item.id));
+    form.set("file", file);
+    setMenuItemVideo({ data: form })
+      .then(({ videoUrl }) => {
+        setItems((prev) =>
+          prev!.map((i) => (i.id === item.id ? { ...i, video_url: videoUrl } : i)),
+        );
+      })
+      .catch((err) => {
+        setVideoError(err instanceof Error ? err.message : "Couldn't upload that clip.");
+      })
+      .finally(() => {
+        setVideoBusyId(null);
+        const input = videoInputs.current[item.id];
+        if (input) input.value = "";
+      });
+  };
+
+  const removeVideo = async (item: MenuItemRow) => {
+    setVideoError(null);
+    setVideoBusyId(item.id);
+    try {
+      await clearMenuItemVideo({ data: { id: item.id } });
+      setItems((prev) => prev!.map((i) => (i.id === item.id ? { ...i, video_url: null } : i)));
+    } catch (err) {
+      setVideoError(err instanceof Error ? err.message : "Couldn't remove that clip.");
+    } finally {
+      setVideoBusyId(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -129,6 +170,7 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
 
       {error ? <ErrorState message={error} onRetry={load} /> : null}
       {imageError ? <ErrorState message={imageError} onRetry={() => setImageError(null)} /> : null}
+      {videoError ? <ErrorState message={videoError} onRetry={() => setVideoError(null)} /> : null}
 
       {!items ? (
         <LoadingRows rows={6} />
@@ -142,11 +184,12 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
           {categories.map(([slug, title]) => (
             <SectionCard key={slug} title={title}>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[780px] text-left text-sm">
+                <table className="w-full min-w-[900px] text-left text-sm">
                   <thead>
                     <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                       <th className="py-2 pr-4">Item</th>
                       <th className="py-2 pr-4">Photo</th>
+                      <th className="py-2 pr-4">Clip</th>
                       <th className="py-2 pr-4">Description</th>
                       <th className="py-2 pr-4">Price ($)</th>
                       <th className="py-2 pr-4">Status</th>
@@ -200,6 +243,57 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
                                     type="button"
                                     disabled={imageBusyId === item.id}
                                     onClick={() => removePhoto(item)}
+                                    className="text-xs text-muted-foreground underline decoration-dotted hover:text-destructive disabled:opacity-50"
+                                  >
+                                    Remove
+                                  </button>
+                                ) : null}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-3.5 pr-4">
+                            <div className="flex items-center gap-2">
+                              {item.video_url ? (
+                                <video
+                                  src={`/gallery-image/${item.video_url}`}
+                                  muted
+                                  loop
+                                  playsInline
+                                  className="h-12 w-12 rounded-lg border border-border object-cover"
+                                />
+                              ) : (
+                                <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-border text-[10px] text-muted-foreground">
+                                  No clip
+                                </div>
+                              )}
+                              <div className="flex flex-col gap-1">
+                                <input
+                                  ref={(el) => {
+                                    videoInputs.current[item.id] = el;
+                                  }}
+                                  type="file"
+                                  accept="video/*"
+                                  className="hidden"
+                                  onChange={(e) => onPickVideo(item, e.target.files?.[0])}
+                                />
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  type="button"
+                                  disabled={videoBusyId === item.id}
+                                  onClick={() => videoInputs.current[item.id]?.click()}
+                                >
+                                  {videoBusyId === item.id
+                                    ? "…"
+                                    : item.video_url
+                                      ? "Change"
+                                      : "Upload"}
+                                </Button>
+                                {item.video_url ? (
+                                  <button
+                                    type="button"
+                                    disabled={videoBusyId === item.id}
+                                    onClick={() => removeVideo(item)}
                                     className="text-xs text-muted-foreground underline decoration-dotted hover:text-destructive disabled:opacity-50"
                                   >
                                     Remove

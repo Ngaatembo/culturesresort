@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Flame, Palette, Plus, Star, Trees, Users } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Flame, Palette, Play, Plus, Star, Trees, Users, Volume2, VolumeX } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { ParallaxImage } from "@/components/parallax-image";
 import { ExperienceGrid } from "@/components/experience-grid";
+import { DishMedia } from "@/components/dish-media";
+import { VideoTourModal } from "@/components/video-tour-modal";
 import { TrustReviews } from "@/components/trust-reviews";
 import { testimonials } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
@@ -41,6 +43,9 @@ function Home() {
   const { business } = useSiteSettings();
   const [playVideo, setPlayVideo] = useState(false);
   const [signatureDishes, setSignatureDishes] = useState<PreviewDish[] | null>(null);
+  const [craftMuted, setCraftMuted] = useState(true);
+  const [tourOpen, setTourOpen] = useState(false);
+  const craftVideoRef = useRef<HTMLVideoElement>(null);
   const { add, has } = useOrder();
 
   useEffect(() => {
@@ -125,6 +130,14 @@ function Home() {
               >
                 Get directions
               </a>
+              <button
+                type="button"
+                onClick={() => setTourOpen(true)}
+                className="group eyebrow flex items-center justify-center gap-2 px-8 py-5 text-bone/75 transition-colors hover:text-bone"
+              >
+                <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                Take a 1-min tour
+              </button>
             </div>
           </Reveal>
           <Reveal delay={340}>
@@ -152,13 +165,33 @@ function Home() {
       <section id="story" className="grain bg-background py-20 lg:py-32">
         <div className="mx-auto grid max-w-7xl items-start gap-14 px-5 lg:grid-cols-12 lg:px-10">
           <Reveal className="relative lg:col-span-5">
-            <div className="aspect-[4/5] overflow-hidden rounded-2xl">
-              <img
-                src={images.craft}
-                alt="Hand-carved wooden and clay craft detail on display at Cultures Resort"
-                loading="lazy"
+            <div className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-ink">
+              <video
+                ref={craftVideoRef}
+                src={fireCookingLoop}
+                poster={fireGrill}
+                autoPlay
+                muted={craftMuted}
+                loop
+                playsInline
+                preload="metadata"
+                aria-label="Behind the craft: cooking over the open fire at Cultures Resort"
                 className="h-full w-full object-cover"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
+              <p className="eyebrow absolute left-5 top-5 text-bone/85">Behind the craft</p>
+              <button
+                type="button"
+                onClick={() => setCraftMuted((m) => !m)}
+                aria-label={craftMuted ? "Turn sound on" : "Turn sound off"}
+                className="absolute bottom-5 right-5 grid h-10 w-10 place-items-center rounded-full bg-ink/60 text-bone backdrop-blur transition-colors hover:bg-ink/80"
+              >
+                {craftMuted ? (
+                  <VolumeX className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <Volume2 className="h-4 w-4" aria-hidden="true" />
+                )}
+              </button>
             </div>
             <div className="absolute -bottom-6 -right-6 hidden max-w-[13rem] rounded-2xl border border-border bg-card p-5 shadow-lift sm:block">
               <p className="font-display text-3xl italic text-primary">est.</p>
@@ -262,18 +295,18 @@ function Home() {
                 dish ? (
                   <li
                     key={dish.id}
-                    className="card-tactile img-zoom overflow-hidden rounded-2xl bg-bone/5"
+                    className="card-tactile overflow-hidden rounded-2xl bg-bone/5"
                   >
                     <div className="aspect-[4/3] overflow-hidden">
-                      <img
-                        src={
+                      <DishMedia
+                        imageSrc={
                           dish.imageUrl
                             ? `/gallery-image/${dish.imageUrl}`
                             : (dishPhotos[dish.name] ?? images.food)
                         }
+                        videoSrc={dish.videoUrl ? `/gallery-image/${dish.videoUrl}` : null}
                         alt={dish.name}
-                        loading="lazy"
-                        className="img-zoom-target h-full w-full object-cover"
+                        className="h-full"
                       />
                     </div>
                     <div className="p-4">
@@ -524,6 +557,13 @@ function Home() {
           </Reveal>
         </div>
       </section>
+
+      <VideoTourModal
+        open={tourOpen}
+        onClose={() => setTourOpen(false)}
+        src={gardenLoop}
+        poster={images.garden}
+      />
     </>
   );
 }

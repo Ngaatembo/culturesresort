@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { DishMedia } from "@/components/dish-media";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
 import { useOrder } from "@/lib/order";
@@ -212,12 +213,14 @@ function Menu() {
                             key={item.id}
                             className="card-tactile flex overflow-hidden rounded-2xl border border-border bg-card"
                           >
-                            <div className="img-zoom w-[38%] shrink-0 sm:w-2/5">
-                              <img
-                                src={photo}
+                            <div className="w-[38%] shrink-0 sm:w-2/5">
+                              <DishMedia
+                                imageSrc={photo}
+                                videoSrc={
+                                  item.videoUrl ? `/gallery-image/${item.videoUrl}` : null
+                                }
                                 alt={item.name}
-                                loading="lazy"
-                                className="img-zoom-target h-full min-h-36 w-full object-cover"
+                                className="h-full min-h-36"
                               />
                             </div>
                             <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
