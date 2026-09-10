@@ -246,7 +246,7 @@ function Reservations() {
                     maxLength={500}
                     value={values.request}
                     onChange={set("request")}
-                    className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                    className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-2xl transition-colors focus:border-primary"
                     placeholder="Highchairs, seating preference, celebration…"
                   />
                   {errors.request ? (
@@ -260,7 +260,7 @@ function Reservations() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="eyebrow mt-9 w-full bg-primary px-7 py-5 text-primary-foreground disabled:opacity-60"
+                className="eyebrow mt-9 w-full rounded-full bg-primary px-7 py-5 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 text-primary-foreground disabled:opacity-60"
               >
                 {submitting ? "Sending…" : "Request this table"}
               </button>
@@ -336,7 +336,7 @@ function Input({
       <input
         {...rest}
         aria-invalid={Boolean(error)}
-        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-full transition-colors focus:border-primary"
       />
       {error ? (
         <span role="alert" className="mt-2 block text-sm text-destructive">

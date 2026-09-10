@@ -213,7 +213,7 @@ function Contact() {
                       name="name"
                       required
                       maxLength={100}
-                      className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                      className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-full transition-colors focus:border-primary"
                     />
                   </label>
                   <div className="grid gap-5 sm:grid-cols-2">
@@ -223,7 +223,7 @@ function Contact() {
                         name="phone"
                         type="tel"
                         maxLength={30}
-                        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-full transition-colors focus:border-primary"
                       />
                     </label>
                     <label className="block">
@@ -232,7 +232,7 @@ function Contact() {
                         name="email"
                         type="email"
                         maxLength={255}
-                        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-full transition-colors focus:border-primary"
                       />
                     </label>
                   </div>
@@ -241,7 +241,7 @@ function Contact() {
                     <input
                       name="subject"
                       maxLength={120}
-                      className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                      className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-full transition-colors focus:border-primary"
                     />
                   </label>
                   <label className="block">
@@ -251,7 +251,7 @@ function Contact() {
                       rows={5}
                       maxLength={1000}
                       required
-                      className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                      className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-2xl transition-colors focus:border-primary"
                     />
                   </label>
                   {error ? (
@@ -262,7 +262,7 @@ function Contact() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="eyebrow w-full bg-primary px-7 py-5 text-primary-foreground disabled:opacity-60"
+                    className="eyebrow w-full rounded-full bg-primary px-7 py-5 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 text-primary-foreground disabled:opacity-60"
                   >
                     {submitting ? "Sending…" : "Send message"}
                   </button>

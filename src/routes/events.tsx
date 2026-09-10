@@ -254,7 +254,7 @@ function Events() {
                       <span className="eyebrow text-muted-foreground">Type of event</span>
                       <select
                         name="type"
-                        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-full transition-colors focus:border-primary"
                       >
                         {eventTypes.map((t) => (
                           <option key={t}>{t}</option>
@@ -273,7 +273,7 @@ function Events() {
                       {eventRequirements.map((r) => (
                         <label
                           key={r}
-                          className="flex items-start gap-3 border border-border p-3 text-sm"
+                          className="flex items-start gap-3 rounded-2xl border border-border p-3 text-sm transition-colors hover:border-primary/40"
                         >
                           <input
                             type="checkbox"
@@ -293,7 +293,7 @@ function Events() {
                       name="message"
                       rows={4}
                       maxLength={1000}
-                      className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+                      className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-2xl transition-colors focus:border-primary"
                     />
                   </label>
                   {error ? (
@@ -304,7 +304,7 @@ function Events() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="eyebrow w-full bg-primary px-7 py-5 text-primary-foreground disabled:opacity-60"
+                    className="eyebrow w-full rounded-full bg-primary px-7 py-5 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 text-primary-foreground disabled:opacity-60"
                   >
                     {submitting ? "Sending…" : "Send enquiry"}
                   </button>
@@ -335,7 +335,7 @@ function Field({
         name={name}
         type={type}
         {...rest}
-        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm"
+        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-full transition-colors focus:border-primary"
       />
     </label>
   );
