@@ -198,7 +198,7 @@ function StaffPage() {
                     {s.is_developer ? "Developer" : ROLE_LABELS[s.role]}
                   </p>
                 </div>
-                {s.id !== selfId ? (
+                {s.id !== selfId && !s.is_developer ? (
                   <button
                     type="button"
                     onClick={() => onRemove(s.id)}
@@ -209,7 +209,9 @@ function StaffPage() {
                     <Trash2 className="h-4 w-4" />
                   </button>
                 ) : (
-                  <span className="text-xs text-muted-foreground">This is you</span>
+                  <span className="text-xs text-muted-foreground">
+                    {s.id === selfId ? "This is you" : "Protected"}
+                  </span>
                 )}
               </li>
             ))}

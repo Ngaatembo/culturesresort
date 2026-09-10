@@ -143,13 +143,22 @@ export const createStaffAccount = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
-/** Owner-only: remove an admin account. Can't remove your own account. */
+/**
+ * Owner-only: remove an admin account. Can't remove your own account, and
+ * developer accounts can never be removed this way — they're the site's
+ * support/maintenance access and stay in place regardless of who is
+ * logged in as owner.
+ */
 export const removeStaffAccount = createServerFn({ method: "POST" })
   .middleware([ownerOnlyMiddleware])
   .validator((data: { id: number }) => data)
   .handler(async ({ data, context }) => {
     if (data.id === context.admin?.userId) {
       throw new Error("You can't remove your own account while logged into it.");
+    }
+    const target = await findAdminById(data.id);
+    if (target?.is_developer) {
+      throw new Error("Developer accounts can't be removed here.");
     }
     await deleteAdminUser(data.id);
     return { ok: true as const };
