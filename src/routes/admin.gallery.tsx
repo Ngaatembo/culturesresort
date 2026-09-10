@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Trash2, Upload } from "lucide-react";
+import { Download, Trash2, Upload } from "lucide-react";
 import { gallery as bundledGallery } from "@/lib/gallery";
 import {
   deleteGalleryPhoto,
+  importBundledGalleryPhotos,
   listGalleryPhotos,
   updateGalleryPhoto,
   uploadGalleryPhoto,
@@ -32,6 +33,8 @@ function GalleryPage() {
   const [error, setError] = useState<string | null>(null);
   const [bucketMissing, setBucketMissing] = useState(false);
   const [filter, setFilter] = useState<"All" | (typeof CATEGORIES)[number]>("All");
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState<string | null>(null);
 
   // Upload form state
   const fileRef = useRef<HTMLInputElement>(null);
@@ -53,14 +56,44 @@ function GalleryPage() {
   };
   useEffect(load, []);
 
+  // Bundled launch photos not yet copied into the database — once a
+  // photo's been imported (or manually re-uploaded under the same
+  // caption) it's excluded here so nothing ever shows twice.
+  const remainingBundled = useMemo(() => {
+    const dbCaptions = new Set((photos ?? []).map((p) => p.caption));
+    return bundledGallery.filter((g) => !dbCaptions.has(g.caption));
+  }, [photos]);
+
   const shownBundled = useMemo(
-    () => (filter === "All" ? bundledGallery : bundledGallery.filter((g) => g.category === filter)),
-    [filter],
+    () =>
+      filter === "All" ? remainingBundled : remainingBundled.filter((g) => g.category === filter),
+    [remainingBundled, filter],
   );
   const shownUploaded = useMemo(
     () => (photos ?? []).filter((p) => filter === "All" || p.category === filter),
     [photos, filter],
   );
+
+  const onImport = async () => {
+    setImporting(true);
+    setImportResult(null);
+    setError(null);
+    try {
+      const result = await importBundledGalleryPhotos();
+      setImportResult(
+        `Imported ${result.imported}, skipped ${result.skipped} already-imported` +
+          (result.failed.length ? `, ${result.failed.length} failed` : "") +
+          ".",
+      );
+      load();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Couldn't import the launch photos.";
+      setBucketMissing(message.includes("GALLERY"));
+      setError(message);
+    } finally {
+      setImporting(false);
+    }
+  };
 
   const onUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,7 +150,7 @@ function GalleryPage() {
     <div className="space-y-6">
       <PageHeader
         title="Gallery"
-        description={`${bundledGallery.length + (photos?.length ?? 0)} photos live on the public site right now.`}
+        description={`${remainingBundled.length + (photos?.length ?? 0)} photos live on the public site right now.`}
       />
 
       {bucketMissing ? (
@@ -132,6 +165,21 @@ function GalleryPage() {
         </SectionCard>
       ) : error ? (
         <ErrorState message={error} onRetry={load} />
+      ) : null}
+
+      {remainingBundled.length > 0 ? (
+        <SectionCard
+          title="Make the launch photos fully editable"
+          description="Right now the 20 original photos are bundled with the site's code, so they can't be edited or deleted here. This copies them into the database, one time, so every photo — old and new — works the same way."
+        >
+          {importResult ? (
+            <p className="mb-3 text-sm text-muted-foreground">{importResult}</p>
+          ) : null}
+          <Button type="button" onClick={onImport} disabled={importing}>
+            <Download className="h-4 w-4" />
+            {importing ? "Importing…" : `Import the ${remainingBundled.length} launch photos`}
+          </Button>
+        </SectionCard>
       ) : null}
 
       <SectionCard title="Upload a photo">
@@ -214,7 +262,7 @@ function GalleryPage() {
         <>
           {shownUploaded.length > 0 ? (
             <SectionCard
-              title="Uploaded photos"
+              title="Photos"
               description="Editable and deletable — these live in the database."
             >
               <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -272,32 +320,34 @@ function GalleryPage() {
             </SectionCard>
           ) : null}
 
-          <SectionCard
-            title="Launch photos"
-            description="Bundled with the site's code — not deletable from here. Tell me to swap or remove one and I'll update the code directly."
-          >
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {shownBundled.map((g, i) => (
-                <li
-                  key={`${g.caption}-${i}`}
-                  className="overflow-hidden rounded-2xl border border-border bg-card"
-                >
-                  <img
-                    src={g.src}
-                    alt={g.alt}
-                    loading="lazy"
-                    className="aspect-[4/3] w-full object-cover"
-                  />
-                  <div className="p-4">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
-                      {g.category}
-                    </p>
-                    <p className="mt-1 text-sm text-muted-foreground">{g.caption}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </SectionCard>
+          {shownBundled.length > 0 ? (
+            <SectionCard
+              title="Launch photos (not yet imported)"
+              description="Import them above to make these editable and deletable too."
+            >
+              <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {shownBundled.map((g, i) => (
+                  <li
+                    key={`${g.caption}-${i}`}
+                    className="overflow-hidden rounded-2xl border border-border bg-card opacity-75"
+                  >
+                    <img
+                      src={g.src}
+                      alt={g.alt}
+                      loading="lazy"
+                      className="aspect-[4/3] w-full object-cover"
+                    />
+                    <div className="p-4">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
+                        {g.category}
+                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">{g.caption}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </SectionCard>
+          ) : null}
         </>
       )}
     </div>

@@ -5,6 +5,8 @@ import { getDashboardStats, type DashboardStats } from "@/lib/data/dashboard";
 import { listOrders, type OrderWithItems } from "@/lib/data/orders";
 import { listBookings, type BookingRow } from "@/lib/data/bookings";
 import { listEnquiries, type EnquiryRow } from "@/lib/data/enquiries";
+import { getSiteSettings } from "@/lib/data/settings";
+import { listGalleryPhotos } from "@/lib/data/gallery-photos";
 import {
   EmptyState,
   ErrorState,
@@ -65,6 +67,8 @@ function Overview() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [activity, setActivity] = useState<ActivityEntry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [settingsOk, setSettingsOk] = useState<boolean | null>(null);
+  const [galleryOk, setGalleryOk] = useState<boolean | null>(null);
 
   const load = () => {
     setError(null);
@@ -76,6 +80,12 @@ function Overview() {
       .catch((err) =>
         setError(err instanceof Error ? err.message : "Could not load the dashboard."),
       );
+    getSiteSettings()
+      .then((s) => setSettingsOk(!!s.business?.name))
+      .catch(() => setSettingsOk(false));
+    listGalleryPhotos()
+      .then(() => setGalleryOk(true))
+      .catch(() => setGalleryOk(false));
   };
 
   useEffect(load, []);
@@ -157,7 +167,18 @@ function Overview() {
                 {error ? "Database unreachable" : stats ? "Database connected" : "Connecting…"}
               </StatusDot>
               <StatusDot tone="ok">Orders, reservations & enquiries — live</StatusDot>
-              <StatusDot tone="warn">Gallery, hours & contact — setup required</StatusDot>
+              <StatusDot tone={settingsOk === null ? "warn" : settingsOk ? "ok" : "off"}>
+                Hours, visit details & contact —{" "}
+                {settingsOk === null ? "checking…" : settingsOk ? "live" : "setup required"}
+              </StatusDot>
+              <StatusDot tone={galleryOk === null ? "warn" : galleryOk ? "ok" : "off"}>
+                Gallery —{" "}
+                {galleryOk === null
+                  ? "checking…"
+                  : galleryOk
+                    ? "live"
+                    : "setup required (run the gallery_photos migration)"}
+              </StatusDot>
             </div>
           </SectionCard>
 

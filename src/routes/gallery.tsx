@@ -51,7 +51,10 @@ function Gallery() {
       });
   }, []);
 
-  const gallery = useMemo(() => [...uploaded, ...bundledGallery], [uploaded]);
+  const gallery = useMemo(() => {
+    const uploadedCaptions = new Set(uploaded.map((g) => g.caption));
+    return [...uploaded, ...bundledGallery.filter((g) => !uploadedCaptions.has(g.caption))];
+  }, [uploaded]);
 
   const shown = useMemo(
     () => (filter === "All" ? gallery : gallery.filter((g) => g.category === filter)),

@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestUrl } from "@tanstack/react-start/server";
 import { getDb, getGalleryBucket } from "./cf";
 import { authMiddleware } from "@/lib/auth/functions";
+import { gallery as bundledGallery } from "@/lib/gallery";
 
 export type GalleryPhotoRow = {
   id: number;
@@ -94,4 +96,66 @@ export const deleteGalleryPhoto = createServerFn({ method: "POST" })
       await db.prepare("DELETE FROM gallery_photos WHERE id = ?").bind(data.id).run();
     }
     return { ok: true as const };
+  });
+
+/**
+ * One-time: copies the 20 launch photos (bundled with the site's code,
+ * src/lib/gallery.ts) into the database + R2, so they become ordinary
+ * rows — editable and deletable from the admin like anything uploaded
+ * from now on, instead of a separate read-only "launch photos" set.
+ * Safe to run more than once: skips any photo whose exact caption
+ * already exists in the table.
+ */
+export const importBundledGalleryPhotos = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .handler(async () => {
+    const db = getDb();
+    const bucket = getGalleryBucket();
+    const origin = getRequestUrl().origin;
+
+    const { results: existing } = await db
+      .prepare("SELECT caption FROM gallery_photos")
+      .all<{ caption: string }>();
+    const existingCaptions = new Set(existing.map((r) => r.caption));
+
+    const maxOrder = await db
+      .prepare("SELECT COALESCE(MAX(sort_order), 0) as m FROM gallery_photos")
+      .first<{ m: number }>();
+    let order = maxOrder?.m ?? 0;
+
+    let imported = 0;
+    let skipped = 0;
+    const failed: string[] = [];
+
+    for (const photo of bundledGallery) {
+      if (existingCaptions.has(photo.caption)) {
+        skipped++;
+        continue;
+      }
+      try {
+        const assetUrl = new URL(photo.src, origin).toString();
+        const res = await fetch(assetUrl);
+        if (!res.ok) {
+          failed.push(photo.caption);
+          continue;
+        }
+        const contentType = res.headers.get("content-type") ?? "image/jpeg";
+        const ext = contentType.split("/")[1]?.replace(/[^a-z0-9]/gi, "") || "jpg";
+        const key = `gallery/imported-${Date.now()}-${crypto.randomUUID()}.${ext}`;
+        await bucket.put(key, await res.arrayBuffer(), { httpMetadata: { contentType } });
+
+        order += 1;
+        await db
+          .prepare(
+            "INSERT INTO gallery_photos (r2_key, alt, caption, category, sort_order) VALUES (?, ?, ?, ?, ?)",
+          )
+          .bind(key, photo.alt, photo.caption, photo.category, order)
+          .run();
+        imported++;
+      } catch {
+        failed.push(photo.caption);
+      }
+    }
+
+    return { imported, skipped, failed };
   });
