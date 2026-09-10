@@ -162,8 +162,8 @@ function Home() {
               className="h-full w-full object-cover"
             />
           </div>
-          <div className="hidden gap-2 lg:grid">
-            <div className="aspect-[4/3] overflow-hidden">
+          <div className="hidden h-full grid-rows-2 gap-2 lg:grid">
+            <div className="overflow-hidden">
               <img
                 src={images.sadzaPlate}
                 alt="Sadza and covo served on a white plate at an outdoor wooden table"
@@ -171,7 +171,7 @@ function Home() {
                 className="h-full w-full object-cover"
               />
             </div>
-            <div className="aspect-[4/3] overflow-hidden">
+            <div className="overflow-hidden">
               <img
                 src={images.porkSizzler}
                 alt="Sizzling grilled pork served on a hot plate with tomato and onion"
