@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  clearMenuItemImage,
   getMenuAdmin,
   setMenuItemAvailability,
+  setMenuItemImage,
   setMenuItemPrice,
   type MenuItemRow,
   type MenuKind,
@@ -28,6 +30,9 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
   const [drafts, setDrafts] = useState<Record<number, string>>({});
   const [savingId, setSavingId] = useState<number | null>(null);
   const [savedId, setSavedId] = useState<number | null>(null);
+  const [imageBusyId, setImageBusyId] = useState<number | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const fileInputs = useRef<Record<number, HTMLInputElement | null>>({});
 
   const load = () => {
     setError(null);
@@ -79,6 +84,42 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
     }
   };
 
+  const onPickPhoto = (item: MenuItemRow, file: File | undefined) => {
+    if (!file) return;
+    setImageError(null);
+    setImageBusyId(item.id);
+    const form = new FormData();
+    form.set("id", String(item.id));
+    form.set("file", file);
+    setMenuItemImage({ data: form })
+      .then(({ imageUrl }) => {
+        setItems((prev) =>
+          prev!.map((i) => (i.id === item.id ? { ...i, image_url: imageUrl } : i)),
+        );
+      })
+      .catch((err) => {
+        setImageError(err instanceof Error ? err.message : "Couldn't upload that photo.");
+      })
+      .finally(() => {
+        setImageBusyId(null);
+        const input = fileInputs.current[item.id];
+        if (input) input.value = "";
+      });
+  };
+
+  const removePhoto = async (item: MenuItemRow) => {
+    setImageError(null);
+    setImageBusyId(item.id);
+    try {
+      await clearMenuItemImage({ data: { id: item.id } });
+      setItems((prev) => prev!.map((i) => (i.id === item.id ? { ...i, image_url: null } : i)));
+    } catch (err) {
+      setImageError(err instanceof Error ? err.message : "Couldn't remove that photo.");
+    } finally {
+      setImageBusyId(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -87,6 +128,7 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
       />
 
       {error ? <ErrorState message={error} onRetry={load} /> : null}
+      {imageError ? <ErrorState message={imageError} onRetry={() => setImageError(null)} /> : null}
 
       {!items ? (
         <LoadingRows rows={6} />
@@ -100,10 +142,11 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
           {categories.map(([slug, title]) => (
             <SectionCard key={slug} title={title}>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[680px] text-left text-sm">
+                <table className="w-full min-w-[780px] text-left text-sm">
                   <thead>
                     <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                       <th className="py-2 pr-4">Item</th>
+                      <th className="py-2 pr-4">Photo</th>
                       <th className="py-2 pr-4">Description</th>
                       <th className="py-2 pr-4">Price ($)</th>
                       <th className="py-2 pr-4">Status</th>
@@ -116,6 +159,55 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
                       .map((item) => (
                         <tr key={item.id} className="border-b border-border/60 align-top">
                           <td className="py-3.5 pr-4 font-semibold text-foreground">{item.name}</td>
+                          <td className="py-3.5 pr-4">
+                            <div className="flex items-center gap-2">
+                              {item.image_url ? (
+                                <img
+                                  src={`/gallery-image/${item.image_url}`}
+                                  alt={item.name}
+                                  className="h-12 w-12 rounded-lg border border-border object-cover"
+                                />
+                              ) : (
+                                <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-border text-[10px] text-muted-foreground">
+                                  No photo
+                                </div>
+                              )}
+                              <div className="flex flex-col gap-1">
+                                <input
+                                  ref={(el) => {
+                                    fileInputs.current[item.id] = el;
+                                  }}
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => onPickPhoto(item, e.target.files?.[0])}
+                                />
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  type="button"
+                                  disabled={imageBusyId === item.id}
+                                  onClick={() => fileInputs.current[item.id]?.click()}
+                                >
+                                  {imageBusyId === item.id
+                                    ? "…"
+                                    : item.image_url
+                                      ? "Change"
+                                      : "Upload"}
+                                </Button>
+                                {item.image_url ? (
+                                  <button
+                                    type="button"
+                                    disabled={imageBusyId === item.id}
+                                    onClick={() => removePhoto(item)}
+                                    className="text-xs text-muted-foreground underline decoration-dotted hover:text-destructive disabled:opacity-50"
+                                  >
+                                    Remove
+                                  </button>
+                                ) : null}
+                              </div>
+                            </div>
+                          </td>
                           <td className="max-w-xs py-3.5 pr-4 text-muted-foreground">
                             {item.description}
                           </td>

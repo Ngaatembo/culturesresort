@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getDb } from "./cf";
+import { getDb, getGalleryBucket } from "./cf";
 import { authMiddleware } from "@/lib/auth/functions";
 
 export type MenuKind = "food" | "beverages";
@@ -110,4 +110,83 @@ export const setMenuItemPrice = createServerFn({ method: "POST" })
       .bind(priceCents, data.id)
       .run();
     return { ok: true, priceCents };
+  });
+
+/**
+ * Uploads a photo for one menu item, replacing whatever image it had
+ * before (old R2 object is deleted so the bucket doesn't accumulate
+ * orphaned files). Stored in the same bucket as the gallery, under a
+ * separate `menu/` prefix, and served by the same /gallery-image/$ route.
+ */
+export const setMenuItemImage = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((data: unknown) => {
+    if (!(data instanceof FormData)) {
+      throw new Error("Expected a file upload.");
+    }
+    const file = data.get("file");
+    const id = Number(data.get("id"));
+    if (!Number.isFinite(id)) {
+      throw new Error("Missing menu item id.");
+    }
+    if (!(file instanceof File) || file.size === 0) {
+      throw new Error("Choose an image file first.");
+    }
+    if (!file.type.startsWith("image/")) {
+      throw new Error("That file doesn't look like an image.");
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      throw new Error("Images must be under 8MB.");
+    }
+    return { id, file };
+  })
+  .handler(async ({ data }) => {
+    const db = getDb();
+    const bucket = getGalleryBucket();
+
+    const existing = await db
+      .prepare("SELECT image_url FROM menu_items WHERE id = ?")
+      .bind(data.id)
+      .first<{ image_url: string | null }>();
+
+    const ext = (data.file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const key = `menu/${data.id}-${Date.now()}-${crypto.randomUUID()}.${ext || "jpg"}`;
+
+    const bytes = await data.file.arrayBuffer();
+    await bucket.put(key, bytes, { httpMetadata: { contentType: data.file.type } });
+
+    await db
+      .prepare("UPDATE menu_items SET image_url = ?, updated_at = datetime('now') WHERE id = ?")
+      .bind(key, data.id)
+      .run();
+
+    if (existing?.image_url) {
+      await bucket.delete(existing.image_url).catch(() => {});
+    }
+
+    return { ok: true as const, imageUrl: key };
+  });
+
+/** Removes a menu item's uploaded photo — it falls back to the default stock photo. */
+export const clearMenuItemImage = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((data: { id: number }) => data)
+  .handler(async ({ data }) => {
+    const db = getDb();
+    const existing = await db
+      .prepare("SELECT image_url FROM menu_items WHERE id = ?")
+      .bind(data.id)
+      .first<{ image_url: string | null }>();
+
+    if (existing?.image_url) {
+      const bucket = getGalleryBucket();
+      await bucket.delete(existing.image_url).catch(() => {});
+    }
+
+    await db
+      .prepare("UPDATE menu_items SET image_url = NULL, updated_at = datetime('now') WHERE id = ?")
+      .bind(data.id)
+      .run();
+
+    return { ok: true as const };
   });

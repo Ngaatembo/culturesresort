@@ -204,7 +204,9 @@ function Menu() {
                       {category.items.map((item) => {
                         const id = String(item.id);
                         const imageKey = CATEGORY_IMAGE[category.slug] ?? "food";
-                        const photo = dishPhotos[item.name] ?? images[imageKey];
+                        const photo = item.imageUrl
+                          ? `/gallery-image/${item.imageUrl}`
+                          : (dishPhotos[item.name] ?? images[imageKey]);
                         return (
                           <li
                             key={item.id}
