@@ -259,10 +259,10 @@ function Home() {
             <img
               src={images.food}
               alt="A grilled meat platter with rosemary garnish and cocktails, served in the evening garden"
-              width={1600}
-              height={1200}
+              width={590}
+              height={1095}
               loading="lazy"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover object-bottom"
             />
           </div>
           <div className="hidden h-full grid-rows-2 gap-2 lg:grid">

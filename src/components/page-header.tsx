@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/reveal";
 import { ParallaxImage } from "@/components/parallax-image";
+import { cn } from "@/lib/utils";
 
 export function PageHeader({
   eyebrow,
@@ -7,12 +8,17 @@ export function PageHeader({
   intro,
   image,
   imageAlt,
+  imagePosition,
 }: {
   eyebrow: string;
   title: string;
   intro?: string;
   image: string;
   imageAlt: string;
+  /** CSS object-position keyword for the background image — use when a
+      portrait-shaped photo needs its subject kept in frame inside this
+      wide, short hero container (default centers the crop). */
+  imagePosition?: "center" | "bottom" | "top";
 }) {
   return (
     <section className="relative flex min-h-[62svh] items-end overflow-hidden">
@@ -20,7 +26,11 @@ export function PageHeader({
         <img
           src={image}
           alt={imageAlt}
-          className="breathe h-[120%] w-full object-cover"
+          className={cn(
+            "breathe h-[120%] w-full object-cover",
+            imagePosition === "bottom" && "object-bottom",
+            imagePosition === "top" && "object-top",
+          )}
           fetchPriority="high"
         />
       </ParallaxImage>

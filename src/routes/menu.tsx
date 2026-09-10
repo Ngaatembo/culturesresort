@@ -86,6 +86,7 @@ function Menu() {
         intro="Add anything you'd like to try and check out online or on WhatsApp. Items, prices and availability are managed by the Cultures team, so a few are still marked On request while the full list is loaded."
         image={images.food}
         imageAlt="A grilled meat platter with rosemary garnish and cocktails, served in the evening garden"
+        imagePosition="bottom"
       />
 
       <section className="bg-background py-16 lg:py-24">
