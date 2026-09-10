@@ -49,7 +49,9 @@ export const ownerOnlyMiddleware = createMiddleware({ type: "function" })
 
 export const getAdminSession = createServerFn({ method: "GET" }).handler(async () => {
   const session = await adminSession();
-  return session.data?.userId ? { email: session.data.email, role: session.data.role } : null;
+  return session.data?.userId
+    ? { email: session.data.email, role: session.data.role, isDeveloper: session.data.isDeveloper }
+    : null;
 });
 
 export const adminLogin = createServerFn({ method: "POST" })
@@ -66,7 +68,12 @@ export const adminLogin = createServerFn({ method: "POST" })
     }
 
     const session = await adminSession();
-    await session.update({ userId: user.id, email: user.email, role: user.role });
+    await session.update({
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      isDeveloper: !!user.is_developer,
+    });
     return { ok: true as const };
   });
 
@@ -95,7 +102,12 @@ export const adminSetup = createServerFn({ method: "POST" })
 
     const session = await adminSession();
     const user = await findAdminByEmail(data.email);
-    await session.update({ userId: user!.id, email: user!.email, role: user!.role });
+    await session.update({
+      userId: user!.id,
+      email: user!.email,
+      role: user!.role,
+      isDeveloper: !!user!.is_developer,
+    });
     return { ok: true as const };
   });
 

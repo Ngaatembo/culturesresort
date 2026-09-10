@@ -8,6 +8,7 @@ export type AdminUser = {
   password_hash: string;
   password_salt: string;
   role: AdminRole;
+  is_developer: number;
   created_at: string;
 };
 

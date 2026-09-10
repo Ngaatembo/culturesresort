@@ -70,11 +70,11 @@ function Overview() {
   const [error, setError] = useState<string | null>(null);
   const [settingsOk, setSettingsOk] = useState<boolean | null>(null);
   const [galleryOk, setGalleryOk] = useState<boolean | null>(null);
-  const [isOwner, setIsOwner] = useState(false);
+  const [isDeveloper, setIsDeveloper] = useState(false);
 
   const load = () => {
     setError(null);
-    getAdminSession().then((s) => setIsOwner(s?.role === "owner"));
+    getAdminSession().then((s) => setIsDeveloper(!!s?.isDeveloper));
     Promise.all([getDashboardStats(), listOrders(), listBookings(), listEnquiries()])
       .then(([s, orders, bookings, enquiries]) => {
         setStats(s);
@@ -164,7 +164,7 @@ function Overview() {
         </SectionCard>
 
         <div className="space-y-6">
-          {isOwner ? (
+          {isDeveloper ? (
             <SectionCard title="System status">
               <div className="space-y-3">
                 <StatusDot tone={error ? "off" : stats ? "ok" : "warn"}>

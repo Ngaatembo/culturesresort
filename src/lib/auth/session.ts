@@ -6,6 +6,7 @@ export type AdminSessionData = {
   userId: number;
   email: string;
   role: AdminRole;
+  isDeveloper: boolean;
 };
 
 /**

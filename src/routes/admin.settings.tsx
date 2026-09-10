@@ -8,20 +8,22 @@ export const Route = createFileRoute("/admin/settings")({
 });
 
 function SettingsPage() {
-  const [isOwner, setIsOwner] = useState<boolean | null>(null);
+  const [isDeveloper, setIsDeveloper] = useState<boolean | null>(null);
   const [email, setEmail] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     getAdminSession().then((s) => {
       if (!s) return;
-      setIsOwner(s.role === "owner");
+      setIsDeveloper(!!s.isDeveloper);
       setEmail(s.email ?? null);
+      setRole(s.role ?? null);
     });
   }, []);
 
-  if (isOwner === null) return null;
+  if (isDeveloper === null) return null;
 
-  if (!isOwner) {
+  if (!isDeveloper) {
     return (
       <div className="space-y-6">
         <PageHeader title="Settings" description="Your account details." />
@@ -33,7 +35,7 @@ function SettingsPage() {
             </li>
             <li className="flex items-center justify-between py-3">
               <span className="text-muted-foreground">Role</span>
-              <span className="font-medium text-foreground">Manager</span>
+              <span className="font-medium capitalize text-foreground">{role}</span>
             </li>
           </ul>
         </SectionCard>
