@@ -8,6 +8,8 @@ import { useOrder } from "@/lib/order";
 import { getMenu, type MenuCategoryOut, type MenuKind } from "@/lib/data/menu";
 import { dishPhotos } from "@/lib/dish-photos";
 import { useSiteSettings } from "@/lib/site-settings-query";
+import cocktailPourLoop from "@/assets/video/cocktail-pour-loop.mp4";
+import cocktailPoster from "@/assets/cocktail-poster.jpg";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/menu")({
@@ -51,6 +53,13 @@ function Menu() {
   const [menuData, setMenuData] = useState<Record<MenuKind, MenuCategoryOut[]> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { add, has } = useOrder();
+  const [playVideo, setPlayVideo] = useState(false);
+
+  useEffect(() => {
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setPlayVideo(true);
+    }
+  }, []);
 
   useEffect(() => {
     getMenu()
@@ -99,6 +108,37 @@ function Menu() {
               Managed by the Cultures team
             </span>
           </div>
+
+          {course === "beverages" ? (
+            <Reveal className="card-tactile img-zoom relative mt-8 overflow-hidden rounded-2xl">
+              {playVideo ? (
+                <video
+                  src={cocktailPourLoop}
+                  poster={cocktailPoster}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-hidden="true"
+                  className="img-zoom-target h-56 w-full object-cover sm:h-72"
+                />
+              ) : (
+                <img
+                  src={cocktailPoster}
+                  alt="A cocktail being poured behind the bar"
+                  className="img-zoom-target h-56 w-full object-cover sm:h-72"
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                <p className="eyebrow text-ochre">Full bar</p>
+                <h2 className="mt-1 font-display text-xl text-bone sm:text-2xl">
+                  Cocktails and cold drinks, made to order
+                </h2>
+              </div>
+            </Reveal>
+          ) : null}
 
           {error ? (
             <div className="mt-8 border border-dashed border-destructive p-6 text-sm text-destructive">
