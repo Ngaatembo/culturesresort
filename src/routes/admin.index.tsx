@@ -7,6 +7,7 @@ import { listBookings, type BookingRow } from "@/lib/data/bookings";
 import { listEnquiries, type EnquiryRow } from "@/lib/data/enquiries";
 import { getSiteSettings } from "@/lib/data/settings";
 import { listGalleryPhotos } from "@/lib/data/gallery-photos";
+import { getAdminSession } from "@/lib/auth/functions";
 import {
   EmptyState,
   ErrorState,
@@ -69,9 +70,11 @@ function Overview() {
   const [error, setError] = useState<string | null>(null);
   const [settingsOk, setSettingsOk] = useState<boolean | null>(null);
   const [galleryOk, setGalleryOk] = useState<boolean | null>(null);
+  const [isOwner, setIsOwner] = useState(false);
 
   const load = () => {
     setError(null);
+    getAdminSession().then((s) => setIsOwner(s?.role === "owner"));
     Promise.all([getDashboardStats(), listOrders(), listBookings(), listEnquiries()])
       .then(([s, orders, bookings, enquiries]) => {
         setStats(s);
@@ -161,26 +164,28 @@ function Overview() {
         </SectionCard>
 
         <div className="space-y-6">
-          <SectionCard title="System status">
-            <div className="space-y-3">
-              <StatusDot tone={error ? "off" : stats ? "ok" : "warn"}>
-                {error ? "Database unreachable" : stats ? "Database connected" : "Connecting…"}
-              </StatusDot>
-              <StatusDot tone="ok">Orders, reservations & enquiries — live</StatusDot>
-              <StatusDot tone={settingsOk === null ? "warn" : settingsOk ? "ok" : "off"}>
-                Hours, visit details & contact —{" "}
-                {settingsOk === null ? "checking…" : settingsOk ? "live" : "setup required"}
-              </StatusDot>
-              <StatusDot tone={galleryOk === null ? "warn" : galleryOk ? "ok" : "off"}>
-                Gallery —{" "}
-                {galleryOk === null
-                  ? "checking…"
-                  : galleryOk
-                    ? "live"
-                    : "setup required (run the gallery_photos migration)"}
-              </StatusDot>
-            </div>
-          </SectionCard>
+          {isOwner ? (
+            <SectionCard title="System status">
+              <div className="space-y-3">
+                <StatusDot tone={error ? "off" : stats ? "ok" : "warn"}>
+                  {error ? "Database unreachable" : stats ? "Database connected" : "Connecting…"}
+                </StatusDot>
+                <StatusDot tone="ok">Orders, reservations & enquiries — live</StatusDot>
+                <StatusDot tone={settingsOk === null ? "warn" : settingsOk ? "ok" : "off"}>
+                  Hours, visit details & contact —{" "}
+                  {settingsOk === null ? "checking…" : settingsOk ? "live" : "setup required"}
+                </StatusDot>
+                <StatusDot tone={galleryOk === null ? "warn" : galleryOk ? "ok" : "off"}>
+                  Gallery —{" "}
+                  {galleryOk === null
+                    ? "checking…"
+                    : galleryOk
+                      ? "live"
+                      : "setup required (run the gallery_photos migration)"}
+                </StatusDot>
+              </div>
+            </SectionCard>
+          ) : null}
 
           <SectionCard title="Quick links">
             <div className="grid gap-2">

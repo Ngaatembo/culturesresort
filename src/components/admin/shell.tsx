@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   Activity,
@@ -36,7 +36,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { adminLogout } from "@/lib/auth/functions";
+import { adminLogout, getAdminSession } from "@/lib/auth/functions";
 import logoMark from "@/assets/logo-mark.png";
 
 type NavItem = {
@@ -44,6 +44,7 @@ type NavItem = {
   label: string;
   icon: typeof LayoutGrid;
   badge?: number | undefined;
+  ownerOnly?: boolean;
 };
 
 type NavGroup = {
@@ -96,7 +97,7 @@ function buildNav(counts: Partial<Record<string, number>>): NavGroup[] {
     {
       label: "System",
       items: [
-        { to: "/admin/staff", label: "Staff & Users", icon: ShieldCheck },
+        { to: "/admin/staff", label: "Staff & Users", icon: ShieldCheck, ownerOnly: true },
         { to: "/admin/settings", label: "Settings", icon: SettingsIcon },
         { to: "/admin/activity", label: "Activity Log", icon: Activity },
       ],
@@ -148,7 +149,18 @@ export function AdminSidebar({
   counts?: Partial<Record<string, number>> | undefined;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const groups = buildNav(counts);
+  const [isOwner, setIsOwner] = useState(false);
+
+  useEffect(() => {
+    getAdminSession().then((s) => setIsOwner(s?.role === "owner"));
+  }, []);
+
+  const groups = buildNav(counts)
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => !item.ownerOnly || isOwner),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <Sidebar collapsible="icon">

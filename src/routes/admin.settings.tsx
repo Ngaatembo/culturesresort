@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { getAdminSession } from "@/lib/auth/functions";
 import { PageHeader, SectionCard, StatusDot } from "@/components/admin/ui";
 
 export const Route = createFileRoute("/admin/settings")({
@@ -6,14 +8,52 @@ export const Route = createFileRoute("/admin/settings")({
 });
 
 function SettingsPage() {
+  const [isOwner, setIsOwner] = useState<boolean | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    getAdminSession().then((s) => {
+      if (!s) return;
+      setIsOwner(s.role === "owner");
+      setEmail(s.email ?? null);
+    });
+  }, []);
+
+  if (isOwner === null) return null;
+
+  if (!isOwner) {
+    return (
+      <div className="space-y-6">
+        <PageHeader title="Settings" description="Your account details." />
+        <SectionCard title="Account">
+          <ul className="divide-y divide-border text-sm">
+            <li className="flex items-center justify-between py-3">
+              <span className="text-muted-foreground">Signed in as</span>
+              <span className="font-medium text-foreground">{email}</span>
+            </li>
+            <li className="flex items-center justify-between py-3">
+              <span className="text-muted-foreground">Role</span>
+              <span className="font-medium text-foreground">Manager</span>
+            </li>
+          </ul>
+        </SectionCard>
+        <SectionCard title="Need something changed?" className="border-accent/40">
+          <StatusDot tone="ok">
+            For anything technical — hosting, new features, or account issues — reach out to your
+            site admin.
+          </StatusDot>
+        </SectionCard>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <PageHeader title="Settings" description="System information and security status." />
 
-      <SectionCard title="Security" className="border-destructive/30">
-        <StatusDot tone="off">
-          No login is configured — /admin is currently open to anyone with the URL. This needs real
-          authentication before the business relies on this dashboard day to day.
+      <SectionCard title="Security">
+        <StatusDot tone="ok">
+          Login is enabled — only invited staff accounts can access /admin.
         </StatusDot>
       </SectionCard>
 
