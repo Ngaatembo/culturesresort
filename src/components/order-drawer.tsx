@@ -4,6 +4,7 @@ import { Minus, Plus, X } from "lucide-react";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { useOrder } from "@/lib/order";
 import { useSiteSettings } from "@/lib/site-settings-query";
+import { createEnquiry } from "@/lib/data/enquiries";
 import { cn } from "@/lib/utils";
 
 export function OrderDrawer() {
@@ -17,6 +18,7 @@ export function OrderDrawer() {
     remove,
     clear,
     whatsappHref,
+    whatsappBody,
     placeOrder,
     placing,
   } = useOrder();
@@ -24,6 +26,7 @@ export function OrderDrawer() {
   const [phone, setPhone] = useState("");
   const [placed, setPlaced] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loggingWhatsApp, setLoggingWhatsApp] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -50,6 +53,28 @@ export function OrderDrawer() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not place the order. Please try again.");
     }
+  };
+
+  // A guest tapping "Ask/Send on WhatsApp" with real items in the cart is a
+  // genuine enquiry the team should see in the admin dashboard too, not
+  // just in WhatsApp — logged as a best-effort enquiry (never blocks or
+  // delays opening WhatsApp itself, and a failure here is silent since the
+  // WhatsApp message is the guest's real fallback either way).
+  const handleWhatsAppClick = () => {
+    if (lines.length > 0) {
+      setLoggingWhatsApp(true);
+      createEnquiry({
+        data: {
+          name: "WhatsApp menu enquiry",
+          message: whatsappBody,
+        },
+      })
+        .catch(() => {
+          /* best-effort — WhatsApp still opens regardless */
+        })
+        .finally(() => setLoggingWhatsApp(false));
+    }
+    window.open(whatsappHref, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -102,7 +127,7 @@ export function OrderDrawer() {
               <Link
                 to="/menu"
                 onClick={closeDrawer}
-                className="eyebrow mt-8 inline-block bg-primary px-6 py-4 text-primary-foreground"
+                className="eyebrow mt-8 inline-block rounded-full bg-primary px-6 py-4 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5"
                 tabIndex={open ? 0 : -1}
               >
                 Order something else
@@ -118,7 +143,7 @@ export function OrderDrawer() {
               <Link
                 to="/menu"
                 onClick={closeDrawer}
-                className="eyebrow mt-8 inline-block bg-primary px-6 py-4 text-primary-foreground"
+                className="eyebrow mt-8 inline-block rounded-full bg-primary px-6 py-4 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5"
                 tabIndex={open ? 0 : -1}
               >
                 Browse the menu
@@ -198,7 +223,7 @@ export function OrderDrawer() {
                 type="button"
                 onClick={handlePlaceOrder}
                 disabled={placing}
-                className="eyebrow w-full bg-primary px-6 py-4 text-primary-foreground disabled:opacity-60"
+                className="eyebrow w-full rounded-full bg-primary px-6 py-4 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
                 tabIndex={open ? 0 : -1}
               >
                 {placing
@@ -212,22 +237,22 @@ export function OrderDrawer() {
             Placing an order sends it straight to the kitchen queue. You can also send it on
             WhatsApp so the team sees it right away.
           </p>
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noreferrer"
-            className="eyebrow mt-4 flex items-center justify-center gap-3 bg-leaf px-6 py-4 text-bone"
+          <button
+            type="button"
+            onClick={handleWhatsAppClick}
+            disabled={loggingWhatsApp}
+            className="eyebrow mt-4 flex w-full items-center justify-center gap-3 rounded-full bg-leaf px-6 py-4 text-bone transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-leaf/90 disabled:opacity-70"
             tabIndex={open ? 0 : -1}
           >
             <WhatsAppIcon className="h-4 w-4" />
             {lines.length
               ? `Send ${count} item${count === 1 ? "" : "s"} on WhatsApp`
               : "Ask on WhatsApp"}
-          </a>
+          </button>
           <div className="mt-3 grid grid-cols-2 gap-3">
             <a
               href={business.phoneHref}
-              className="eyebrow border border-border px-4 py-4 text-center"
+              className="eyebrow rounded-full border border-border px-4 py-4 text-center transition-colors hover:bg-secondary"
             >
               Call
             </a>
@@ -235,7 +260,7 @@ export function OrderDrawer() {
               <button
                 type="button"
                 onClick={clear}
-                className="eyebrow border border-border px-4 py-4"
+                className="eyebrow rounded-full border border-border px-4 py-4 transition-colors hover:bg-secondary"
                 tabIndex={open ? 0 : -1}
               >
                 Clear list
@@ -244,7 +269,7 @@ export function OrderDrawer() {
               <Link
                 to="/reservations"
                 onClick={closeDrawer}
-                className="eyebrow border border-border px-4 py-4 text-center"
+                className="eyebrow rounded-full border border-border px-4 py-4 text-center transition-colors hover:bg-secondary"
               >
                 Book a table
               </Link>

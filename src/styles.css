@@ -296,3 +296,33 @@
     transform: none !important;
   }
 }
+
+/*
+ * Slow continuous "breathing" zoom for hero/banner images — the image
+ * itself drifts gently in and out on a loop, independent of scroll, so
+ * it reads as alive even before the visitor scrolls at all. Applied to
+ * the <img> itself; ParallaxImage's own scroll-linked drift is on the
+ * *wrapping* div, so the two transforms never collide. Oscillates
+ * between 110% and 116% (rather than starting at 100%) because these
+ * images are already oversized to 110%+ so the scroll-parallax on the
+ * wrapper never reveals an edge — the breathing keyframe has to keep
+ * that same minimum, not reset to 100% and expose a gap.
+ */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.16);
+  }
+}
+@utility breathe {
+  animation: breathe 14s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .breathe {
+    animation: none !important;
+    transform: scale(1.1);
+  }
+}

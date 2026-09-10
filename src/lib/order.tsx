@@ -38,6 +38,8 @@ type OrderContextValue = {
   clear: () => void;
   has: (id: string) => boolean;
   whatsappHref: string;
+  /** Same text as whatsappHref, before URL-encoding — used to also log the enquiry. */
+  whatsappBody: string;
   /** Submits the cart as a real order. Throws on failure — caller shows the message. */
   placeOrder: (customer: {
     name: string;
@@ -121,6 +123,7 @@ export function OrderProvider({ children }: { children: ReactNode }) {
       clear,
       has: (id: string) => lines.some((l) => l.id === id),
       whatsappHref: whatsappLink(body, business.whatsappNumber),
+      whatsappBody: body,
       placeOrder,
       placing,
     };

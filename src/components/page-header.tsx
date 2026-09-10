@@ -20,7 +20,7 @@ export function PageHeader({
         <img
           src={image}
           alt={imageAlt}
-          className="h-[120%] w-full scale-110 object-cover"
+          className="breathe h-[120%] w-full object-cover"
           fetchPriority="high"
         />
       </ParallaxImage>

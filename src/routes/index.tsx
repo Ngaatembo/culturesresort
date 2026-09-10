@@ -40,7 +40,7 @@ function Home() {
             alt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
             width={1920}
             height={1280}
-            className="h-[122%] w-full scale-110 object-cover"
+            className="breathe h-[122%] w-full object-cover"
             fetchPriority="high"
           />
         </ParallaxImage>
@@ -185,15 +185,17 @@ function Home() {
       </section>
 
       {/* Fire */}
-      <section className="relative overflow-hidden">
-        <img
-          src={fireGrill}
-          alt="Ribs and cuts of meat charring over open charcoal"
-          width={1600}
-          height={900}
-          loading="lazy"
-          className="h-[60svh] w-full object-cover"
-        />
+      <section className="relative flex h-[60svh] items-center justify-center overflow-hidden">
+        <ParallaxImage strength={30} className="absolute inset-0 h-full w-full">
+          <img
+            src={fireGrill}
+            alt="Ribs and cuts of meat charring over open charcoal"
+            width={1600}
+            height={900}
+            loading="lazy"
+            className="breathe h-[122%] w-full object-cover"
+          />
+        </ParallaxImage>
         <div className="absolute inset-0 flex items-center justify-center bg-ink/55 text-center">
           <Reveal className="px-5">
             <span className="mx-auto block h-px w-12 bg-ochre" aria-hidden="true" />

@@ -14,7 +14,7 @@ export function WhatsAppFab() {
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with Cultures Resort on WhatsApp"
-      className="group fixed bottom-6 right-6 z-[80] hidden items-center gap-3 bg-leaf py-4 pl-4 pr-5 text-bone shadow-lift transition-transform duration-300 hover:-translate-y-0.5 lg:flex"
+      className="group fixed bottom-6 right-6 z-[80] hidden items-center gap-3 rounded-full bg-leaf py-4 pl-4 pr-5 text-bone shadow-lift transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-leaf/90 lg:flex"
     >
       <WhatsAppIcon className="h-6 w-6 shrink-0" />
       <span className="eyebrow">Chat on WhatsApp</span>

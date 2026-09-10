@@ -27,12 +27,14 @@ export function ParallaxImage({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      window.matchMedia("(max-width: 767px)").matches
-    ) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
+    // Gentler on small screens rather than switched off entirely — a
+    // phone should still feel like it's "responding to movement", just
+    // with less travel than desktop.
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    const effectiveStrength = isMobile ? strength * 0.5 : strength;
 
     let ticking = false;
     const update = () => {
@@ -42,7 +44,7 @@ export function ParallaxImage({
       // 0 when the element's center is at the viewport's center, ranging
       // roughly -1..1 as it moves from below to above the fold.
       const progress = (rect.top + rect.height / 2 - vh / 2) / vh;
-      const offset = Math.max(-1, Math.min(1, progress)) * strength;
+      const offset = Math.max(-1, Math.min(1, progress)) * effectiveStrength;
       el.style.transform = `translate3d(0, ${offset.toFixed(1)}px, 0)`;
     };
     const onScroll = () => {
