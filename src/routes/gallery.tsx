@@ -134,7 +134,7 @@ function Gallery() {
                       <span className="min-w-0 truncate text-sm text-muted-foreground">
                         {img.caption}
                       </span>
-                      <span className="eyebrow shrink-0 text-ochre">{img.category}</span>
+                      <span className="eyebrow shrink-0 text-primary">{img.category}</span>
                     </span>
                   </button>
                 </Reveal>

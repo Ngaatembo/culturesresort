@@ -93,7 +93,7 @@ function Events() {
                       />
                     ) : null}
                     <div className="flex flex-1 flex-col p-5">
-                      {e.event_date ? <p className="eyebrow text-ochre">{e.event_date}</p> : null}
+                      {e.event_date ? <p className="eyebrow text-primary">{e.event_date}</p> : null}
                       <h3 className="mt-2 font-display text-xl">{e.title}</h3>
                       {e.description ? (
                         <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
@@ -117,7 +117,7 @@ function Events() {
           <ol className="mt-10 grid gap-8 md:grid-cols-3">
             {steps.map((s, i) => (
               <Reveal as="li" key={s.n} delay={i * 90} className="border-t border-border pt-6">
-                <span className="eyebrow text-ochre">{s.n}</span>
+                <span className="eyebrow text-primary">{s.n}</span>
                 <h2 className="mt-3 font-display text-2xl">{s.title}</h2>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
               </Reveal>

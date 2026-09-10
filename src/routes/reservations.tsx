@@ -281,16 +281,16 @@ function Reservations() {
               <p className="eyebrow rule-ochre text-primary">How booking works</p>
               <ol className="mt-6 space-y-6 text-sm leading-relaxed text-muted-foreground">
                 <li>
-                  <span className="eyebrow block text-ochre">Step one</span>
+                  <span className="eyebrow block text-primary">Step one</span>
                   Send your request with date, time and party size.
                 </li>
                 <li>
-                  <span className="eyebrow block text-ochre">Step two</span>
+                  <span className="eyebrow block text-primary">Step two</span>
                   Call or WhatsApp the restaurant to confirm — this is the step that secures your
                   table.
                 </li>
                 <li>
-                  <span className="eyebrow block text-ochre">Step three</span>
+                  <span className="eyebrow block text-primary">Step three</span>
                   Arrive and be seated in the garden.
                 </li>
               </ol>
