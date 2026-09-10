@@ -1,16 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Plus, Star } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { ParallaxImage } from "@/components/parallax-image";
 import { ExperienceGrid } from "@/components/experience-grid";
 import { TrustReviews } from "@/components/trust-reviews";
-import { menu, testimonials } from "@/lib/site-data";
+import { testimonials } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
 import { images } from "@/lib/gallery";
+import { getMenu, type MenuItemOut } from "@/lib/data/menu";
+import { dishPhotos } from "@/lib/dish-photos";
+import { useOrder } from "@/lib/order";
 import fireGrill from "@/assets/fire-nyama-choma.jpg";
 import fireCookingLoop from "@/assets/video/fire-cooking-loop.mp4";
 import gardenLoop from "@/assets/video/garden-loop.mp4";
 import { cn } from "@/lib/utils";
+
+type PreviewDish = MenuItemOut & { categoryTitle: string; categorySlug: string };
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,11 +40,25 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { business } = useSiteSettings();
   const [playVideo, setPlayVideo] = useState(false);
+  const [signatureDishes, setSignatureDishes] = useState<PreviewDish[] | null>(null);
+  const { add, has } = useOrder();
 
   useEffect(() => {
     if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setPlayVideo(true);
     }
+  }, []);
+
+  useEffect(() => {
+    getMenu()
+      .then((data) => {
+        const flattened: PreviewDish[] = data.food.flatMap((c) =>
+          c.items.map((item) => ({ ...item, categoryTitle: c.title, categorySlug: c.slug })),
+        );
+        const featured = flattened.filter((d) => d.featured);
+        setSignatureDishes((featured.length >= 3 ? featured : flattened).slice(0, 3));
+      })
+      .catch(() => setSignatureDishes([]));
   }, []);
 
   return (
@@ -191,13 +211,55 @@ function Home() {
               Slow-cooked relishes, grains, greens and meat from the open fire — served family style
               on wood and clay.
             </p>
-            <ul className="mx-auto mt-10 flex max-w-md flex-wrap justify-center gap-x-8 gap-y-4 border-t border-bone/15 pt-8 text-sm">
-              {menu.slice(0, 4).map((c) => (
-                <li key={c.slug} className="flex items-baseline gap-2">
-                  <span className="font-display text-lg">{c.title}</span>
-                  <span className="text-bone/50">{c.items.length}</span>
-                </li>
-              ))}
+            <ul className="mx-auto mt-10 grid max-w-3xl gap-4 text-left sm:grid-cols-3">
+              {(signatureDishes ?? [null, null, null]).map((dish, i) =>
+                dish ? (
+                  <li
+                    key={dish.id}
+                    className="card-tactile img-zoom overflow-hidden rounded-2xl bg-bone/5"
+                  >
+                    <div className="aspect-[4/3] overflow-hidden">
+                      <img
+                        src={
+                          dish.imageUrl
+                            ? `/gallery-image/${dish.imageUrl}`
+                            : (dishPhotos[dish.name] ?? images.food)
+                        }
+                        alt={dish.name}
+                        loading="lazy"
+                        className="img-zoom-target h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <p className="eyebrow text-ochre">{dish.categoryTitle}</p>
+                      <div className="mt-1 flex items-start justify-between gap-2">
+                        <h3 className="min-w-0 font-display text-lg leading-tight">{dish.name}</h3>
+                        <span className="shrink-0 text-sm text-bone/70">{dish.price}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          add({
+                            id: String(dish.id),
+                            name: dish.name,
+                            category: dish.categoryTitle,
+                            price: dish.price,
+                          })
+                        }
+                        className="eyebrow mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-bone/25 px-3 py-2.5 text-bone/85 transition-colors hover:bg-bone/10"
+                      >
+                        <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+                        {has(String(dish.id)) ? "Added — add another" : "Add to enquiry"}
+                      </button>
+                    </div>
+                  </li>
+                ) : (
+                  <li
+                    key={i}
+                    className="aspect-[4/3] animate-pulse rounded-2xl bg-bone/10 sm:aspect-auto"
+                  />
+                ),
+              )}
             </ul>
             <Link
               to="/menu"
@@ -277,31 +339,46 @@ function Home() {
               Straight from Google reviews
             </h2>
           </Reveal>
-          <div className="mt-16 grid gap-12 lg:grid-cols-3 lg:gap-10">
+          <div
+            className="mt-16 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible"
+            style={{ scrollbarWidth: "none" }}
+          >
             {testimonials.map((t, i) => (
               <Reveal
                 key={t.name}
                 delay={i * 100}
-                className={cn(
-                  i > 0 &&
-                    "border-t border-border pt-10 lg:border-t-0 lg:border-l lg:pl-10 lg:pt-0",
-                )}
+                className="card-tactile w-[85%] shrink-0 snap-start rounded-2xl border border-border bg-card p-7 shadow-card sm:w-[60%] lg:w-auto"
               >
-                <span
-                  className="font-display text-5xl italic leading-none text-accent"
-                  aria-hidden="true"
-                >
-                  &ldquo;
-                </span>
-                <p className="-mt-3 font-display text-xl italic leading-snug text-foreground">
-                  {t.quote}
-                </p>
-                <p className="eyebrow mt-6 text-muted-foreground">
-                  {t.name} · {t.rating}★ · {t.meta}
-                </p>
+                <div className="flex items-center gap-3">
+                  <span className="eyebrow grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground">
+                    {t.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .slice(0, 2)
+                      .join("")}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate font-display text-base leading-tight">{t.name}</p>
+                    <p className="truncate text-xs text-muted-foreground">{t.meta}</p>
+                  </div>
+                </div>
+                <div className="mt-4 flex gap-0.5" aria-label={`${t.rating} out of 5 stars`}>
+                  {Array.from({ length: 5 }).map((_, s) => (
+                    <Star
+                      key={s}
+                      className={cn(
+                        "h-4 w-4",
+                        s < t.rating ? "fill-ochre text-ochre" : "fill-transparent text-border",
+                      )}
+                      aria-hidden="true"
+                    />
+                  ))}
+                </div>
+                <p className="mt-4 leading-relaxed text-foreground">{t.quote}</p>
               </Reveal>
             ))}
           </div>
+          <p className="mt-3 text-xs text-muted-foreground lg:hidden">Swipe to read more →</p>
 
           <TrustReviews />
         </div>
