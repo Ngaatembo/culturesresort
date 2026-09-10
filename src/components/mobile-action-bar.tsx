@@ -45,9 +45,13 @@ export function MobileActionBar() {
           </span>
         ) : null}
       </button>
-      <Link to="/events" className={itemClass} activeProps={{ className: "text-ochre" }}>
+      <Link
+        to="/reservations"
+        className={`${itemClass} bg-primary text-primary-foreground`}
+        activeProps={{ className: "bg-ember" }}
+      >
         <CalendarHeart className="h-5 w-5" aria-hidden="true" />
-        Events
+        Reserve
       </Link>
       <a
         href={whatsappLink(whatsappMessages.general, business.whatsappNumber)}

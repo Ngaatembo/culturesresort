@@ -63,47 +63,56 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-7 lg:flex" aria-label="Main">
-          {navLinks.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              activeOptions={{ exact: l.to === "/" }}
-              className={cn(
-                "eyebrow transition-opacity hover:opacity-100",
-                scrolled ? "text-foreground/80" : "text-bone/85",
-              )}
-              activeProps={{
-                className:
-                  "!opacity-100 underline decoration-ochre decoration-2 underline-offset-8",
-              }}
-            >
-              {l.label}
-            </Link>
-          ))}
-          <button
-            type="button"
-            onClick={openDrawer}
+        <nav className="hidden items-center lg:flex" aria-label="Main">
+          <div className="flex items-center gap-7">
+            {navLinks.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                activeOptions={{ exact: l.to === "/" }}
+                className={cn(
+                  "eyebrow transition-opacity hover:opacity-100",
+                  scrolled ? "text-foreground/80" : "text-bone/85",
+                )}
+                activeProps={{
+                  className:
+                    "!opacity-100 underline decoration-ochre decoration-2 underline-offset-8",
+                }}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
+          <div
             className={cn(
-              "eyebrow flex items-center gap-2 border px-4 py-3 transition-colors",
-              scrolled ? "border-border text-foreground" : "border-bone/40 text-bone",
+              "ml-7 flex items-center gap-3 border-l pl-7",
+              scrolled ? "border-border" : "border-bone/25",
             )}
-            aria-label="Open your enquiry list"
           >
-            <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-            Order
-            {count > 0 ? (
-              <span className="grid h-5 min-w-5 place-items-center rounded-full bg-ochre px-1 text-[0.6rem] text-ink">
-                {count}
-              </span>
-            ) : null}
-          </button>
-          <Link
-            to="/reservations"
-            className="eyebrow bg-primary px-5 py-3 text-primary-foreground transition-colors hover:bg-ember"
-          >
-            Reserve a table
-          </Link>
+            <button
+              type="button"
+              onClick={openDrawer}
+              className={cn(
+                "eyebrow flex items-center gap-2 border px-4 py-3 transition-colors",
+                scrolled ? "border-border text-foreground" : "border-bone/40 text-bone",
+              )}
+              aria-label="Open your enquiry list"
+            >
+              <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+              Order
+              {count > 0 ? (
+                <span className="grid h-5 min-w-5 place-items-center rounded-full bg-ochre px-1 text-[0.6rem] text-ink">
+                  {count}
+                </span>
+              ) : null}
+            </button>
+            <Link
+              to="/reservations"
+              className="eyebrow bg-primary px-5 py-3 text-primary-foreground transition-colors hover:bg-ember"
+            >
+              Reserve a table
+            </Link>
+          </div>
         </nav>
 
         <button
