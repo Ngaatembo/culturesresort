@@ -101,35 +101,33 @@ function Home() {
           </Reveal>
           <Reveal delay={90}>
             <h1 className="mt-6 max-w-3xl font-display text-[clamp(2.6rem,8vw,5.5rem)] leading-[0.95]">
-              More than a meal.
-              <span className="block italic text-ochre">An experience of Africa.</span>
+              Built around a table,
+              <span className="block italic text-ochre">not a trend.</span>
             </h1>
           </Reveal>
           <Reveal delay={180}>
             <p className="mt-7 max-w-xl text-base leading-relaxed text-bone/80 sm:text-lg">
-              Traditional African cooking served in an open garden, among carved wood, woven fibre
-              and open flame.
+              Slow-cooked clay pot stews and open-fire grills, served family style in a garden
+              built for lingering afternoons.
             </p>
           </Reveal>
           <Reveal delay={270}>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
-                to="/reservations"
-                className="group eyebrow bg-primary px-8 py-5 text-center text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:opacity-90"
+                to="/menu"
+                className="eyebrow border border-bone/40 px-8 py-5 text-center transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
               >
-                Reserve a table{" "}
+                Explore menu
+              </Link>
+              <Link
+                to="/reservations"
+                className="group eyebrow bg-primary px-8 py-5 text-center text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-ember"
+              >
+                Book a table{" "}
                 <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
                   →
                 </span>
               </Link>
-              <a
-                href={business.mapsHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="eyebrow border border-bone/40 px-8 py-5 text-center transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
-              >
-                Get directions
-              </a>
               <button
                 type="button"
                 onClick={() => setTourOpen(true)}
@@ -148,6 +146,17 @@ function Home() {
                   <span className="eyebrow text-bone/70">{stat}</span>
                 </li>
               ))}
+              <li className="flex items-center gap-3">
+                <span className="text-ochre/60" aria-hidden="true">•</span>
+                <a
+                  href={business.mapsHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="eyebrow text-bone/70 underline decoration-bone/30 underline-offset-4 hover:text-bone"
+                >
+                  Get directions
+                </a>
+              </li>
             </ul>
           </Reveal>
         </div>

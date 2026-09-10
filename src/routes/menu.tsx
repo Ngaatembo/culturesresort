@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
+import { WhatsAppIcon } from "@/components/whatsapp-icon";
+import { whatsappLink } from "@/lib/site-data";
 import { PageHeader } from "@/components/page-header";
 import { DishMedia } from "@/components/dish-media";
 import { Reveal } from "@/components/reveal";
@@ -239,21 +241,36 @@ function Menu() {
                               <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
                                 {item.description}
                               </p>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  add({
-                                    id,
-                                    name: item.name,
-                                    category: category.title,
-                                    price: item.price,
-                                  })
-                                }
-                                className="eyebrow mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
-                              >
-                                <Plus className="h-4 w-4" aria-hidden="true" />
-                                {has(id) ? "Added — add another" : "Add to order"}
-                              </button>
+                              <div className="mt-3 flex gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    add({
+                                      id,
+                                      name: item.name,
+                                      category: category.title,
+                                      price: item.price,
+                                    })
+                                  }
+                                  className="eyebrow flex flex-1 items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
+                                >
+                                  <Plus className="h-4 w-4" aria-hidden="true" />
+                                  {has(id) ? "Added — add another" : "Add to order"}
+                                </button>
+                                <a
+                                  href={whatsappLink(
+                                    `Hello Cultures Resort, I'd like to order ${item.name}${
+                                      item.price !== "On request" ? ` (${item.price})` : ""
+                                    }. `,
+                                  )}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  aria-label={`Order ${item.name} via WhatsApp`}
+                                  className="grid shrink-0 place-items-center rounded-full bg-leaf px-4 text-bone transition-colors hover:bg-leaf/90"
+                                >
+                                  <WhatsAppIcon className="h-4 w-4" aria-hidden="true" />
+                                </a>
+                              </div>
                             </div>
                           </li>
                         );

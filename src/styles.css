@@ -59,34 +59,39 @@
 
 :root {
   --radius: 0.2rem;
-  --background: oklch(0.943 0.021 79);
-  --foreground: oklch(0.219 0.008 85);
-  --card: oklch(0.96 0.016 79);
-  --card-foreground: oklch(0.219 0.008 85);
-  --popover: oklch(0.96 0.016 79);
-  --popover-foreground: oklch(0.219 0.008 85);
-  --primary: oklch(0.534 0.125 38.5);
-  --primary-foreground: oklch(0.96 0.016 79);
-  --secondary: oklch(0.9 0.018 76);
-  --secondary-foreground: oklch(0.3 0.02 60);
-  --muted: oklch(0.9 0.018 76);
-  --muted-foreground: oklch(0.46 0.025 60);
-  --accent: oklch(0.711 0.101 78.4);
-  --accent-foreground: oklch(0.219 0.008 85);
+  /* Cultures Resort brand palette:
+     primary = Burnt Terracotta, accent = Flame Gold, background = Sand/Cream,
+     foreground = Charcoal Wood, leaf = WhatsApp Green. Everything else here
+     (card, secondary, muted, border...) is a tint mixed from those five so
+     the whole UI stays in one warm, earthy family. */
+  --background: #fbf8f3;
+  --foreground: #2a211d;
+  --card: #fefcf9;
+  --card-foreground: #2a211d;
+  --popover: #fefcf9;
+  --popover-foreground: #2a211d;
+  --primary: #8c3a18;
+  --primary-foreground: #fbf8f3;
+  --secondary: #f2e8db;
+  --secondary-foreground: #2a211d;
+  --muted: #f2e8db;
+  --muted-foreground: #6b5b4e;
+  --accent: #d48c29;
+  --accent-foreground: #2a211d;
   --destructive: oklch(0.52 0.19 27);
-  --destructive-foreground: oklch(0.98 0.01 82);
-  --border: oklch(0.85 0.02 74);
-  --input: oklch(0.85 0.02 74);
-  --ring: oklch(0.534 0.125 38.5);
+  --destructive-foreground: #fbf8f3;
+  --border: #e7dac8;
+  --input: #e7dac8;
+  --ring: #8c3a18;
 
-  --ember: oklch(0.621 0.136 49.2);
-  --ochre: oklch(0.711 0.101 78.4);
-  --clay: oklch(0.424 0.048 53.8);
-  --bone: oklch(0.943 0.021 79);
-  --ink: oklch(0.219 0.008 85);
-  --leaf: oklch(0.5 0.1 134);
-  --success: oklch(0.5 0.1 145);
-  --success-foreground: oklch(0.98 0.01 82);
+  --ember: #d48c29;
+  --ochre: #d48c29;
+  --clay: #3a2c23;
+  --bone: #fbf8f3;
+  --ink: #2a211d;
+  --leaf: #25d366;
+  --success: #25d366;
+  --success-foreground: #fbf8f3;
 
   --sidebar: var(--card);
   --sidebar-foreground: var(--foreground);
