@@ -19,7 +19,13 @@ export const Route = createFileRoute("/admin/staff")({
   component: StaffPage,
 });
 
-type StaffRow = { id: number; email: string; role: AdminRole; created_at: string };
+type StaffRow = {
+  id: number;
+  email: string;
+  role: AdminRole;
+  is_developer: number;
+  created_at: string;
+};
 
 const ROLE_LABELS: Record<AdminRole, string> = {
   owner: "Owner",
@@ -165,7 +171,7 @@ function StaffPage() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(["manager", "kitchen", "staff"] as AdminRole[]).map((r) => (
+                {(["owner", "manager", "kitchen", "staff"] as AdminRole[]).map((r) => (
                   <SelectItem key={r} value={r}>
                     {ROLE_LABELS[r]}
                   </SelectItem>
@@ -188,7 +194,9 @@ function StaffPage() {
               <li key={s.id} className="flex items-center justify-between gap-4 py-3.5">
                 <div>
                   <p className="font-medium text-foreground">{s.email}</p>
-                  <p className="text-xs text-muted-foreground">{ROLE_LABELS[s.role]}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {s.is_developer ? "Developer" : ROLE_LABELS[s.role]}
+                  </p>
                 </div>
                 {s.id !== selfId ? (
                   <button

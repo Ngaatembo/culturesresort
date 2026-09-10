@@ -41,7 +41,7 @@ export async function listAdminUsers(): Promise<
 > {
   const db = getDb();
   const { results } = await db
-    .prepare("SELECT id, email, role, created_at FROM admin_users ORDER BY created_at ASC")
+    .prepare("SELECT id, email, role, is_developer, created_at FROM admin_users ORDER BY created_at ASC")
     .all<Omit<AdminUser, "password_hash" | "password_salt">>();
   return results;
 }
