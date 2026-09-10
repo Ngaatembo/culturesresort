@@ -9,6 +9,7 @@ import { useSiteSettings } from "@/lib/site-settings-query";
 import { images } from "@/lib/gallery";
 import fireGrill from "@/assets/fire-nyama-choma.jpg";
 import fireCookingLoop from "@/assets/video/fire-cooking-loop.mp4";
+import gardenLoop from "@/assets/video/garden-loop.mp4";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -45,14 +46,28 @@ function Home() {
       {/* Hero */}
       <section className="relative flex min-h-[92svh] items-end overflow-hidden">
         <ParallaxImage strength={44} className="absolute inset-0 h-full w-full">
-          <img
-            src={images.garden}
-            alt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
-            width={1920}
-            height={1280}
-            className="breathe h-[122%] w-full object-cover"
-            fetchPriority="high"
-          />
+          {playVideo ? (
+            <video
+              src={gardenLoop}
+              poster={images.garden}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden="true"
+              className="h-[122%] w-full object-cover"
+            />
+          ) : (
+            <img
+              src={images.garden}
+              alt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
+              width={1920}
+              height={1280}
+              className="h-[122%] w-full object-cover"
+              fetchPriority="high"
+            />
+          )}
         </ParallaxImage>
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/35" />
         <div className="relative mx-auto w-full max-w-7xl px-5 pb-16 pt-32 text-bone lg:px-10 lg:pb-24">
