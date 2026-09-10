@@ -74,7 +74,7 @@ export function Lightbox({
         <img
           src={image.src}
           alt={image.alt}
-          className="max-h-full min-h-0 w-auto max-w-full object-contain"
+          className="max-h-full min-h-0 w-auto max-w-full rounded-2xl object-contain shadow-lift"
         />
         <button
           type="button"
