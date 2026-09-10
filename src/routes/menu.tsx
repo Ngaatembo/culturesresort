@@ -215,7 +215,7 @@ function Menu() {
                             key={item.id}
                             className="card-tactile flex overflow-hidden rounded-2xl border border-border bg-card"
                           >
-                            <div className="w-[38%] shrink-0 sm:w-2/5">
+                            <div className="relative w-[38%] shrink-0 sm:w-2/5">
                               <DishMedia
                                 imageSrc={photo}
                                 videoSrc={
@@ -224,6 +224,11 @@ function Menu() {
                                 alt={item.name}
                                 className="h-full min-h-36"
                               />
+                              {category.slug === "grills" ? (
+                                <span className="eyebrow absolute left-2 top-2 rounded-full bg-ink/75 px-2.5 py-1 text-[0.55rem] text-bone backdrop-blur">
+                                  Slow-fired grill
+                                </span>
+                              ) : null}
                             </div>
                             <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
                               <div className="flex items-start justify-between gap-2">

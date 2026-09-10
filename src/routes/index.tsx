@@ -94,10 +94,12 @@ function Home() {
             />
           )}
         </ParallaxImage>
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/35" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/65 to-ink/40" />
         <div className="relative mx-auto w-full max-w-7xl px-5 pb-16 pt-32 text-bone lg:px-10 lg:pb-24">
           <Reveal>
-            <p className="eyebrow text-ochre">Hillside · Harare · Zimbabwe</p>
+            <p className="eyebrow tracking-[0.32em] text-ochre">
+              Destination dining &amp; cultural sanctuary
+            </p>
           </Reveal>
           <Reveal delay={90}>
             <h1 className="mt-6 max-w-3xl font-display text-[clamp(2.6rem,8vw,5.5rem)] leading-[0.95]">
@@ -139,25 +141,32 @@ function Home() {
             </div>
           </Reveal>
           <Reveal delay={340}>
-            <ul className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-bone/15 pt-6 text-xs">
-              {["Traditional clay pot dining", "Open air garden", "Live music"].map((stat, i) => (
-                <li key={stat} className="flex items-center gap-3">
-                  {i > 0 ? <span className="text-ochre/60" aria-hidden="true">•</span> : null}
-                  <span className="eyebrow text-bone/70">{stat}</span>
-                </li>
-              ))}
-              <li className="flex items-center gap-3">
-                <span className="text-ochre/60" aria-hidden="true">•</span>
-                <a
-                  href={business.mapsHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="eyebrow text-bone/70 underline decoration-bone/30 underline-offset-4 hover:text-bone"
+            <dl className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-bone/15 pt-7 text-xs">
+              {[
+                { label: "Location", value: "Hillside, Harare" },
+                { label: "Cuisine style", value: "Traditional African, open fire" },
+                { label: "Atmosphere", value: "Open-air garden, live music" },
+              ].map((field, i) => (
+                <div
+                  key={field.label}
+                  className={cn(
+                    "flex flex-col gap-1",
+                    i > 0 && "border-l border-bone/15 pl-8",
+                  )}
                 >
-                  Get directions
-                </a>
-              </li>
-            </ul>
+                  <dt className="eyebrow text-ochre/80">{field.label}</dt>
+                  <dd className="text-bone/70">{field.value}</dd>
+                </div>
+              ))}
+              <a
+                href={business.mapsHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="eyebrow border-l border-bone/15 pl-8 text-bone/70 underline decoration-bone/30 underline-offset-4 hover:text-bone"
+              >
+                Get directions
+              </a>
+            </dl>
           </Reveal>
         </div>
         <a

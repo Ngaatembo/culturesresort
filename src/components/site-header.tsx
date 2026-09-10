@@ -31,20 +31,22 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-500",
-        scrolled || open
-          ? "bg-background/95 border-b border-border backdrop-blur"
-          : "bg-gradient-to-b from-ink/70 to-transparent",
+        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
+        scrolled || open ? "p-3 sm:p-4" : "p-0",
       )}
     >
-      <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 lg:px-10">
+      <div
+        className={cn(
+          "mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 transition-all duration-500 lg:px-10",
+          scrolled || open
+            ? "rounded-2xl border border-bone/10 bg-ink/70 shadow-lift backdrop-blur-xl"
+            : "bg-gradient-to-b from-ink/70 to-transparent",
+        )}
+      >
         <Link
           to="/"
           onClick={() => setOpen(false)}
-          className={cn(
-            "flex min-w-0 items-center gap-3 leading-none transition-colors",
-            scrolled || open ? "text-foreground" : "text-bone",
-          )}
+          className="flex min-w-0 items-center gap-3 leading-none text-bone"
           aria-label={`${business.name} — home`}
         >
           <img
@@ -59,7 +61,9 @@ export function SiteHeader() {
             <span className="block font-display text-lg tracking-tight sm:text-xl">
               Cultures Resort
             </span>
-            <span className="eyebrow mt-1 block text-[0.6rem] opacity-70">Harare · Zimbabwe</span>
+            <span className="eyebrow mt-1 block text-[0.6rem] tracking-[0.28em] text-ochre/90">
+              Harare • Zimbabwe
+            </span>
           </span>
         </Link>
 
@@ -70,10 +74,7 @@ export function SiteHeader() {
                 key={l.to}
                 to={l.to}
                 activeOptions={{ exact: l.to === "/" }}
-                className={cn(
-                  "eyebrow transition-opacity hover:opacity-100",
-                  scrolled ? "text-foreground/80" : "text-bone/85",
-                )}
+                className="eyebrow text-bone/85 transition-opacity hover:opacity-100"
                 activeProps={{
                   className:
                     "!opacity-100 underline decoration-ochre decoration-2 underline-offset-8",
@@ -83,19 +84,11 @@ export function SiteHeader() {
               </Link>
             ))}
           </div>
-          <div
-            className={cn(
-              "ml-7 flex items-center gap-3 border-l pl-7",
-              scrolled ? "border-border" : "border-bone/25",
-            )}
-          >
+          <div className="ml-7 flex items-center gap-3 border-l border-bone/20 pl-7">
             <button
               type="button"
               onClick={openDrawer}
-              className={cn(
-                "eyebrow flex items-center gap-2 border px-4 py-3 transition-colors",
-                scrolled ? "border-border text-foreground" : "border-bone/40 text-bone",
-              )}
+              className="eyebrow flex items-center gap-2 border border-bone/30 px-4 py-3 text-bone transition-colors hover:border-bone/50"
               aria-label="Open your enquiry list"
             >
               <ShoppingBag className="h-4 w-4" aria-hidden="true" />
@@ -121,10 +114,7 @@ export function SiteHeader() {
           aria-expanded={open}
           aria-controls="mobile-nav"
           aria-label={open ? "Close menu" : "Open menu"}
-          className={cn(
-            "relative h-11 w-11 lg:hidden",
-            scrolled || open ? "text-foreground" : "text-bone",
-          )}
+          className="relative h-11 w-11 text-bone lg:hidden"
         >
           <span
             className={cn(
