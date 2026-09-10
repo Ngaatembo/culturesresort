@@ -168,47 +168,48 @@ function Menu() {
                         return (
                           <li
                             key={item.id}
-                            className="flex flex-col rounded-2xl border border-border bg-card p-5"
+                            className="card-tactile flex overflow-hidden rounded-2xl border border-border bg-card"
                           >
-                            <div className="flex gap-4">
+                            <div className="img-zoom w-[38%] shrink-0 sm:w-2/5">
                               <img
                                 src={photo}
                                 alt={item.name}
                                 loading="lazy"
-                                className="h-20 w-20 shrink-0 rounded-xl object-cover"
+                                className="img-zoom-target h-full min-h-36 w-full object-cover"
                               />
-                              <div className="min-w-0 flex-1">
-                                <div className="flex items-start justify-between gap-3">
-                                  <h3 className="min-w-0 font-display text-lg leading-tight">
-                                    {item.name}
-                                  </h3>
-                                  <span className="shrink-0 rounded-full bg-secondary px-3 py-1 text-sm text-foreground">
-                                    {item.price}
-                                  </span>
-                                </div>
-                                <p className="eyebrow mt-1 text-primary">
-                                  {item.featured ? "Signature" : "\u00A0"}
-                                </p>
-                              </div>
                             </div>
-                            <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                              {item.description}
-                            </p>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                add({
-                                  id,
-                                  name: item.name,
-                                  category: category.title,
-                                  price: item.price,
-                                })
-                              }
-                              className="eyebrow mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
-                            >
-                              <Plus className="h-4 w-4" aria-hidden="true" />
-                              {has(id) ? "Added — add another" : "Add to order"}
-                            </button>
+                            <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
+                              <div className="flex items-start justify-between gap-2">
+                                <h3 className="min-w-0 font-display text-lg leading-tight">
+                                  {item.name}
+                                </h3>
+                                <span className="shrink-0 rounded-full bg-secondary px-3 py-1 text-sm text-foreground">
+                                  {item.price}
+                                </span>
+                              </div>
+                              <p className="eyebrow mt-1 text-primary">
+                                {category.title}
+                                {item.featured ? " · Signature" : ""}
+                              </p>
+                              <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                                {item.description}
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  add({
+                                    id,
+                                    name: item.name,
+                                    category: category.title,
+                                    price: item.price,
+                                  })
+                                }
+                                className="eyebrow mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
+                              >
+                                <Plus className="h-4 w-4" aria-hidden="true" />
+                                {has(id) ? "Added — add another" : "Add to order"}
+                              </button>
+                            </div>
                           </li>
                         );
                       })}
