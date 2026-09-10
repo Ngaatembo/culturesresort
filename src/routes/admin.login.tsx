@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { adminLogin, adminSetupStatus } from "@/lib/auth/functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import logoMark from "@/assets/logo-mark.png";
 
 export const Route = createFileRoute("/admin/login")({
   component: LoginPage,
@@ -55,9 +56,7 @@ function LoginPage() {
   return (
     <div className="admin flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 shadow-card">
-        <p className="flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar font-display text-sm text-sidebar-foreground">
-          C
-        </p>
+        <img src={logoMark} alt="Cultures Resort" className="h-14 w-14 rounded-full object-cover" />
         <h1 className="mt-4 text-xl font-bold text-foreground">Cultures Resort Admin</h1>
         <p className="mt-1 text-sm text-muted-foreground">Sign in to manage the dashboard.</p>
 

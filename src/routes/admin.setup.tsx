@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { adminSetup, adminSetupStatus } from "@/lib/auth/functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import logoMark from "@/assets/logo-mark.png";
 
 export const Route = createFileRoute("/admin/setup")({
   component: SetupPage,
@@ -51,7 +52,12 @@ function SetupPage() {
     return (
       <div className="admin flex min-h-screen items-center justify-center bg-background p-4">
         <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center shadow-card">
-          <h1 className="text-lg font-bold text-foreground">Setup already completed</h1>
+          <img
+            src={logoMark}
+            alt="Cultures Resort"
+            className="mx-auto h-14 w-14 rounded-full object-cover"
+          />
+          <h1 className="mt-4 text-lg font-bold text-foreground">Setup already completed</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             An admin account already exists. Head to the login page instead.
           </p>
@@ -66,7 +72,8 @@ function SetupPage() {
   return (
     <div className="admin flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 shadow-card">
-        <h1 className="text-xl font-bold text-foreground">Set up admin access</h1>
+        <img src={logoMark} alt="Cultures Resort" className="h-14 w-14 rounded-full object-cover" />
+        <h1 className="mt-4 text-xl font-bold text-foreground">Set up admin access</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           This runs once. Choose the email and password you'll use to log in — nobody else sees
           this, and this page locks itself the moment it's used.

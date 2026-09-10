@@ -37,6 +37,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { adminLogout } from "@/lib/auth/functions";
+import logoMark from "@/assets/logo-mark.png";
 
 type NavItem = {
   to: string;
@@ -153,9 +154,11 @@ export function AdminSidebar({
     <Sidebar collapsible="icon">
       <SidebarHeader className="px-3 py-4">
         <div className="flex items-center gap-2.5 px-1">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent font-display text-sm text-sidebar-accent-foreground">
-            C
-          </span>
+          <img
+            src={logoMark}
+            alt="Cultures Resort"
+            className="h-8 w-8 shrink-0 rounded-full object-cover"
+          />
           <div className="min-w-0 group-data-[collapsible=icon]:hidden">
             <p className="truncate text-sm font-bold text-sidebar-foreground">Cultures Resort</p>
             <p className="truncate text-xs text-sidebar-foreground/60">Owner dashboard</p>
