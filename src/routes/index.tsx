@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Reveal } from "@/components/reveal";
 import { ParallaxImage } from "@/components/parallax-image";
 import { ExperienceGrid } from "@/components/experience-grid";
@@ -7,6 +8,7 @@ import { menu, testimonials } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
 import { images } from "@/lib/gallery";
 import fireGrill from "@/assets/fire-nyama-choma.jpg";
+import fireCookingLoop from "@/assets/video/fire-cooking-loop.mp4";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -30,6 +32,14 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { business } = useSiteSettings();
+  const [playVideo, setPlayVideo] = useState(false);
+
+  useEffect(() => {
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setPlayVideo(true);
+    }
+  }, []);
+
   return (
     <>
       {/* Hero */}
@@ -187,14 +197,28 @@ function Home() {
       {/* Fire */}
       <section className="relative flex h-[60svh] items-center justify-center overflow-hidden">
         <ParallaxImage strength={30} className="absolute inset-0 h-full w-full">
-          <img
-            src={fireGrill}
-            alt="Ribs and cuts of meat charring over open charcoal"
-            width={1600}
-            height={900}
-            loading="lazy"
-            className="breathe h-[122%] w-full object-cover"
-          />
+          {playVideo ? (
+            <video
+              src={fireCookingLoop}
+              poster={fireGrill}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden="true"
+              className="h-[122%] w-full object-cover"
+            />
+          ) : (
+            <img
+              src={fireGrill}
+              alt="Ribs and cuts of meat charring over open charcoal"
+              width={1600}
+              height={900}
+              loading="lazy"
+              className="h-[122%] w-full object-cover"
+            />
+          )}
         </ParallaxImage>
         <div className="absolute inset-0 flex items-center justify-center bg-ink/55 text-center">
           <Reveal className="px-5">
