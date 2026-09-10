@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { Plus, Search, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Plus, Search, Star, Trash2 } from "lucide-react";
 import {
   listBookings,
   updateBookingStatus,
@@ -8,7 +8,16 @@ import {
   type BookingStatus,
 } from "@/lib/data/bookings";
 import { getSiteSettings, updateSiteSetting } from "@/lib/data/settings";
+import {
+  createSiteEvent,
+  deleteSiteEvent,
+  listSiteEventsAdmin,
+  updateSiteEvent,
+  type SiteEventRow,
+  type SiteEventStatus,
+} from "@/lib/data/site-events";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -35,6 +44,7 @@ import {
   SectionCard,
   StatusBadge,
 } from "@/components/admin/ui";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/events")({
   component: EventsPage,
@@ -52,6 +62,18 @@ function EventsPage() {
   const [eventRequirements, setEventRequirements] = useState<string[] | null>(null);
   const [savingList, setSavingList] = useState<"eventTypes" | "eventRequirements" | null>(null);
   const [savedList, setSavedList] = useState<"eventTypes" | "eventRequirements" | null>(null);
+  const [siteEvents, setSiteEvents] = useState<SiteEventRow[] | null>(null);
+  const [siteEventsError, setSiteEventsError] = useState<string | null>(null);
+  const [editingEvent, setEditingEvent] = useState<SiteEventRow | "new" | null>(null);
+
+  const loadSiteEvents = () => {
+    setSiteEventsError(null);
+    listSiteEventsAdmin()
+      .then((rows) => setSiteEvents(rows))
+      .catch((err) =>
+        setSiteEventsError(err instanceof Error ? err.message : "Couldn't load events."),
+      );
+  };
 
   const load = () => {
     setError(null);
@@ -69,6 +91,7 @@ function EventsPage() {
         // The bookings table above already surfaces a load error; the
         // options lists just stay in their loading state if this fails.
       });
+    loadSiteEvents();
   };
   useEffect(load, []);
 
@@ -111,6 +134,92 @@ function EventsPage() {
         title="Events & Functions"
         description="Function and event enquiries, saved directly from the /events page as guests submit them."
       />
+
+      <SectionCard
+        title="Upcoming events & specials"
+        description="What you post here shows up on the public /events page immediately — for things like a Mother's Day special, a live music night, or a holiday menu."
+      >
+        {siteEventsError ? <ErrorState message={siteEventsError} onRetry={loadSiteEvents} /> : null}
+
+        <div className="mb-4">
+          <Button type="button" onClick={() => setEditingEvent("new")}>
+            <Plus className="h-4 w-4" /> Post an event
+          </Button>
+        </div>
+
+        {!siteEvents ? (
+          <LoadingRows rows={3} />
+        ) : siteEvents.length === 0 ? (
+          <EmptyState
+            title="Nothing posted yet"
+            description="Post your first event or special and it'll appear on the site right away."
+          />
+        ) : (
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {siteEvents.map((e) => (
+              <li key={e.id} className="overflow-hidden rounded-2xl border border-border bg-card">
+                {e.image_key ? (
+                  <img
+                    src={`/gallery-image/${e.image_key}`}
+                    alt={e.title}
+                    className="aspect-[4/3] w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex aspect-[4/3] w-full items-center justify-center bg-secondary text-xs text-muted-foreground">
+                    No image
+                  </div>
+                )}
+                <div className="space-y-2 p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-semibold text-foreground">{e.title}</p>
+                    {e.featured ? (
+                      <Star
+                        className="h-4 w-4 shrink-0 fill-accent text-accent"
+                        aria-label="Featured"
+                      />
+                    ) : null}
+                  </div>
+                  {e.event_date ? (
+                    <p className="text-xs text-muted-foreground">{e.event_date}</p>
+                  ) : null}
+                  <span
+                    className={cn(
+                      "inline-block rounded-full px-2.5 py-1 text-xs font-semibold capitalize",
+                      e.status === "cancelled"
+                        ? "bg-destructive/10 text-destructive"
+                        : e.status === "past"
+                          ? "bg-secondary text-muted-foreground"
+                          : "bg-success/15 text-success",
+                    )}
+                  >
+                    {e.status}
+                  </span>
+                  <div className="flex gap-2 pt-1">
+                    <Button size="sm" variant="outline" onClick={() => setEditingEvent(e)}>
+                      Edit
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-destructive hover:bg-destructive/10"
+                      onClick={async () => {
+                        setSiteEvents((prev) => (prev ? prev.filter((x) => x.id !== e.id) : prev));
+                        try {
+                          await deleteSiteEvent({ data: { id: e.id } });
+                        } catch {
+                          loadSiteEvents();
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </SectionCard>
 
       <SectionCard>
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -308,7 +417,152 @@ function EventsPage() {
           ) : null}
         </DrawerContent>
       </Drawer>
+
+      <Drawer open={!!editingEvent} onOpenChange={(open) => !open && setEditingEvent(null)}>
+        <DrawerContent>
+          {editingEvent ? (
+            <SiteEventEditor
+              event={editingEvent === "new" ? null : editingEvent}
+              onDone={() => {
+                setEditingEvent(null);
+                loadSiteEvents();
+              }}
+              onError={(msg) => setSiteEventsError(msg)}
+            />
+          ) : null}
+        </DrawerContent>
+      </Drawer>
     </div>
+  );
+}
+
+function SiteEventEditor({
+  event,
+  onDone,
+  onError,
+}: {
+  event: SiteEventRow | null;
+  onDone: () => void;
+  onError: (message: string) => void;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [title, setTitle] = useState(event?.title ?? "");
+  const [description, setDescription] = useState(event?.description ?? "");
+  const [eventDate, setEventDate] = useState(event?.event_date ?? "");
+  const [status, setStatus] = useState<SiteEventStatus>(event?.status ?? "upcoming");
+  const [featured, setFeatured] = useState(!!event?.featured);
+  const [saving, setSaving] = useState(false);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const form = new FormData();
+      if (event) form.set("id", String(event.id));
+      form.set("title", title);
+      form.set("description", description);
+      form.set("event_date", eventDate);
+      form.set("status", status);
+      form.set("featured", String(featured));
+      const file = fileRef.current?.files?.[0];
+      if (file) form.set("file", file);
+
+      if (event) {
+        await updateSiteEvent({ data: form });
+      } else {
+        await createSiteEvent({ data: form });
+      }
+      onDone();
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Couldn't save that event.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <form onSubmit={onSubmit} className="mx-auto w-full max-w-lg">
+      <DrawerHeader>
+        <DrawerTitle>{event ? "Edit event" : "Post an event"}</DrawerTitle>
+        <DrawerDescription>Shows on the public /events page as soon as you save.</DrawerDescription>
+      </DrawerHeader>
+      <div className="space-y-4 px-4">
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-muted-foreground">Title</label>
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Mother's Day Special"
+            required
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-muted-foreground">Description</label>
+          <Textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={4}
+            placeholder="What's on, what's included, anything guests should know"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-muted-foreground">Date (free text)</label>
+          <Input
+            value={eventDate}
+            onChange={(e) => setEventDate(e.target.value)}
+            placeholder="e.g. Sunday, 10 May 2026, or 'Every Sunday'"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">Status</label>
+            <Select value={status} onValueChange={(v) => setStatus(v as SiteEventStatus)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="upcoming">Upcoming</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="past">Past</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-end pb-2">
+            <label className="flex items-center gap-2 text-sm text-foreground">
+              <input
+                type="checkbox"
+                checked={featured}
+                onChange={(e) => setFeatured(e.target.checked)}
+                className="h-4 w-4 rounded border-border"
+              />
+              Featured
+            </label>
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-muted-foreground">
+            {event?.image_key ? "Replace image (optional)" : "Image (optional)"}
+          </label>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="block w-full text-sm text-foreground file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-primary-foreground"
+          />
+        </div>
+      </div>
+      <DrawerFooter className="flex-row flex-wrap gap-2">
+        <Button type="submit" disabled={saving}>
+          {saving ? "Saving…" : "Save"}
+        </Button>
+        <DrawerClose asChild>
+          <Button type="button" variant="outline">
+            Cancel
+          </Button>
+        </DrawerClose>
+      </DrawerFooter>
+    </form>
   );
 }
 

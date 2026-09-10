@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
 import { createBooking } from "@/lib/data/bookings";
+import { listPublicEvents, type SiteEventRow } from "@/lib/data/site-events";
 import { useSiteSettings } from "@/lib/site-settings-query";
 
 export const Route = createFileRoute("/events")({
@@ -47,9 +48,18 @@ const steps = [
 
 function Events() {
   const { business, eventRequirements, eventTypes, visitDetails } = useSiteSettings();
+  const [siteEvents, setSiteEvents] = useState<SiteEventRow[]>([]);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    listPublicEvents()
+      .then(setSiteEvents)
+      .catch(() => {
+        // Non-critical — the enquiry form below still works fine either way.
+      });
+  }, []);
 
   return (
     <>
@@ -60,6 +70,44 @@ function Events() {
         image={images.drums}
         imageAlt="The dining pavilion lit up at night with a leopard sculpture on the lawn"
       />
+
+      {siteEvents.length > 0 ? (
+        <section className="bg-background py-16 lg:py-20">
+          <div className="mx-auto max-w-7xl px-5 lg:px-10">
+            <Reveal>
+              <p className="eyebrow rule-ochre text-primary">What's on</p>
+              <h2 className="mt-3 font-display text-3xl lg:text-4xl">
+                Coming up at Cultures Resort
+              </h2>
+            </Reveal>
+            <ul className="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {siteEvents.map((e, i) => (
+                <Reveal as="li" key={e.id} delay={i * 90}>
+                  <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+                    {e.image_key ? (
+                      <img
+                        src={`/gallery-image/${e.image_key}`}
+                        alt={e.title}
+                        loading="lazy"
+                        className="aspect-[4/3] w-full object-cover"
+                      />
+                    ) : null}
+                    <div className="flex flex-1 flex-col p-5">
+                      {e.event_date ? <p className="eyebrow text-ochre">{e.event_date}</p> : null}
+                      <h3 className="mt-2 font-display text-xl">{e.title}</h3>
+                      {e.description ? (
+                        <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                          {e.description}
+                        </p>
+                      ) : null}
+                    </div>
+                  </article>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : null}
 
       <section className="bg-background py-16 lg:py-20">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
