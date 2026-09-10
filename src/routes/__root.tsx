@@ -8,7 +8,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { Suspense, useEffect, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -74,11 +74,15 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   loader: async ({ context }) => {
-    // Prefetched once here so SiteHeader/SiteFooter/etc. (which all read
-    // business info, hours, and contact details) never show a loading
-    // flash — by the time they render, this is already sitting in the
-    // query cache.
-    await context.queryClient.ensureQueryData(siteSettingsQueryOptions);
+    // Best-effort prefetch so there's usually no loading flash. Never lets
+    // a failure here reach the router — useSiteSettings() has its own
+    // static fallback for exactly this case, so a DB hiccup during SSR
+    // must not crash the whole site over a non-critical prefetch.
+    try {
+      await context.queryClient.ensureQueryData(siteSettingsQueryOptions);
+    } catch {
+      // Swallowed on purpose — see comment above.
+    }
   },
   head: () => ({
     meta: [
@@ -168,26 +172,24 @@ function RootComponent() {
         /* Required: nested routes render here. */
         <Outlet />
       ) : (
-        <Suspense fallback={null}>
-          <OrderProvider>
-            <a
-              href="#main"
-              className="eyebrow sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-primary focus:px-4 focus:py-3 focus:text-primary-foreground"
-            >
-              Skip to content
-            </a>
-            <SiteHeader />
-            <main id="main">
-              <Outlet />
-            </main>
-            <SiteFooter />
-            {/* Bottom bar covers the last strip of the page on mobile. */}
-            <div className="h-16 lg:hidden" aria-hidden="true" />
-            <MobileActionBar />
-            <WhatsAppFab />
-            <OrderDrawer />
-          </OrderProvider>
-        </Suspense>
+        <OrderProvider>
+          <a
+            href="#main"
+            className="eyebrow sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-primary focus:px-4 focus:py-3 focus:text-primary-foreground"
+          >
+            Skip to content
+          </a>
+          <SiteHeader />
+          <main id="main">
+            <Outlet />
+          </main>
+          <SiteFooter />
+          {/* Bottom bar covers the last strip of the page on mobile. */}
+          <div className="h-16 lg:hidden" aria-hidden="true" />
+          <MobileActionBar />
+          <WhatsAppFab />
+          <OrderDrawer />
+        </OrderProvider>
       )}
     </QueryClientProvider>
   );
