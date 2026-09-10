@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, Star } from "lucide-react";
+import { Flame, Palette, Plus, Star, Trees, Users } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { ParallaxImage } from "@/components/parallax-image";
 import { ExperienceGrid } from "@/components/experience-grid";
@@ -127,6 +127,16 @@ function Home() {
               </a>
             </div>
           </Reveal>
+          <Reveal delay={340}>
+            <ul className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-bone/15 pt-6 text-xs">
+              {["Traditional clay pot dining", "Open air garden", "Live music"].map((stat, i) => (
+                <li key={stat} className="flex items-center gap-3">
+                  {i > 0 ? <span className="text-ochre/60" aria-hidden="true">•</span> : null}
+                  <span className="eyebrow text-bone/70">{stat}</span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
         </div>
         <a
           href="#story"
@@ -140,32 +150,68 @@ function Home() {
 
       {/* Intro */}
       <section id="story" className="grain bg-background py-20 lg:py-32">
-        <div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-12 lg:px-10">
-          <Reveal className="lg:col-span-5">
-            <p className="eyebrow rule-ochre text-primary">Our table</p>
-            <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
-              A place to eat, relax and spend time together
-            </h2>
-          </Reveal>
-          <Reveal delay={120} className="lg:col-span-6 lg:col-start-7">
-            <div className="space-y-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
-              <p>
-                Cultures Resort sits on the corner of Chiremba and Southey Road in Hillside, Harare.
-                It was built around a simple idea: that African food is best shared slowly,
-                outdoors, with people you like.
+        <div className="mx-auto grid max-w-7xl items-start gap-14 px-5 lg:grid-cols-12 lg:px-10">
+          <Reveal className="relative lg:col-span-5">
+            <div className="aspect-[4/5] overflow-hidden rounded-2xl">
+              <img
+                src={images.craft}
+                alt="Hand-carved wooden and clay craft detail on display at Cultures Resort"
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="absolute -bottom-6 -right-6 hidden max-w-[13rem] rounded-2xl border border-border bg-card p-5 shadow-lift sm:block">
+              <p className="font-display text-3xl italic text-primary">est.</p>
+              <p className="mt-1 text-sm leading-snug text-muted-foreground">
+                A garden built around craft, fire and shared tables.
               </p>
-              <p>
-                The kitchen cooks traditional dishes. The grounds hold African art, handcrafted
-                objects and shade trees. Families come for lunch and stay through the afternoon.
-              </p>
-              <Link
-                to="/our-story"
-                className="eyebrow inline-block border-b border-primary pb-2 text-primary"
-              >
-                Read our story
-              </Link>
             </div>
           </Reveal>
+          <div className="lg:col-span-6 lg:col-start-7">
+            <Reveal>
+              <p className="eyebrow rule-ochre text-primary">Our table</p>
+              <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
+                A place to eat, relax and spend time together
+              </h2>
+            </Reveal>
+            <Reveal delay={120}>
+              <div className="mt-6 space-y-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
+                <p>
+                  Cultures Resort sits on the corner of Chiremba and Southey Road in Hillside,
+                  Harare. It was built around a simple idea: that African food is best shared
+                  slowly, outdoors, with people you like.
+                </p>
+                <p>
+                  The kitchen cooks traditional dishes. The grounds hold African art, handcrafted
+                  objects and shade trees. Families come for lunch and stay through the afternoon.
+                </p>
+                <Link
+                  to="/our-story"
+                  className="eyebrow inline-block border-b border-primary pb-2 text-primary"
+                >
+                  Read our story
+                </Link>
+              </div>
+            </Reveal>
+            <Reveal delay={200} className="mt-12 grid gap-6 sm:grid-cols-2">
+              {[
+                { title: "Traditional cooking", body: "Slow, open-fire dishes.", Icon: Flame },
+                { title: "Open ground", body: "Tables spread across the garden.", Icon: Trees },
+                { title: "Craft on show", body: "Carved wood, clay and woven fibre.", Icon: Palette },
+                { title: "Room for everyone", body: "Long tables, kids welcome.", Icon: Users },
+              ].map(({ title, body, Icon }) => (
+                <div key={title} className="flex items-start gap-4">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-secondary text-primary">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-display text-base leading-tight">{title}</p>
+                    <p className="mt-1 text-sm leading-snug text-muted-foreground">{body}</p>
+                  </div>
+                </div>
+              ))}
+            </Reveal>
+          </div>
         </div>
       </section>
 
