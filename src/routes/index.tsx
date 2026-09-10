@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/reveal";
+import { ParallaxImage } from "@/components/parallax-image";
 import { ExperienceGrid } from "@/components/experience-grid";
 import { TrustReviews } from "@/components/trust-reviews";
 import { menu, testimonials } from "@/lib/site-data";
@@ -33,38 +34,49 @@ function Home() {
     <>
       {/* Hero */}
       <section className="relative flex min-h-[92svh] items-end overflow-hidden">
-        <img
-          src={images.garden}
-          alt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
-          width={1920}
-          height={1280}
-          className="absolute inset-0 h-full w-full object-cover"
-          fetchPriority="high"
-        />
+        <ParallaxImage strength={44} className="absolute inset-0 h-full w-full">
+          <img
+            src={images.garden}
+            alt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
+            width={1920}
+            height={1280}
+            className="h-[122%] w-full scale-110 object-cover"
+            fetchPriority="high"
+          />
+        </ParallaxImage>
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/35" />
         <div className="relative mx-auto w-full max-w-7xl px-5 pb-16 pt-32 text-bone lg:px-10 lg:pb-24">
           <Reveal>
             <p className="eyebrow text-ochre">Hillside · Harare · Zimbabwe</p>
+          </Reveal>
+          <Reveal delay={90}>
             <h1 className="mt-6 max-w-3xl font-display text-[clamp(2.6rem,8vw,5.5rem)] leading-[0.95]">
               More than a meal.
               <span className="block italic text-ochre">An experience of Africa.</span>
             </h1>
+          </Reveal>
+          <Reveal delay={180}>
             <p className="mt-7 max-w-xl text-base leading-relaxed text-bone/80 sm:text-lg">
               Traditional African cooking served in an open garden, among carved wood, woven fibre
               and open flame.
             </p>
+          </Reveal>
+          <Reveal delay={270}>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/reservations"
-                className="eyebrow bg-primary px-8 py-5 text-center text-primary-foreground transition-colors hover:opacity-90"
+                className="group eyebrow bg-primary px-8 py-5 text-center text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:opacity-90"
               >
-                Reserve a table →
+                Reserve a table{" "}
+                <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
               </Link>
               <a
                 href={business.mapsHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="eyebrow border border-bone/40 px-8 py-5 text-center transition-colors hover:bg-bone/10"
+                className="eyebrow border border-bone/40 px-8 py-5 text-center transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
               >
                 Get directions
               </a>

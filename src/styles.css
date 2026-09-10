@@ -249,3 +249,50 @@
     transparent 2px 9px
   );
 }
+
+/*
+ * Shared motion vocabulary for the public site (see components/motion/).
+ * One consistent easing curve everywhere rather than picking a new curve
+ * per component -- a smooth "decelerate" curve that reads as premium
+ * without ever feeling bouncy or springy.
+ */
+@theme inline {
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Cards that should feel tactile: dish cards, gallery cards, experience
+   cards. Pair with `img-zoom` on the image inside for the hover-zoom. */
+@utility card-tactile {
+  transition:
+    transform 500ms var(--ease-premium),
+    box-shadow 500ms var(--ease-premium);
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+/* Wrap an <img> in an `overflow-hidden` parent with this on the parent;
+   the image itself needs `img-zoom-target`. Gently zooms on hover/focus
+   within a card, never on the card's own hover (so it doesn't fire when
+   hovering unrelated parts of a large card). */
+@utility img-zoom {
+  overflow: hidden;
+}
+@utility img-zoom-target {
+  transition: transform 700ms var(--ease-premium);
+  .img-zoom:hover &,
+  .img-zoom:focus-within & {
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-tactile,
+  .img-zoom-target {
+    transition: none !important;
+  }
+  .card-tactile:hover {
+    transform: none !important;
+  }
+}

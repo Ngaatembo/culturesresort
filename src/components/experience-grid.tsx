@@ -8,15 +8,20 @@ import { experiences } from "@/lib/site-data";
  */
 export function ExperienceGrid() {
   return (
-    <ul className="grid gap-3 sm:grid-cols-2">
+    <ul className="grid gap-4 sm:grid-cols-2">
       {experiences.map((e, i) => (
-        <Reveal as="li" key={e.title} delay={i * 90} className="group relative overflow-hidden">
+        <Reveal
+          as="li"
+          key={e.title}
+          delay={i * 90}
+          className="card-tactile group relative overflow-hidden rounded-2xl"
+        >
           <img
             src={images[e.imageKey]}
             alt=""
             aria-hidden="true"
             loading="lazy"
-            className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            className="aspect-[4/3] w-full object-cover transition-transform duration-700 [transition-timing-function:var(--ease-premium)] group-hover:scale-[1.06]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-6 text-bone lg:p-8">

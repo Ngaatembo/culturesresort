@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/reveal";
+import { ParallaxImage } from "@/components/parallax-image";
 
 export function PageHeader({
   eyebrow,
@@ -15,12 +16,14 @@ export function PageHeader({
 }) {
   return (
     <section className="relative flex min-h-[62svh] items-end overflow-hidden">
-      <img
-        src={image}
-        alt={imageAlt}
-        className="absolute inset-0 h-full w-full object-cover"
-        fetchPriority="high"
-      />
+      <ParallaxImage strength={36} className="absolute inset-0 h-full w-full">
+        <img
+          src={image}
+          alt={imageAlt}
+          className="h-[120%] w-full scale-110 object-cover"
+          fetchPriority="high"
+        />
+      </ParallaxImage>
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/30" />
       <div className="relative mx-auto w-full max-w-7xl px-5 pb-14 pt-32 text-bone lg:px-10 lg:pb-20">
         <Reveal>
