@@ -169,7 +169,7 @@ function Home() {
       </section>
 
       {/* Intro */}
-      <section id="story" className="grain bg-background py-20 lg:py-32">
+      <section id="story" className="grain bg-background py-16 lg:py-24">
         <div className="mx-auto grid max-w-7xl items-start gap-14 px-5 lg:grid-cols-12 lg:px-10">
           <Reveal className="relative lg:col-span-5">
             <div className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-ink">
@@ -398,7 +398,7 @@ function Home() {
       </section>
 
       {/* Experience */}
-      <section className="bg-background pb-10 pt-20 lg:py-32">
+      <section className="bg-background pb-10 pt-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
             <p className="eyebrow rule-ochre text-primary">The experience</p>
@@ -431,7 +431,7 @@ function Home() {
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover opacity-25"
         />
-        <div className="relative mx-auto max-w-4xl px-5 py-24 text-center lg:px-10 lg:py-32">
+        <div className="relative mx-auto max-w-4xl px-5 py-16 text-center lg:px-10 lg:py-24">
           <Reveal>
             <p className="eyebrow rule-ochre mx-auto text-ochre">The hand behind the fire</p>
             <h2 className="mt-6 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-tight">
@@ -461,7 +461,7 @@ function Home() {
       </section>
 
       {/* Reviews */}
-      <section className="bg-background pb-20 pt-10 lg:py-32">
+      <section className="bg-background pb-16 pt-10 lg:py-24">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
             <p className="eyebrow rule-ochre text-primary">What people remember</p>
@@ -543,8 +543,8 @@ function Home() {
       </section>
 
       {/* Visit */}
-      <section className="grain bg-secondary py-20 lg:py-28">
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-3 lg:px-10">
+      <section className="grain bg-secondary pb-16 pt-16 lg:py-24">
+        <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-3 lg:gap-12 lg:px-10">
           <Reveal>
             <p className="eyebrow rule-ochre text-primary">Visit</p>
             <h2 className="mt-6 font-display text-3xl leading-tight">
@@ -552,7 +552,7 @@ function Home() {
             </h2>
           </Reveal>
           <Reveal delay={100} className="lg:col-span-2">
-            <dl className="grid gap-8 sm:grid-cols-3">
+            <dl className="grid gap-6 sm:grid-cols-3 sm:gap-8">
               <div>
                 <dt className="eyebrow text-muted-foreground">Address</dt>
                 <dd className="mt-3">
@@ -586,10 +586,10 @@ function Home() {
                 </dd>
               </div>
             </dl>
-            <div className="mt-10 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/reservations"
-                className="eyebrow bg-primary px-7 py-4 text-primary-foreground"
+                className="eyebrow w-full bg-primary px-7 py-4 text-center text-primary-foreground sm:w-auto"
               >
                 Reserve a table
               </Link>
@@ -597,11 +597,14 @@ function Home() {
                 href={business.whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="eyebrow border border-border px-7 py-4"
+                className="eyebrow w-full border border-border px-7 py-4 text-center sm:w-auto"
               >
                 WhatsApp us
               </a>
-              <Link to="/events" className="eyebrow border border-border px-7 py-4">
+              <Link
+                to="/events"
+                className="eyebrow w-full border border-border px-7 py-4 text-center sm:w-auto"
+              >
                 Enquire about an event
               </Link>
             </div>
@@ -610,19 +613,19 @@ function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-ink py-20 text-center text-bone lg:py-28">
+      <section className="bg-ink pb-16 pt-16 text-center text-bone lg:py-24">
         <div className="mx-auto max-w-2xl px-5 lg:px-10">
           <Reveal>
             <h2 className="font-display text-[clamp(2.2rem,5vw,3.75rem)] leading-tight">
               Your table is waiting.
             </h2>
-            <p className="mt-5 text-base leading-relaxed text-bone/80 sm:text-lg">
+            <p className="mt-4 text-base leading-relaxed text-bone/80 sm:text-lg">
               Come for the food. Stay for the experience.
             </p>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <div className="mx-auto mt-8 flex max-w-[440px] flex-col items-stretch gap-4 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
               <Link
                 to="/reservations"
-                className="eyebrow bg-primary px-8 py-5 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:opacity-90"
+                className="eyebrow bg-primary px-8 py-4 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:opacity-90"
               >
                 Reserve a table →
               </Link>
@@ -630,7 +633,7 @@ function Home() {
                 href={business.mapsHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="eyebrow border border-bone/40 px-8 py-5 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
+                className="eyebrow border border-bone/40 px-8 py-4 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
               >
                 Get directions →
               </a>
@@ -638,7 +641,7 @@ function Home() {
                 href={business.whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="eyebrow border border-bone/40 px-8 py-5 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
+                className="eyebrow border border-bone/40 px-8 py-4 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
               >
                 Chat on WhatsApp →
               </a>

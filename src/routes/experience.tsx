@@ -34,7 +34,7 @@ function Experience() {
         imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
       />
 
-      <section className="bg-background py-20 lg:py-28">
+      <section className="bg-background py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <ExperienceGrid />
         </div>
@@ -42,7 +42,7 @@ function Experience() {
 
       <section className="bg-clay text-bone">
         <div className="mx-auto grid max-w-7xl lg:grid-cols-2">
-          <div className="min-h-[50vh]">
+          <div className="aspect-[4/3] lg:aspect-auto lg:min-h-[50vh]">
             <img
               src={images.drums}
               alt="The dining pavilion lit up at night with a leopard sculpture on the lawn"
@@ -52,7 +52,7 @@ function Experience() {
               className="h-full w-full object-cover"
             />
           </div>
-          <div className="px-5 py-16 lg:px-14 lg:py-28">
+          <div className="px-5 py-16 lg:px-14 lg:py-24">
             <Reveal>
               <p className="eyebrow text-ochre">Atmosphere</p>
               <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3rem)] leading-tight">
@@ -76,7 +76,7 @@ function Experience() {
         </div>
       </section>
 
-      <section className="grain bg-background py-20 lg:py-28">
+      <section className="grain bg-background py-16 lg:py-24">
         <div className="mx-auto max-w-3xl px-5 text-center lg:px-10">
           <Reveal>
             <p className="eyebrow text-primary">Plan your visit</p>

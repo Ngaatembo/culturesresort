@@ -42,7 +42,7 @@ function Contact() {
         imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
       />
 
-      <section className="bg-background py-20 lg:py-28">
+      <section className="bg-background py-16 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-12 lg:px-10">
           <Reveal className="lg:col-span-5">
             <p className="eyebrow rule-ochre text-primary">Reach us</p>

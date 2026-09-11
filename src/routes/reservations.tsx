@@ -83,7 +83,7 @@ function Reservations() {
           image={images.garden}
           imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
         />
-        <section className="bg-background py-20 lg:py-28">
+        <section className="bg-background py-16 lg:py-24">
           <div className="mx-auto max-w-2xl px-5 lg:px-10">
             <div className="border border-border bg-card p-8 lg:p-12">
               <p className="eyebrow text-primary">Request saved</p>
@@ -145,7 +145,7 @@ function Reservations() {
         imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
       />
 
-      <section className="bg-background py-20 lg:py-28">
+      <section className="bg-background py-16 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-12 lg:px-10">
           <Reveal className="lg:col-span-7">
             <form

@@ -35,7 +35,7 @@ function OurStory() {
         imageAlt="A staff member hand-painting a buffalo mural on the brick wall of the dining pavilion"
       />
 
-      <section className="grain bg-background py-20 lg:py-32">
+      <section className="grain bg-background py-16 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-12 lg:px-10">
           <Reveal className="lg:col-span-7">
             <div className="space-y-7 text-base leading-relaxed text-muted-foreground sm:text-lg">
@@ -103,7 +103,7 @@ function OurStory() {
       </section>
 
       {/* Food Experience */}
-      <section className="bg-secondary py-20 lg:py-28">
+      <section className="bg-secondary py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal className="max-w-2xl">
             <p className="eyebrow rule-ochre text-primary">The kitchen</p>
@@ -158,7 +158,10 @@ function OurStory() {
             </Reveal>
           </div>
           <Reveal delay={280}>
-            <Link to="/menu" className="eyebrow mt-8 inline-block border-b border-primary pb-2 text-primary">
+            <Link
+              to="/menu"
+              className="eyebrow mt-8 inline-block border-b border-primary pb-2 text-primary"
+            >
               See the full menu →
             </Link>
           </Reveal>
@@ -166,7 +169,7 @@ function OurStory() {
       </section>
 
       {/* The Cultures Experience */}
-      <section className="bg-background py-20 lg:py-28">
+      <section className="bg-background py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal className="max-w-2xl">
             <p className="eyebrow rule-ochre text-primary">Beyond the table</p>
@@ -184,7 +187,7 @@ function OurStory() {
         </div>
       </section>
 
-      <section className="bg-clay py-20 text-bone lg:py-28">
+      <section className="bg-clay py-16 text-bone lg:py-24">
         <div className="mx-auto max-w-3xl px-5 text-center lg:px-10">
           <Reveal>
             <blockquote className="font-display text-[clamp(1.6rem,4vw,2.6rem)] italic leading-tight">
