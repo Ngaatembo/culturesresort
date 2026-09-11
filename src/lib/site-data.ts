@@ -68,16 +68,15 @@ export function whatsappLink(
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
-/** Placeholder — owner to confirm real trading hours in the dashboard. */
-/** VERIFIED — as stated on the business's own WhatsApp Business profile. */
+/** VERIFIED — client-confirmed operating hours: 10am–10pm daily. */
 export const openingHours = [
-  { day: "Monday", hours: "Open 24 hours" },
-  { day: "Tuesday", hours: "Open 24 hours" },
-  { day: "Wednesday", hours: "Open 24 hours" },
-  { day: "Thursday", hours: "Open 24 hours" },
-  { day: "Friday", hours: "Open 24 hours" },
-  { day: "Saturday", hours: "Open 24 hours" },
-  { day: "Sunday", hours: "Open 24 hours" },
+  { day: "Monday", hours: "10:00 AM – 10:00 PM" },
+  { day: "Tuesday", hours: "10:00 AM – 10:00 PM" },
+  { day: "Wednesday", hours: "10:00 AM – 10:00 PM" },
+  { day: "Thursday", hours: "10:00 AM – 10:00 PM" },
+  { day: "Friday", hours: "10:00 AM – 10:00 PM" },
+  { day: "Saturday", hours: "10:00 AM – 10:00 PM" },
+  { day: "Sunday", hours: "10:00 AM – 10:00 PM" },
 ];
 
 export type ImageKey = "garden" | "food" | "craft" | "drums" | "gardenGuestsDaytime";
@@ -331,14 +330,14 @@ export const eventRequirements = [
  * than given invented numbers. All editable from the dashboard.
  */
 export const visitDetails = [
-  { label: "Parking", value: "Secure on-site parking available" },
+  { label: "Parking", value: "Guarded on-site parking available" },
   { label: "Families & children", value: "Kids' play area available" },
   {
     label: "Groups & celebrations",
-    value: "Group bookings and celebrations welcome — capacity available on request",
+    value: "Group bookings and celebrations welcome — hosts up to 200 guests",
   },
   { label: "Dietary options", value: "Vegetarian options available" },
-  { label: "Payments", value: "Card and digital payments accepted" },
+  { label: "Payments", value: "Cash, Ecocash, bank transfer, and Visa accepted" },
   { label: "Drinks", value: "Fully licensed restaurant & bar" },
   { label: "Group reservations", value: "Advance booking recommended for larger groups" },
 ];
