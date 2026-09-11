@@ -205,7 +205,10 @@ function Home() {
           <div className="lg:col-span-6 lg:col-start-7">
             <Reveal>
               <p className="eyebrow rule-ochre text-primary">Our table</p>
-              <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
+              <p className="mt-6 font-display text-2xl italic leading-tight text-primary sm:text-3xl">
+                Come hungry. Stay awhile.
+              </p>
+              <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
                 A place to eat, relax and spend time together
               </h2>
             </Reveal>
@@ -521,7 +524,7 @@ function Home() {
             <Reveal>
               <p className="eyebrow text-ochre">Culture</p>
               <blockquote className="mt-6 max-w-2xl font-display text-[clamp(1.8rem,4vw,3rem)] italic leading-tight">
-                Food, music, craft and company — held in one place.
+                Food. Music. Craft. Company.
               </blockquote>
               <Link
                 to="/gallery"

@@ -78,7 +78,7 @@ export const openingHours = [
   { day: "Sunday", hours: "Open 24 hours" },
 ];
 
-export type ImageKey = "garden" | "food" | "craft" | "drums";
+export type ImageKey = "garden" | "food" | "craft" | "drums" | "gardenGuestsDaytime";
 
 export type MenuItem = {
   name: string;
@@ -278,6 +278,7 @@ export const menuSections = [
 export const experiences = [
   {
     title: "The Garden",
+    headline: "Outside is where we belong.",
     body: "Tables set beneath mature trees, lanterns in the branches, open air and shade. Seating is spread across the grounds so groups can gather without crowding.",
     imageKey: "garden",
   },
@@ -293,10 +294,11 @@ export const experiences = [
   },
   {
     title: "Family & Friends",
-    body: "Long tables, space for children, and an unhurried pace. People come to stay a while, not only to eat.",
-    imageKey: "drums",
+    headline: "Bring your people.",
+    body: "Long tables, open air, good food and room to stay awhile.",
+    imageKey: "gardenGuestsDaytime",
   },
-] satisfies Array<{ title: string; body: string; imageKey: ImageKey }>;
+] satisfies Array<{ title: string; headline?: string; body: string; imageKey: ImageKey }>;
 
 /** The kinds of gathering guests can enquire about. Nothing is promised here. */
 export const eventTypes = [
