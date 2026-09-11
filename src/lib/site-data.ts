@@ -323,17 +323,24 @@ export const eventRequirements = [
 ] as const;
 
 /**
- * Practical visiting details. All answers are deliberately unconfirmed —
- * the owner fills these in from the dashboard.
+ * Practical visiting details, shown on Menu/Events pages. Sourced from a
+ * mix of the owner's direct confirmation (parking) and current public
+ * listings/reviews (vegetarian options, card payments) — the two still
+ * genuinely unconfirmed facts (exact max group size, exact advance-notice
+ * window) are deliberately phrased as "on request" / "recommended" rather
+ * than given invented numbers. All editable from the dashboard.
  */
 export const visitDetails = [
-  { label: "Largest group seated", value: "To be confirmed" },
-  { label: "Parking", value: "To be confirmed" },
-  { label: "Children", value: "Yes — there's a kids' play area on the grounds" },
-  { label: "Alcohol license", value: "Fully licensed restaurant" },
-  { label: "Vegetarian options", value: "To be confirmed" },
-  { label: "Card payments", value: "To be confirmed" },
-  { label: "Advance notice for groups", value: "To be confirmed" },
+  { label: "Parking", value: "Secure on-site parking available" },
+  { label: "Families & children", value: "Kids' play area available" },
+  {
+    label: "Groups & celebrations",
+    value: "Group bookings and celebrations welcome — capacity available on request",
+  },
+  { label: "Dietary options", value: "Vegetarian options available" },
+  { label: "Payments", value: "Card and digital payments accepted" },
+  { label: "Drinks", value: "Fully licensed restaurant & bar" },
+  { label: "Group reservations", value: "Advance booking recommended for larger groups" },
 ];
 
 /** Real Google reviews for Cultures Resort — used as testimonials on the site. */
