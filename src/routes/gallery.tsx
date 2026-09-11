@@ -7,7 +7,7 @@ import { gallery as bundledGallery, images, type GalleryEntry } from "@/lib/gall
 import { listGalleryPhotos } from "@/lib/data/gallery-photos";
 import { cn } from "@/lib/utils";
 
-const categories = ["All", "Garden", "Food", "Culture", "Détail"] as const;
+const categories = ["All", "People", "Food", "Fire", "Garden", "Culture", "Details"] as const;
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({

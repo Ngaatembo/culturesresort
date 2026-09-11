@@ -52,7 +52,7 @@ export type GalleryEntry = {
   src: string;
   alt: string;
   caption: string;
-  category: "Garden" | "Food" | "Culture" | "Détail";
+  category: "Garden" | "Food" | "Fire" | "Culture" | "People" | "Details";
   tall?: boolean;
 };
 
@@ -81,26 +81,26 @@ export const gallery: GalleryEntry[] = [
     src: craft,
     alt: "A staff member hand-painting a buffalo mural on the brick wall of the dining pavilion",
     caption: "Hand-painted art on the pavilion walls",
-    category: "Détail",
+    category: "Details",
     tall: true,
   },
   {
     src: curioShop,
     alt: "A curio stand selling beaded jewellery, woven bags and traditional cloth",
     caption: "The curio shop, on site",
-    category: "Détail",
+    category: "Culture",
   },
   {
     src: drums,
     alt: "The dining pavilion lit up at night with a leopard sculpture on the lawn",
     caption: "The grounds after dark",
-    category: "Culture",
+    category: "Garden",
   },
   {
     src: staffWelcome,
     alt: "A staff member in branded uniform welcoming guests beside the curio display",
     caption: "Friendly staff, ready to welcome you",
-    category: "Culture",
+    category: "People",
   },
   {
     src: interiorDeck,
@@ -118,7 +118,7 @@ export const gallery: GalleryEntry[] = [
     src: waterfall,
     alt: "A rock-built water feature in the garden, with the thatched pavilion behind it",
     caption: "The rock water feature",
-    category: "Détail",
+    category: "Garden",
   },
   {
     src: gardenLion,
@@ -143,7 +143,7 @@ export const gallery: GalleryEntry[] = [
     src: porkSizzler,
     alt: "Sizzling grilled pork served on a hot plate with tomato and onion",
     caption: "Sizzling grilled pork, straight to the table",
-    category: "Food",
+    category: "Fire",
   },
   {
     src: jollofPlate,
@@ -155,7 +155,7 @@ export const gallery: GalleryEntry[] = [
     src: craftBaskets,
     alt: "Hand-painted canvases of African women and woven baskets on display",
     caption: "Local art and woven baskets on display",
-    category: "Détail",
+    category: "Culture",
     tall: true,
   },
   {
@@ -163,12 +163,6 @@ export const gallery: GalleryEntry[] = [
     alt: "A staff member in traditional dress arranging a large clay pot",
     caption: "Traditional dress and handcrafted clay pots",
     category: "Culture",
-  },
-  {
-    src: garden,
-    alt: "Wooden signpost among the trees in the garden",
-    caption: "Signposts through the garden",
-    category: "Détail",
   },
   {
     src: playArea,
@@ -180,31 +174,31 @@ export const gallery: GalleryEntry[] = [
     src: goatChopsPlate,
     alt: "Char-grilled ribs and chops with a slice of tomato, served sizzling on a black platter",
     caption: "Char-grilled ribs, straight off the fire",
-    category: "Food",
+    category: "Fire",
   },
   {
     src: gardenGuestsDaytime,
     alt: "Guests seated at picnic tables in the garden on a sunny day, with lion and elephant sculptures among the greenery",
     caption: "A sunny afternoon in the garden",
-    category: "Garden",
+    category: "People",
     tall: true,
   },
   {
     src: interiorTrophyWall,
     alt: "The indoor dining hall at night, with mounted buffalo, kudu and wildebeest heads on the wood-panelled wall above the tables",
     caption: "Indoor seating, beneath the trophy wall",
-    category: "Détail",
+    category: "Details",
   },
   {
     src: traditionalDrinkPouring,
     alt: "Two staff members in branded uniform pouring a traditional drink from a large clay pot into ceramic cups",
     caption: "A traditional welcome drink, poured from the pot",
-    category: "Culture",
+    category: "People",
   },
   {
     src: potjiePotsTable,
     alt: "Small cast-iron three-legged pots of stew on a table, beside plates of grilled offal and mopani worms",
     caption: "Stews, straight from the pot",
-    category: "Food",
+    category: "Fire",
   },
 ];

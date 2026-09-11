@@ -26,7 +26,7 @@ export const Route = createFileRoute("/admin/gallery")({
   component: GalleryPage,
 });
 
-const CATEGORIES = ["Garden", "Food", "Culture", "Détail"] as const;
+const CATEGORIES = ["People", "Food", "Fire", "Garden", "Culture", "Details"] as const;
 
 function GalleryPage() {
   const [photos, setPhotos] = useState<GalleryPhotoRow[] | null>(null);
@@ -40,7 +40,7 @@ function GalleryPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [alt, setAlt] = useState("");
   const [caption, setCaption] = useState("");
-  const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("Détail");
+  const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("Details");
   const [uploading, setUploading] = useState(false);
 
   const load = () => {

@@ -43,7 +43,7 @@ export const uploadGalleryPhoto = createServerFn({ method: "POST" })
       file,
       alt: String(data.get("alt") ?? ""),
       caption: String(data.get("caption") ?? ""),
-      category: String(data.get("category") ?? "Détail"),
+      category: String(data.get("category") ?? "Details"),
     };
   })
   .handler(async ({ data }) => {
