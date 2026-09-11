@@ -25,6 +25,7 @@ const BUSINESS_FIELDS: FieldDef[] = [
   { key: "addressLine", label: "Address (full)" },
   { key: "addressShort", label: "Address (short)" },
   { key: "mapsHref", label: "Google Maps link" },
+  { key: "googleReviewsHref", label: "Google Reviews link" },
   { key: "tripadvisorHref", label: "TripAdvisor link" },
 ];
 

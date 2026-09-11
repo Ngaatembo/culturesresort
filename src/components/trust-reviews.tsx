@@ -37,7 +37,7 @@ export function TrustReviews() {
     <>
       <Reveal delay={80} className="mt-14 grid gap-4 sm:grid-cols-3">
         <a
-          href={business.mapsHref}
+          href={business.googleReviewsHref}
           target="_blank"
           rel="noopener noreferrer"
           className="group flex flex-col justify-between gap-6 border border-border bg-card p-7 transition-colors hover:border-primary"
@@ -54,9 +54,7 @@ export function TrustReviews() {
           </div>
           <div>
             <p className="font-display text-lg leading-tight">Read our Google reviews</p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {GOOGLE_RATING.count} on Google.
-            </p>
+            <p className="mt-2 text-sm text-muted-foreground">{GOOGLE_RATING.count} on Google.</p>
           </div>
         </a>
 

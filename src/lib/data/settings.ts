@@ -15,6 +15,7 @@ export type BusinessInfo = {
   mapsHref: string;
   mapsEmbedHref: string;
   tripadvisorHref: string;
+  googleReviewsHref: string;
 };
 
 export type SocialLinks = {
@@ -65,7 +66,12 @@ export const getSiteSettings = createServerFn({ method: "GET" }).handler(
 
     return {
       business: parse(KEYS.business, {} as BusinessInfo),
-      socialLinks: parse(KEYS.socialLinks, { facebook: null, instagram: null, tiktok: null, x: null }),
+      socialLinks: parse(KEYS.socialLinks, {
+        facebook: null,
+        instagram: null,
+        tiktok: null,
+        x: null,
+      }),
       openingHours: parse(KEYS.openingHours, []),
       visitDetails: parse(KEYS.visitDetails, []),
       eventTypes: parse(KEYS.eventTypes, []),
