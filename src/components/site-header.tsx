@@ -7,6 +7,7 @@ import { navLinks, whatsappLink, whatsappMessages } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
 import { cn } from "@/lib/utils";
 import logoMark from "@/assets/logo-mark.png";
+import "../ui-refinements.css";
 
 export function SiteHeader() {
   const { business } = useSiteSettings();
