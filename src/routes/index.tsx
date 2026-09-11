@@ -611,44 +611,6 @@ function Home() {
           </Reveal>
         </div>
       </section>
-
-      {/* Final CTA */}
-      <section className="bg-ink pb-16 pt-16 text-center text-bone lg:py-24">
-        <div className="mx-auto max-w-2xl px-5 lg:px-10">
-          <Reveal>
-            <h2 className="font-display text-[clamp(2.2rem,5vw,3.75rem)] leading-tight">
-              Your table is waiting.
-            </h2>
-            <p className="mt-4 text-base leading-relaxed text-bone/80 sm:text-lg">
-              Come for the food. Stay for the experience.
-            </p>
-            <div className="mx-auto mt-8 flex max-w-[440px] flex-col items-stretch gap-4 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
-              <Link
-                to="/reservations"
-                className="eyebrow bg-primary px-8 py-4 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:opacity-90"
-              >
-                Reserve a table →
-              </Link>
-              <a
-                href={business.mapsHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="eyebrow border border-bone/40 px-8 py-4 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
-              >
-                Get directions →
-              </a>
-              <a
-                href={business.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="eyebrow border border-bone/40 px-8 py-4 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
-              >
-                Chat on WhatsApp →
-              </a>
-            </div>
-          </Reveal>
-        </div>
-      </section>
     </>
   );
 }
