@@ -104,7 +104,7 @@ function Home() {
             <p className="eyebrow text-ochre">Hillside · Harare · Zimbabwe</p>
           </Reveal>
           <Reveal delay={90}>
-            <h1 className="mt-6 max-w-3xl font-display text-[clamp(2.6rem,8vw,5.5rem)] leading-[0.95]">
+            <h1 className="mt-6 max-w-3xl font-display text-[clamp(2.6rem,8vw,4.75rem)] leading-[0.95]">
               More than a meal.
               <span className="block italic text-ochre">An experience of Africa.</span>
             </h1>
@@ -296,7 +296,7 @@ function Home() {
         </div>
         <div className="mx-auto max-w-3xl px-5 py-16 text-center lg:px-10 lg:py-24">
           <Reveal>
-            <p className="eyebrow text-ochre">The kitchen</p>
+            <p className="eyebrow text-ochre">The Cultures table</p>
             <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
               Traditional plates, cooked without hurry
             </h2>
