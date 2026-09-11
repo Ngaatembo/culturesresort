@@ -411,13 +411,54 @@ function Home() {
         </div>
       </section>
 
+      {/* Chef / story */}
+      <section className="relative overflow-hidden bg-ink text-bone">
+        <img
+          src={fireGrill}
+          alt=""
+          aria-hidden="true"
+          width={1600}
+          height={1067}
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover opacity-25"
+        />
+        <div className="relative mx-auto max-w-4xl px-5 py-24 text-center lg:px-10 lg:py-32">
+          <Reveal>
+            <p className="eyebrow rule-ochre mx-auto text-ochre">The hand behind the fire</p>
+            <h2 className="mt-6 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-tight">
+              35 years at the flame.
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-bone/85">
+              Cultures' kitchen is led by Chef Kumbirai Gumbochuma, who has spent more than
+              thirty-five years cooking traditional African food over open fire and charcoal —
+              the same slow, unhurried approach that shapes every plate that leaves this kitchen
+              today.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Maheu — understated welcome moment, not guaranteed every visit */}
+      <section className="bg-clay py-14 text-bone">
+        <div className="mx-auto max-w-7xl px-5 text-center lg:px-10">
+          <Reveal>
+            <p className="eyebrow text-ochre">Start with a taste of home</p>
+            <p className="mt-3 font-display text-2xl italic leading-snug lg:text-3xl">Maheu</p>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-bone/80">
+              Guests are sometimes welcomed with maheu, a traditional fermented grain drink —
+              a small, informal touch when it's on offer, not a fixed part of every visit.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
       {/* Reviews */}
       <section className="bg-background pb-20 pt-10 lg:py-32">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
-            <p className="eyebrow rule-ochre text-primary">What guests say</p>
+            <p className="eyebrow rule-ochre text-primary">What people remember</p>
             <h2 className="mt-6 max-w-2xl font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
-              Straight from Google reviews
+              Straight from Google &amp; TripAdvisor
             </h2>
           </Reveal>
           <div
