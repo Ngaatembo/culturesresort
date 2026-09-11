@@ -329,3 +329,43 @@
     transform: scale(1.1);
   }
 }
+
+/*
+ * One-time homepage logo intro: plays once per session on the hero,
+ * over a black backdrop, before revealing the ambient garden loop
+ * underneath. Deliberately NOT part of the looping background video —
+ * a repeating brand flash every loop cycle reads as an ad bumper, so
+ * the mark gets its own single moment instead, then steps aside for
+ * good (see /components/site/logo-intro-overlay.tsx for the session
+ * gate). Eases in with a slight undershoot, pulses once, then fades.
+ */
+@keyframes logo-intro {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  14% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  82% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+@utility logo-intro {
+  animation: logo-intro 2.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-intro {
+    animation: none !important;
+    display: none !important;
+  }
+}

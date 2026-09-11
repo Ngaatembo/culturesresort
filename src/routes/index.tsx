@@ -12,6 +12,7 @@ import { images } from "@/lib/gallery";
 import { getMenu, type MenuItemOut } from "@/lib/data/menu";
 import { dishPhotos } from "@/lib/dish-photos";
 import { useOrder } from "@/lib/order";
+import { LogoIntroOverlay } from "@/components/site/logo-intro-overlay";
 import fireGrill from "@/assets/fire-nyama-choma.jpg";
 import fireCookingLoop from "@/assets/video/fire-cooking-loop.mp4";
 import gardenLoop from "@/assets/video/garden-loop.mp4";
@@ -67,6 +68,7 @@ function Home() {
 
   return (
     <>
+      <LogoIntroOverlay />
       {/* Hero */}
       <section className="relative flex min-h-[92svh] items-end overflow-hidden">
         <ParallaxImage strength={44} className="absolute inset-0 h-full w-full">
