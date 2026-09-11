@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ExternalLink, Facebook, Instagram } from "lucide-react";
+import { TikTokIcon } from "@/components/tiktok-icon";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { navLinks, whatsappLink, whatsappMessages } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
@@ -93,6 +94,17 @@ export function SiteFooter() {
                 className="hover:text-ochre"
               >
                 <Instagram className="h-4 w-4" aria-hidden="true" />
+              </a>
+            )}
+            {socialLinks.tiktok && (
+              <a
+                href={socialLinks.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Cultures Resort on TikTok"
+                className="hover:text-ochre"
+              >
+                <TikTokIcon className="h-4 w-4" aria-hidden="true" />
               </a>
             )}
           </div>

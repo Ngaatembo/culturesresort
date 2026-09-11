@@ -143,25 +143,56 @@ function Contact() {
 
             <div className="mt-6 border border-border bg-secondary p-6">
               <h2 className="eyebrow text-foreground">Good to know</h2>
-              <ul className="mt-4 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-                {[
-                  "Dine-in, takeaway & catering",
-                  "Outdoor seating",
-                  "Free parking on site",
-                  "Wheelchair-accessible entrance, toilet & seating",
-                  "Kids' menu, good for birthdays",
-                  "Vegetarian & vegan options",
-                  "Cards, NFC & mobile payments accepted",
-                  "Reservations recommended for lunch & dinner",
-                ].map((item) => (
-                  <li key={item} className="flex gap-2">
-                    <span className="text-ochre" aria-hidden="true">
-                      ✓
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              {[
+                {
+                  label: "Dining & offerings",
+                  items: [
+                    "Dine-in, takeaway & catering",
+                    "Outdoor seating",
+                    "Alcohol, beer, cocktails & wine",
+                    "Happy-hour drinks & food",
+                    "Small plates, quick bite & all-you-can-eat",
+                    "Vegetarian & vegan options",
+                  ],
+                },
+                {
+                  label: "Great for",
+                  items: [
+                    "Great cocktails, wine list & beer selection",
+                    "Great coffee, tea & dessert",
+                    "Breakfast, lunch, dinner & solo dining",
+                    "Casual, cosy, romantic & upmarket atmosphere",
+                    "Families, groups & tourists",
+                  ],
+                },
+                {
+                  label: "Access & payments",
+                  items: [
+                    "Free parking on site",
+                    "Wheelchair-accessible entrance, toilet, seating & car park",
+                    "Assistive hearing loop",
+                    "Kids' menu, good for birthdays",
+                    "Cards, NFC & mobile payments accepted",
+                  ],
+                },
+              ].map((group) => (
+                <div key={group.label} className="mt-5 first:mt-4">
+                  <p className="eyebrow text-xs text-primary">{group.label}</p>
+                  <ul className="mt-2 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
+                    {group.items.map((item) => (
+                      <li key={item} className="flex gap-2">
+                        <span className="text-ochre" aria-hidden="true">
+                          ✓
+                        </span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+                Reservations recommended for lunch & dinner. Call to confirm before travelling.
+              </p>
             </div>
           </Reveal>
 

@@ -34,9 +34,10 @@ export const business = {
  * a wrong social link is worse than no link. The UI hides any button
  * whose value here is null rather than rendering a placeholder/fake one.
  */
-export const socialLinks: { facebook: string | null; instagram: string | null } = {
+export const socialLinks: { facebook: string | null; instagram: string | null; tiktok: string | null } = {
   facebook: "https://www.facebook.com/100057503797633",
   instagram: "https://www.instagram.com/culturesresort/",
+  tiktok: "https://www.tiktok.com/@culturesresort_hillside2",
 };
 
 /**

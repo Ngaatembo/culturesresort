@@ -141,6 +141,16 @@ function ContactPage() {
                   placeholder="https://instagram.com/..."
                 />
               </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground">TikTok</label>
+                <Input
+                  value={socialLinks.tiktok ?? ""}
+                  onChange={(e) =>
+                    setSocialLinks((s) => (s ? { ...s, tiktok: e.target.value || null } : s))
+                  }
+                  placeholder="https://www.tiktok.com/@..."
+                />
+              </div>
             </div>
             <div className="mt-5">
               <Button onClick={saveSocial} disabled={saving === "social"}>
