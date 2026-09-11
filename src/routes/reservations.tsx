@@ -5,7 +5,6 @@ import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
 import { createBooking } from "@/lib/data/bookings";
 import { useSiteSettings } from "@/lib/site-settings-query";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/reservations")({
   head: () => ({
@@ -34,7 +33,6 @@ type Values = {
   date: string;
   time: string;
   guests: string;
-  seating: string;
   request: string;
 };
 
@@ -45,11 +43,8 @@ const empty: Values = {
   date: "",
   time: "",
   guests: "2",
-  seating: "",
   request: "",
 };
-
-const seatingOptions = ["Garden", "Mbaula hearth", "Private gazebo"] as const;
 
 function Reservations() {
   const { business } = useSiteSettings();
@@ -172,12 +167,7 @@ function Reservations() {
                       guestEmail: values.email || undefined,
                       eventDate: values.date,
                       guests: Number(values.guests),
-                      requirements: [
-                        values.time ? `Time: ${values.time}` : null,
-                        values.seating ? `Seating preference: ${values.seating}` : null,
-                      ]
-                        .filter(Boolean)
-                        .join(" · ") || undefined,
+                      requirements: values.time ? `Time: ${values.time}` : undefined,
                       message: values.request || undefined,
                     },
                   });
@@ -248,37 +238,6 @@ function Reservations() {
                     onChange={set("guests")}
                     error={errors.guests}
                   />
-                </div>
-                <div>
-                  <span className="eyebrow text-muted-foreground">
-                    Seating preference (optional)
-                  </span>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {seatingOptions.map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() =>
-                          setValues((v) => ({
-                            ...v,
-                            seating: v.seating === option ? "" : option,
-                          }))
-                        }
-                        className={cn(
-                          "eyebrow rounded-full border px-4 py-2.5 transition-colors",
-                          values.seating === option
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-border hover:bg-secondary",
-                        )}
-                      >
-                        {option}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    We'll do our best to seat you there — the restaurant confirms availability
-                    when they call to finalize your booking.
-                  </p>
                 </div>
                 <label className="block">
                   <span className="eyebrow text-muted-foreground">Special requests (optional)</span>

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Play, Plus, Star } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Flame, Palette, Play, Plus, Star, Trees, Users, Volume2, VolumeX } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { ParallaxImage } from "@/components/parallax-image";
 import { ExperienceGrid } from "@/components/experience-grid";
@@ -42,6 +42,8 @@ function Home() {
   const { business } = useSiteSettings();
   const [playVideo, setPlayVideo] = useState(false);
   const [signatureDishes, setSignatureDishes] = useState<PreviewDish[] | null>(null);
+  const [craftMuted, setCraftMuted] = useState(true);
+  const craftVideoRef = useRef<HTMLVideoElement>(null);
   const { add, has } = useOrder();
 
   useEffect(() => {
@@ -90,42 +92,42 @@ function Home() {
             />
           )}
         </ParallaxImage>
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/65 to-ink/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/35" />
         <div className="relative mx-auto w-full max-w-7xl px-5 pb-16 pt-32 text-bone lg:px-10 lg:pb-24">
           <Reveal>
-            <p className="eyebrow tracking-[0.32em] text-ochre">
-              Destination dining &amp; cultural sanctuary
-            </p>
+            <p className="eyebrow text-ochre">Hillside · Harare · Zimbabwe</p>
           </Reveal>
           <Reveal delay={90}>
             <h1 className="mt-6 max-w-3xl font-display text-[clamp(2.6rem,8vw,5.5rem)] leading-[0.95]">
-              Built around a table,
-              <span className="block italic text-ochre">not a trend.</span>
+              More than a meal.
+              <span className="block italic text-ochre">An experience of Africa.</span>
             </h1>
           </Reveal>
           <Reveal delay={180}>
             <p className="mt-7 max-w-xl text-base leading-relaxed text-bone/80 sm:text-lg">
-              Slow-cooked clay pot stews and open-fire grills, served family style in a garden
-              built for lingering afternoons.
+              Traditional African cooking served in an open garden, among carved wood, woven fibre
+              and open flame.
             </p>
           </Reveal>
           <Reveal delay={270}>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
-                to="/menu"
-                className="eyebrow border border-bone/40 px-8 py-5 text-center transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
-              >
-                Explore menu
-              </Link>
-              <Link
                 to="/reservations"
-                className="group eyebrow bg-primary px-8 py-5 text-center text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-ember"
+                className="group eyebrow bg-primary px-8 py-5 text-center text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:opacity-90"
               >
-                Book a table{" "}
+                Reserve a table{" "}
                 <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
                   →
                 </span>
               </Link>
+              <a
+                href={business.mapsHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="eyebrow border border-bone/40 px-8 py-5 text-center transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
+              >
+                Get directions
+              </a>
               <a
                 href="https://vt.tiktok.com/ZSqfhjd2x/"
                 target="_blank"
@@ -138,32 +140,14 @@ function Home() {
             </div>
           </Reveal>
           <Reveal delay={340}>
-            <dl className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-bone/15 pt-7 text-xs">
-              {[
-                { label: "Location", value: "Hillside, Harare" },
-                { label: "Cuisine style", value: "Traditional African, open fire" },
-                { label: "Atmosphere", value: "Open-air garden, live music" },
-              ].map((field, i) => (
-                <div
-                  key={field.label}
-                  className={cn(
-                    "flex flex-col gap-1",
-                    i > 0 && "border-l border-bone/15 pl-8",
-                  )}
-                >
-                  <dt className="eyebrow text-ochre/80">{field.label}</dt>
-                  <dd className="text-bone/70">{field.value}</dd>
-                </div>
+            <ul className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-bone/15 pt-6 text-xs">
+              {["Traditional clay pot dining", "Open air garden", "Live music"].map((stat, i) => (
+                <li key={stat} className="flex items-center gap-3">
+                  {i > 0 ? <span className="text-ochre/60" aria-hidden="true">•</span> : null}
+                  <span className="eyebrow text-bone/70">{stat}</span>
+                </li>
               ))}
-              <a
-                href={business.mapsHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="eyebrow border-l border-bone/15 pl-8 text-bone/70 underline decoration-bone/30 underline-offset-4 hover:text-bone"
-              >
-                Get directions
-              </a>
-            </dl>
+            </ul>
           </Reveal>
         </div>
         <a
@@ -176,36 +160,51 @@ function Home() {
         </a>
       </section>
 
-      {/* Intro / Our Story */}
+      {/* Intro */}
       <section id="story" className="grain bg-background py-20 lg:py-32">
         <div className="mx-auto grid max-w-7xl items-start gap-14 px-5 lg:grid-cols-12 lg:px-10">
-          {/* Featured image — "Our Table": outdoor garden dining, with a
-              floating glassmorphism badge over the bottom-left corner.
-              Comes first in markup so it's the lead element on mobile too. */}
           <Reveal className="relative lg:col-span-5">
-            <div className="aspect-[4/5] overflow-hidden rounded-2xl">
-              <img
-                src={images.garden}
-                alt="Outdoor garden dining at Cultures Resort"
-                loading="lazy"
+            <div className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-ink">
+              <video
+                ref={craftVideoRef}
+                src={fireCookingLoop}
+                poster={fireGrill}
+                autoPlay
+                muted={craftMuted}
+                loop
+                playsInline
+                preload="metadata"
+                aria-label="Behind the craft: cooking over the open fire at Cultures Resort"
                 className="h-full w-full object-cover"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
+              <p className="eyebrow absolute left-5 top-5 text-bone/85">Behind the craft</p>
+              <button
+                type="button"
+                onClick={() => setCraftMuted((m) => !m)}
+                aria-label={craftMuted ? "Turn sound on" : "Turn sound off"}
+                className="absolute bottom-5 right-5 grid h-10 w-10 place-items-center rounded-full bg-ink/60 text-bone backdrop-blur transition-colors hover:bg-ink/80"
+              >
+                {craftMuted ? (
+                  <VolumeX className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <Volume2 className="h-4 w-4" aria-hidden="true" />
+                )}
+              </button>
             </div>
-            <div className="absolute bottom-5 left-5 rounded-2xl border border-bone/25 bg-ink/50 px-5 py-4 text-bone shadow-lift backdrop-blur-xl">
-              <p className="eyebrow tracking-[0.28em] text-ochre">Our table</p>
-              <p className="mt-1 font-display text-lg leading-tight">A gathering place</p>
+            <div className="absolute -bottom-6 -right-6 hidden max-w-[13rem] rounded-2xl border border-border bg-card p-5 shadow-lift sm:block">
+              <p className="font-display text-3xl italic text-primary">est.</p>
+              <p className="mt-1 text-sm leading-snug text-muted-foreground">
+                A garden built around craft, fire and shared tables.
+              </p>
             </div>
           </Reveal>
-
           <div className="lg:col-span-6 lg:col-start-7">
             <Reveal>
-              <p className="eyebrow tracking-[0.28em] text-ochre">Heritage &amp; atmosphere</p>
+              <p className="eyebrow rule-ochre text-primary">Our table</p>
               <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
-                Tradition meets fire
-              </h2>
-              <p className="mt-3 font-display text-lg italic text-primary">
                 A place to eat, relax and spend time together
-              </p>
+              </h2>
             </Reveal>
             <Reveal delay={120}>
               <div className="mt-6 space-y-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
@@ -218,34 +217,31 @@ function Home() {
                   The kitchen cooks traditional dishes. The grounds hold African art, handcrafted
                   objects and shade trees. Families come for lunch and stay through the afternoon.
                 </p>
+                <Link
+                  to="/our-story"
+                  className="eyebrow inline-block border-b border-primary pb-2 text-primary"
+                >
+                  Read our story
+                </Link>
               </div>
             </Reveal>
-            {/* 4 brand pillars — asymmetric 2x2 grid, second column offset
-                down slightly on larger screens for an editorial feel. */}
-            <Reveal delay={200} className="mt-12 grid gap-x-6 gap-y-8 sm:grid-cols-2">
+            <Reveal delay={200} className="mt-12 grid gap-6 sm:grid-cols-2">
               {[
-                { n: "01", title: "Traditional cooking", body: "Slow, open-fire dishes." },
-                { n: "02", title: "Open ground", body: "Tables spread across the garden." },
-                { n: "03", title: "Craft on show", body: "Carved wood, clay and woven fibre." },
-                { n: "04", title: "Room for everyone", body: "Long tables, kids welcome." },
-              ].map(({ n, title, body }, i) => (
-                <div key={n} className={cn(i % 2 === 1 && "sm:mt-8")}>
-                  <span className="font-display text-2xl italic text-ochre">{n}</span>
-                  <p className="mt-2 font-display text-base leading-tight">{title}</p>
-                  <p className="mt-1 text-sm leading-snug text-muted-foreground">{body}</p>
+                { title: "Traditional cooking", body: "Slow, open-fire dishes.", Icon: Flame },
+                { title: "Open ground", body: "Tables spread across the garden.", Icon: Trees },
+                { title: "Craft on show", body: "Carved wood, clay and woven fibre.", Icon: Palette },
+                { title: "Room for everyone", body: "Long tables, kids welcome.", Icon: Users },
+              ].map(({ title, body, Icon }) => (
+                <div key={title} className="flex items-start gap-4">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-secondary text-primary">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-display text-base leading-tight">{title}</p>
+                    <p className="mt-1 text-sm leading-snug text-muted-foreground">{body}</p>
+                  </div>
                 </div>
               ))}
-            </Reveal>
-            <Reveal delay={260}>
-              <Link
-                to="/our-story"
-                className="group eyebrow mt-12 inline-flex items-center gap-2 border-b border-primary pb-2 text-primary"
-              >
-                Read our story
-                <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
-                  →
-                </span>
-              </Link>
             </Reveal>
           </div>
         </div>

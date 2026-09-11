@@ -59,37 +59,34 @@
 
 :root {
   --radius: 0.2rem;
-  /* Cultures Resort brand palette:
-     primary = Warm Terracotta, accent = Muted Aged Gold, background =
-     Champagne Sand, foreground = Deep Charcoal Wood, leaf = WhatsApp Green. */
-  --background: #f7f4ee;
-  --foreground: #1a1715;
-  --card: #fdfbf7;
-  --card-foreground: #1a1715;
-  --popover: #fdfbf7;
-  --popover-foreground: #1a1715;
-  --primary: #9e472a;
-  --primary-foreground: #f7f4ee;
-  --secondary: #efe7d7;
-  --secondary-foreground: #1a1715;
-  --muted: #efe7d7;
-  --muted-foreground: #675a4c;
-  --accent: #c59b27;
-  --accent-foreground: #1a1715;
+  --background: oklch(0.943 0.021 79);
+  --foreground: oklch(0.219 0.008 85);
+  --card: oklch(0.96 0.016 79);
+  --card-foreground: oklch(0.219 0.008 85);
+  --popover: oklch(0.96 0.016 79);
+  --popover-foreground: oklch(0.219 0.008 85);
+  --primary: oklch(0.534 0.125 38.5);
+  --primary-foreground: oklch(0.96 0.016 79);
+  --secondary: oklch(0.9 0.018 76);
+  --secondary-foreground: oklch(0.3 0.02 60);
+  --muted: oklch(0.9 0.018 76);
+  --muted-foreground: oklch(0.46 0.025 60);
+  --accent: oklch(0.711 0.101 78.4);
+  --accent-foreground: oklch(0.219 0.008 85);
   --destructive: oklch(0.52 0.19 27);
-  --destructive-foreground: #f7f4ee;
-  --border: #e2d7c1;
-  --input: #e2d7c1;
-  --ring: #9e472a;
+  --destructive-foreground: oklch(0.98 0.01 82);
+  --border: oklch(0.85 0.02 74);
+  --input: oklch(0.85 0.02 74);
+  --ring: oklch(0.534 0.125 38.5);
 
-  --ember: #c59b27;
-  --ochre: #c59b27;
-  --clay: #2e2621;
-  --bone: #f7f4ee;
-  --ink: #1a1715;
-  --leaf: #25d366;
-  --success: #25d366;
-  --success-foreground: #f7f4ee;
+  --ember: oklch(0.621 0.136 49.2);
+  --ochre: oklch(0.711 0.101 78.4);
+  --clay: oklch(0.424 0.048 53.8);
+  --bone: oklch(0.943 0.021 79);
+  --ink: oklch(0.219 0.008 85);
+  --leaf: oklch(0.5 0.1 134);
+  --success: oklch(0.5 0.1 145);
+  --success-foreground: oklch(0.98 0.01 82);
 
   --sidebar: var(--card);
   --sidebar-foreground: var(--foreground);

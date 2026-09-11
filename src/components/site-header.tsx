@@ -31,22 +31,20 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-        scrolled || open ? "p-3 sm:p-4" : "p-0",
+        "fixed inset-x-0 top-0 z-50 transition-colors duration-500",
+        scrolled || open
+          ? "bg-background/95 border-b border-border backdrop-blur"
+          : "bg-gradient-to-b from-ink/70 to-transparent",
       )}
     >
-      <div
-        className={cn(
-          "mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 transition-all duration-500 sm:gap-4 sm:px-5 lg:px-10",
-          scrolled || open
-            ? "rounded-2xl border border-bone/10 bg-ink/70 shadow-lift backdrop-blur-xl"
-            : "bg-gradient-to-b from-ink/70 to-transparent",
-        )}
-      >
+      <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 lg:px-10">
         <Link
           to="/"
           onClick={() => setOpen(false)}
-          className="flex min-w-0 items-center gap-2 leading-none text-bone sm:gap-3"
+          className={cn(
+            "flex min-w-0 items-center gap-3 leading-none transition-colors",
+            scrolled || open ? "text-foreground" : "text-bone",
+          )}
           aria-label={`${business.name} — home`}
         >
           <img
@@ -61,7 +59,7 @@ export function SiteHeader() {
             <span className="block truncate font-display text-base tracking-tight sm:text-lg lg:text-xl">
               Cultures Resort
             </span>
-            <span className="eyebrow mt-1 block truncate text-[0.5rem] tracking-[0.14em] text-ochre/90 sm:text-[0.6rem] sm:tracking-[0.28em]">
+            <span className="eyebrow mt-1 block truncate text-[0.5rem] opacity-70 sm:text-[0.6rem]">
               Traditional African Restaurant
             </span>
           </span>
@@ -74,7 +72,10 @@ export function SiteHeader() {
                 key={l.to}
                 to={l.to}
                 activeOptions={{ exact: l.to === "/" }}
-                className="eyebrow text-bone/85 transition-opacity hover:opacity-100"
+                className={cn(
+                  "eyebrow transition-opacity hover:opacity-100",
+                  scrolled ? "text-foreground/80" : "text-bone/85",
+                )}
                 activeProps={{
                   className:
                     "!opacity-100 underline decoration-ochre decoration-2 underline-offset-8",
@@ -84,11 +85,19 @@ export function SiteHeader() {
               </Link>
             ))}
           </div>
-          <div className="ml-7 flex items-center gap-3 border-l border-bone/20 pl-7">
+          <div
+            className={cn(
+              "ml-7 flex items-center gap-3 border-l pl-7",
+              scrolled ? "border-border" : "border-bone/25",
+            )}
+          >
             <button
               type="button"
               onClick={openDrawer}
-              className="eyebrow flex items-center gap-2 border border-bone/30 px-4 py-3 text-bone transition-colors hover:border-bone/50"
+              className={cn(
+                "eyebrow flex items-center gap-2 border px-4 py-3 transition-colors",
+                scrolled ? "border-border text-foreground" : "border-bone/40 text-bone",
+              )}
               aria-label="Open your enquiry list"
             >
               <ShoppingBag className="h-4 w-4" aria-hidden="true" />
@@ -114,7 +123,10 @@ export function SiteHeader() {
           aria-expanded={open}
           aria-controls="mobile-nav"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="relative h-10 w-10 shrink-0 text-bone sm:h-11 sm:w-11 lg:hidden"
+          className={cn(
+            "relative h-11 w-11 lg:hidden",
+            scrolled || open ? "text-foreground" : "text-bone",
+          )}
         >
           <span
             className={cn(
