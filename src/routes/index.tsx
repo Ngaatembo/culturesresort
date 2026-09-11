@@ -336,7 +336,7 @@ function Home() {
                             price: dish.price,
                           })
                         }
-                        className="eyebrow mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-bone/25 px-3 py-2.5 text-bone/85 transition-colors hover:bg-bone/10"
+                        className="eyebrow mt-3 flex w-full items-center justify-center gap-2 border border-bone/25 px-3 py-2.5 text-bone/85 transition-colors hover:bg-bone/10"
                       >
                         <Plus className="h-3.5 w-3.5" aria-hidden="true" />
                         {has(String(dish.id)) ? "Added — add another" : "Add to enquiry"}

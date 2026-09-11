@@ -127,7 +127,7 @@ export function OrderDrawer() {
               <Link
                 to="/menu"
                 onClick={closeDrawer}
-                className="eyebrow mt-8 inline-block rounded-full bg-primary px-6 py-4 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5"
+                className="eyebrow mt-8 inline-block bg-primary px-6 py-4 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5"
                 tabIndex={open ? 0 : -1}
               >
                 Order something else
@@ -143,7 +143,7 @@ export function OrderDrawer() {
               <Link
                 to="/menu"
                 onClick={closeDrawer}
-                className="eyebrow mt-8 inline-block rounded-full bg-primary px-6 py-4 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5"
+                className="eyebrow mt-8 inline-block bg-primary px-6 py-4 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5"
                 tabIndex={open ? 0 : -1}
               >
                 Browse the menu
@@ -223,7 +223,7 @@ export function OrderDrawer() {
                 type="button"
                 onClick={handlePlaceOrder}
                 disabled={placing}
-                className="eyebrow w-full rounded-full bg-primary px-6 py-4 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
+                className="eyebrow w-full bg-primary px-6 py-4 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
                 tabIndex={open ? 0 : -1}
               >
                 {placing
@@ -241,7 +241,7 @@ export function OrderDrawer() {
             type="button"
             onClick={handleWhatsAppClick}
             disabled={loggingWhatsApp}
-            className="eyebrow mt-4 flex w-full items-center justify-center gap-3 rounded-full bg-leaf px-6 py-4 text-bone transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-leaf/90 disabled:opacity-70"
+            className="eyebrow mt-4 flex w-full items-center justify-center gap-3 bg-leaf px-6 py-4 text-bone transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-leaf/90 disabled:opacity-70"
             tabIndex={open ? 0 : -1}
           >
             <WhatsAppIcon className="h-4 w-4" />
@@ -252,7 +252,7 @@ export function OrderDrawer() {
           <div className="mt-3 grid grid-cols-2 gap-3">
             <a
               href={business.phoneHref}
-              className="eyebrow rounded-full border border-border px-4 py-4 text-center transition-colors hover:bg-secondary"
+              className="eyebrow border border-border px-4 py-4 text-center transition-colors hover:bg-secondary"
             >
               Call
             </a>
@@ -260,7 +260,7 @@ export function OrderDrawer() {
               <button
                 type="button"
                 onClick={clear}
-                className="eyebrow rounded-full border border-border px-4 py-4 transition-colors hover:bg-secondary"
+                className="eyebrow border border-border px-4 py-4 transition-colors hover:bg-secondary"
                 tabIndex={open ? 0 : -1}
               >
                 Clear list
@@ -269,7 +269,7 @@ export function OrderDrawer() {
               <Link
                 to="/reservations"
                 onClick={closeDrawer}
-                className="eyebrow rounded-full border border-border px-4 py-4 text-center transition-colors hover:bg-secondary"
+                className="eyebrow border border-border px-4 py-4 text-center transition-colors hover:bg-secondary"
               >
                 Book a table
               </Link>
