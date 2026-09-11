@@ -135,10 +135,6 @@ function Contact() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-                Hours have not been published yet — they are editable from the owner dashboard.
-                Please call to confirm before travelling.
-              </p>
             </div>
 
             <div className="mt-6 border border-border bg-secondary p-6">
@@ -163,16 +159,17 @@ function Contact() {
                     "Breakfast, lunch, dinner & solo dining",
                     "Casual, cosy, romantic & upmarket atmosphere",
                     "Families, groups & tourists",
+                    "Hosting groups & events up to 200 guests",
                   ],
                 },
                 {
                   label: "Access & payments",
                   items: [
-                    "Free parking on site",
+                    "Guarded on-site parking",
                     "Wheelchair-accessible entrance, toilet, seating & car park",
                     "Assistive hearing loop",
                     "Kids' menu, good for birthdays",
-                    "Cards, NFC & mobile payments accepted",
+                    "Cash, Ecocash, bank transfer & Visa accepted",
                   ],
                 },
               ].map((group) => (

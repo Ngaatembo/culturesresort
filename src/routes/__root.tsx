@@ -92,7 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Cultures Resort is a traditional African restaurant and cultural dining destination in Hillside, Harare, Zimbabwe.",
+          "Cultures Resort is a Traditional African Restaurant offering charcoal-grilled meats and stews, served with traditional African delicacies from across Africa. Hillside, Harare, Zimbabwe.",
       },
       { property: "og:site_name", content: "Cultures Resort" },
       { property: "og:type", content: "website" },

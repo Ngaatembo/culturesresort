@@ -66,7 +66,7 @@ function Events() {
       <PageHeader
         eyebrow="Events & functions"
         title="Gatherings under the trees"
-        intro="Birthdays, family gatherings, outings with friends or a business lunch. Tell us what you have in mind and the team will come back to you directly."
+        intro="Birthdays, family gatherings, outings with friends or a business lunch — the grounds can host groups up to 200 guests. Tell us what you have in mind and the team will come back to you directly."
         image={images.drums}
         imageAlt="The dining pavilion lit up at night with a leopard sculpture on the lawn"
       />

@@ -55,9 +55,8 @@ function OurStory() {
                 added afterwards.
               </p>
               <p className="border-l-2 border-ochre pl-6 text-foreground">
-                This section is written as an honest placeholder. The owner's own history, founding
-                year and family story can be added from the dashboard — we haven't invented dates or
-                claims.
+                Cultures Resort has been open since 2018. The fuller family story — how it started,
+                who built it — is being written with the owners and will be added here.
               </p>
             </div>
           </Reveal>

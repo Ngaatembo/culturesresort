@@ -59,28 +59,31 @@
 
 :root {
   --radius: 0.2rem;
+  /* Accent colors aligned to the new logo: deep red + gold, on the
+     African-triangle motif. Background/text stay the existing warm
+     cream/charcoal pending a decision on a full dark theme. */
   --background: oklch(0.943 0.021 79);
   --foreground: oklch(0.219 0.008 85);
   --card: oklch(0.96 0.016 79);
   --card-foreground: oklch(0.219 0.008 85);
   --popover: oklch(0.96 0.016 79);
   --popover-foreground: oklch(0.219 0.008 85);
-  --primary: oklch(0.534 0.125 38.5);
+  --primary: #b32020;
   --primary-foreground: oklch(0.96 0.016 79);
   --secondary: oklch(0.9 0.018 76);
   --secondary-foreground: oklch(0.3 0.02 60);
   --muted: oklch(0.9 0.018 76);
   --muted-foreground: oklch(0.46 0.025 60);
-  --accent: oklch(0.711 0.101 78.4);
+  --accent: #e8b94a;
   --accent-foreground: oklch(0.219 0.008 85);
   --destructive: oklch(0.52 0.19 27);
   --destructive-foreground: oklch(0.98 0.01 82);
   --border: oklch(0.85 0.02 74);
   --input: oklch(0.85 0.02 74);
-  --ring: oklch(0.534 0.125 38.5);
+  --ring: #b32020;
 
-  --ember: oklch(0.621 0.136 49.2);
-  --ochre: oklch(0.711 0.101 78.4);
+  --ember: #d9791f;
+  --ochre: #e8b94a;
   --clay: oklch(0.424 0.048 53.8);
   --bone: oklch(0.943 0.021 79);
   --ink: oklch(0.219 0.008 85);

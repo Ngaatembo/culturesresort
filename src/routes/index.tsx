@@ -26,12 +26,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Traditional African cuisine, garden dining and cultural atmosphere at the corner of Chiremba and Southey Road, Hillside, Harare. Reserve a table or call +263 77 295 1308.",
+          "Cultures Resort is a Traditional African Restaurant offering charcoal-grilled meats and stews, served with traditional African delicacies from across Africa. Corner of Chiremba and Southey Road, Hillside, Harare.",
       },
       { property: "og:title", content: "Cultures Resort | Traditional African Restaurant in Harare" },
       {
         property: "og:description",
-        content: "More than a meal — an experience of Africa, in Hillside, Harare.",
+        content:
+          "Charcoal-grilled meats and stews, served with traditional African delicacies from across Africa. Open daily, 10am – 10pm.",
       },
     ],
   }),
