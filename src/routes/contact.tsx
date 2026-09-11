@@ -140,6 +140,29 @@ function Contact() {
                 Please call to confirm before travelling.
               </p>
             </div>
+
+            <div className="mt-6 border border-border bg-secondary p-6">
+              <h2 className="eyebrow text-foreground">Good to know</h2>
+              <ul className="mt-4 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
+                {[
+                  "Dine-in, takeaway & catering",
+                  "Outdoor seating",
+                  "Free parking on site",
+                  "Wheelchair-accessible entrance, toilet & seating",
+                  "Kids' menu, good for birthdays",
+                  "Vegetarian & vegan options",
+                  "Cards, NFC & mobile payments accepted",
+                  "Reservations recommended for lunch & dinner",
+                ].map((item) => (
+                  <li key={item} className="flex gap-2">
+                    <span className="text-ochre" aria-hidden="true">
+                      ✓
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </Reveal>
 
           <Reveal delay={120} className="lg:col-span-6 lg:col-start-7">
