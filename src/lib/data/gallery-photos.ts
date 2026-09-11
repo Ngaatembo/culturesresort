@@ -12,9 +12,12 @@ export type GalleryPhotoRow = {
   category: string;
   sort_order: number;
   created_at: string;
+  bundled_source: string | null;
+  is_deleted: number;
 };
 
-/** Public — the site's gallery page merges this with the bundled launch photos. */
+/** Public data source. Bundled rows include tombstones so the public gallery can
+ * permanently hide a launch photo after an admin deletes it. */
 export const listGalleryPhotos = createServerFn({ method: "GET" }).handler(async () => {
   const db = getDb();
   const { results } = await db
@@ -61,7 +64,7 @@ export const uploadGalleryPhoto = createServerFn({ method: "POST" })
 
     await db
       .prepare(
-        "INSERT INTO gallery_photos (r2_key, alt, caption, category, sort_order) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO gallery_photos (r2_key, alt, caption, category, sort_order, bundled_source, is_deleted) VALUES (?, ?, ?, ?, ?, NULL, 0)",
       )
       .bind(key, data.alt, data.caption, data.category, (maxOrder?.m ?? 0) + 1)
       .run();
@@ -75,7 +78,7 @@ export const updateGalleryPhoto = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const db = getDb();
     await db
-      .prepare("UPDATE gallery_photos SET alt = ?, caption = ?, category = ? WHERE id = ?")
+      .prepare("UPDATE gallery_photos SET alt = ?, caption = ?, category = ? WHERE id = ? AND is_deleted = 0")
       .bind(data.alt, data.caption, data.category, data.id)
       .run();
     return { ok: true as const };
@@ -87,24 +90,26 @@ export const deleteGalleryPhoto = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const db = getDb();
     const row = await db
-      .prepare("SELECT r2_key FROM gallery_photos WHERE id = ?")
+      .prepare("SELECT r2_key, bundled_source FROM gallery_photos WHERE id = ? AND is_deleted = 0")
       .bind(data.id)
-      .first<{ r2_key: string }>();
+      .first<{ r2_key: string; bundled_source: string | null }>();
     if (row) {
-      const bucket = getGalleryBucket();
-      await bucket.delete(row.r2_key);
-      await db.prepare("DELETE FROM gallery_photos WHERE id = ?").bind(data.id).run();
+      if (row.bundled_source) {
+        // Keep a tombstone so the original bundled asset does not reappear.
+        await db.prepare("UPDATE gallery_photos SET is_deleted = 1 WHERE id = ?").bind(data.id).run();
+      } else {
+        const bucket = getGalleryBucket();
+        await bucket.delete(row.r2_key);
+        await db.prepare("DELETE FROM gallery_photos WHERE id = ?").bind(data.id).run();
+      }
     }
     return { ok: true as const };
   });
 
 /**
- * One-time: copies the 20 launch photos (bundled with the site's code,
- * src/lib/gallery.ts) into the database + R2, so they become ordinary
- * rows — editable and deletable from the admin like anything uploaded
- * from now on, instead of a separate read-only "launch photos" set.
- * Safe to run more than once: skips any photo whose exact caption
- * already exists in the table.
+ * One-time: copies the bundled launch photos into database + R2 so they become
+ * ordinary admin-managed rows. `bundled_source` preserves the original asset
+ * identity, which makes later edits and deletions persistent.
  */
 export const importBundledGalleryPhotos = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
@@ -114,8 +119,9 @@ export const importBundledGalleryPhotos = createServerFn({ method: "POST" })
     const origin = getRequestUrl().origin;
 
     const { results: existing } = await db
-      .prepare("SELECT caption FROM gallery_photos")
-      .all<{ caption: string }>();
+      .prepare("SELECT bundled_source, caption FROM gallery_photos")
+      .all<{ bundled_source: string | null; caption: string }>();
+    const existingSources = new Set(existing.map((r) => r.bundled_source).filter(Boolean) as string[]);
     const existingCaptions = new Set(existing.map((r) => r.caption));
 
     const maxOrder = await db
@@ -128,7 +134,7 @@ export const importBundledGalleryPhotos = createServerFn({ method: "POST" })
     const failed: string[] = [];
 
     for (const photo of bundledGallery) {
-      if (existingCaptions.has(photo.caption)) {
+      if (existingSources.has(photo.caption) || existingCaptions.has(photo.caption)) {
         skipped++;
         continue;
       }
@@ -147,9 +153,9 @@ export const importBundledGalleryPhotos = createServerFn({ method: "POST" })
         order += 1;
         await db
           .prepare(
-            "INSERT INTO gallery_photos (r2_key, alt, caption, category, sort_order) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO gallery_photos (r2_key, alt, caption, category, sort_order, bundled_source, is_deleted) VALUES (?, ?, ?, ?, ?, ?, 0)",
           )
-          .bind(key, photo.alt, photo.caption, photo.category, order)
+          .bind(key, photo.alt, photo.caption, photo.category, order, photo.caption)
           .run();
         imported++;
       } catch {
