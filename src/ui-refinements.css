@@ -1,0 +1,116 @@
+@layer components {
+  /* Shared editorial rhythm: less vertical drift, more intentional whitespace. */
+  main > section {
+    scroll-margin-top: 5.5rem;
+  }
+
+  /* Homepage hero: slightly shorter and less top-heavy. */
+  main > section:first-child {
+    min-height: 88svh;
+  }
+
+  main > section:first-child > div.relative.mx-auto {
+    padding-top: 8rem;
+    padding-bottom: 5.5rem;
+  }
+
+  main > section:first-child h1 {
+    max-width: 12ch;
+    text-wrap: balance;
+  }
+
+  /* Editorial sections: tighten the vertical rhythm. */
+  main section.grain {
+    padding-block: clamp(4rem, 7vw, 6rem) !important;
+  }
+
+  main section.grain > div.mx-auto {
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  main h2 {
+    text-wrap: balance;
+  }
+
+  main p {
+    text-wrap: pretty;
+  }
+
+  /* One consistent image/card corner treatment. */
+  main .rounded-2xl {
+    border-radius: 0.75rem;
+  }
+
+  /* Reduce the largest utility-generated gaps without changing layout intent. */
+  main .mt-12 {
+    margin-top: 2.25rem;
+  }
+
+  main .mt-14 {
+    margin-top: 2.75rem;
+  }
+
+  /* Buttons stay substantial without dominating the page. */
+  main a.bg-primary,
+  main button.bg-primary {
+    min-height: 3.25rem;
+  }
+
+  /* Keep feature grids on a consistent 24px rhythm. */
+  main .grid.gap-6 {
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 639px) {
+    main > section:first-child {
+      min-height: 82svh;
+    }
+
+    main > section:first-child > div.relative.mx-auto {
+      padding-inline: 1.25rem;
+      padding-top: 7rem;
+      padding-bottom: 4.25rem;
+    }
+
+    main > section:first-child h1 {
+      max-width: 10ch;
+      font-size: clamp(2.45rem, 12vw, 3.4rem);
+      line-height: 0.98;
+    }
+
+    main > section:first-child .mt-10 {
+      margin-top: 1.75rem;
+    }
+
+    main section.grain {
+      padding-block: 4rem !important;
+    }
+
+    main section.grain > div.mx-auto {
+      gap: 2.5rem;
+    }
+
+    main section.grain h2 {
+      font-size: clamp(2rem, 9vw, 2.75rem);
+      line-height: 1.05;
+    }
+
+    main section.grain .mt-6 {
+      margin-top: 1.25rem;
+    }
+
+    main section.grain .mt-12 {
+      margin-top: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    main > section:first-child > div.relative.mx-auto {
+      padding-bottom: 6rem;
+    }
+
+    main section.grain > div.mx-auto {
+      padding-inline: 2.5rem;
+    }
+  }
+}
