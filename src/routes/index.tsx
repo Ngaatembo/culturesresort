@@ -5,7 +5,6 @@ import { Reveal } from "@/components/reveal";
 import { ParallaxImage } from "@/components/parallax-image";
 import { ExperienceGrid } from "@/components/experience-grid";
 import { DishMedia } from "@/components/dish-media";
-import { VideoTourModal } from "@/components/video-tour-modal";
 import { TrustReviews } from "@/components/trust-reviews";
 import { testimonials } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
@@ -43,7 +42,6 @@ function Home() {
   const { business } = useSiteSettings();
   const [playVideo, setPlayVideo] = useState(false);
   const [signatureDishes, setSignatureDishes] = useState<PreviewDish[] | null>(null);
-  const [tourOpen, setTourOpen] = useState(false);
   const { add, has } = useOrder();
 
   useEffect(() => {
@@ -128,14 +126,15 @@ function Home() {
                   →
                 </span>
               </Link>
-              <button
-                type="button"
-                onClick={() => setTourOpen(true)}
+              <a
+                href="https://vt.tiktok.com/ZSqfhjd2x/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group eyebrow flex items-center justify-center gap-2 px-8 py-5 text-bone/75 transition-colors hover:text-bone"
               >
                 <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                 Take a 1-min tour
-              </button>
+              </a>
             </div>
           </Reveal>
           <Reveal delay={340}>
@@ -561,13 +560,6 @@ function Home() {
           </Reveal>
         </div>
       </section>
-
-      <VideoTourModal
-        open={tourOpen}
-        onClose={() => setTourOpen(false)}
-        src={gardenLoop}
-        poster={images.garden}
-      />
     </>
   );
 }
