@@ -29,7 +29,10 @@ export const Route = createFileRoute("/")({
         content:
           "Cultures Resort is a Traditional African Restaurant offering charcoal-grilled meats and stews, served with traditional African delicacies from across Africa. Corner of Chiremba and Southey Road, Hillside, Harare.",
       },
-      { property: "og:title", content: "Cultures Resort | Traditional African Restaurant in Harare" },
+      {
+        property: "og:title",
+        content: "Cultures Resort | Traditional African Restaurant in Harare",
+      },
       {
         property: "og:description",
         content:
@@ -123,14 +126,12 @@ function Home() {
                   →
                 </span>
               </Link>
-              <a
-                href={business.mapsHref}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/menu"
                 className="eyebrow border border-bone/40 px-8 py-5 text-center transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
               >
-                Get directions
-              </a>
+                Explore the menu
+              </Link>
               <a
                 href="https://vt.tiktok.com/ZSqfhjd2x/"
                 target="_blank"
@@ -146,7 +147,11 @@ function Home() {
             <ul className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-bone/15 pt-6 text-xs">
               {["Traditional clay pot dining", "Open air garden", "Live music"].map((stat, i) => (
                 <li key={stat} className="flex items-center gap-3">
-                  {i > 0 ? <span className="text-ochre/60" aria-hidden="true">•</span> : null}
+                  {i > 0 ? (
+                    <span className="text-ochre/60" aria-hidden="true">
+                      •
+                    </span>
+                  ) : null}
                   <span className="eyebrow text-bone/70">{stat}</span>
                 </li>
               ))}
@@ -235,7 +240,11 @@ function Home() {
               {[
                 { title: "Traditional cooking", body: "Slow, open-fire dishes.", Icon: Flame },
                 { title: "Open ground", body: "Tables spread across the garden.", Icon: Trees },
-                { title: "Craft on show", body: "Carved wood, clay and woven fibre.", Icon: Palette },
+                {
+                  title: "Craft on show",
+                  body: "Carved wood, clay and woven fibre.",
+                  Icon: Palette,
+                },
                 { title: "Room for everyone", body: "Long tables, kids welcome.", Icon: Users },
               ].map(({ title, body, Icon }) => (
                 <div key={title} className="flex items-start gap-4">
@@ -298,10 +307,7 @@ function Home() {
             <ul className="mx-auto mt-10 grid max-w-3xl gap-4 text-left sm:grid-cols-3">
               {(signatureDishes ?? [null, null, null]).map((dish, i) =>
                 dish ? (
-                  <li
-                    key={dish.id}
-                    className="card-tactile overflow-hidden rounded-2xl bg-bone/5"
-                  >
+                  <li key={dish.id} className="card-tactile overflow-hidden rounded-2xl bg-bone/5">
                     <div className="aspect-[4/3] overflow-hidden">
                       <DishMedia
                         imageSrc={
@@ -433,9 +439,8 @@ function Home() {
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-bone/85">
               Cultures' kitchen is led by Chef Kumbirai Gumbochuma, who has spent more than
-              thirty-five years cooking traditional African food over open fire and charcoal —
-              the same slow, unhurried approach that shapes every plate that leaves this kitchen
-              today.
+              thirty-five years cooking traditional African food over open fire and charcoal — the
+              same slow, unhurried approach that shapes every plate that leaves this kitchen today.
             </p>
           </Reveal>
         </div>
@@ -448,8 +453,8 @@ function Home() {
             <p className="eyebrow text-ochre">Start with a taste of home</p>
             <p className="mt-3 font-display text-2xl italic leading-snug lg:text-3xl">Maheu</p>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-bone/80">
-              Guests are sometimes welcomed with maheu, a traditional fermented grain drink —
-              a small, informal touch when it's on offer, not a fixed part of every visit.
+              Guests are sometimes welcomed with maheu, a traditional fermented grain drink — a
+              small, informal touch when it's on offer, not a fixed part of every visit.
             </p>
           </Reveal>
         </div>
@@ -599,6 +604,44 @@ function Home() {
               <Link to="/events" className="eyebrow border border-border px-7 py-4">
                 Enquire about an event
               </Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="bg-ink py-20 text-center text-bone lg:py-28">
+        <div className="mx-auto max-w-2xl px-5 lg:px-10">
+          <Reveal>
+            <h2 className="font-display text-[clamp(2.2rem,5vw,3.75rem)] leading-tight">
+              Your table is waiting.
+            </h2>
+            <p className="mt-5 text-base leading-relaxed text-bone/80 sm:text-lg">
+              Come for the food. Stay for the experience.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                to="/reservations"
+                className="eyebrow bg-primary px-8 py-5 text-primary-foreground transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:opacity-90"
+              >
+                Reserve a table →
+              </Link>
+              <a
+                href={business.mapsHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="eyebrow border border-bone/40 px-8 py-5 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
+              >
+                Get directions →
+              </a>
+              <a
+                href={business.whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="eyebrow border border-bone/40 px-8 py-5 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-bone/10"
+              >
+                Chat on WhatsApp →
+              </a>
             </div>
           </Reveal>
         </div>

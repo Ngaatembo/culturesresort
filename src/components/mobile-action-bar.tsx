@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { CalendarHeart, Home, ShoppingBag, UtensilsCrossed } from "lucide-react";
+import { CalendarHeart, MapPin, ShoppingBag, UtensilsCrossed } from "lucide-react";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { useOrder } from "@/lib/order";
 import { whatsappLink, whatsappMessages } from "@/lib/site-data";
@@ -18,15 +18,16 @@ export function MobileActionBar() {
       className="fixed inset-x-0 bottom-0 z-[85] grid grid-cols-5 border-t border-bone/15 bg-ink text-bone/70 lg:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <Link
-        to="/"
-        activeOptions={{ exact: true }}
+      <a
+        href={business.mapsHref}
+        target="_blank"
+        rel="noopener noreferrer"
         className={itemClass}
-        activeProps={{ className: "text-ochre" }}
+        aria-label="Get directions to Cultures Resort"
       >
-        <Home className="h-5 w-5" aria-hidden="true" />
-        Home
-      </Link>
+        <MapPin className="h-5 w-5" aria-hidden="true" />
+        Directions
+      </a>
       <Link to="/menu" className={itemClass} activeProps={{ className: "text-ochre" }}>
         <UtensilsCrossed className="h-5 w-5" aria-hidden="true" />
         Menu

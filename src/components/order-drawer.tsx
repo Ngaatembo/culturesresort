@@ -102,13 +102,13 @@ export function OrderDrawer() {
         <div className="pattern-band h-1.5 w-full shrink-0" aria-hidden="true" />
         <header className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-4 border-b border-border px-5 py-5">
           <div className="min-w-0">
-            <p className="eyebrow text-primary">Enquiry list</p>
-            <h2 className="mt-2 font-display text-2xl">Items you want to ask about</h2>
+            <p className="eyebrow text-primary">Your order</p>
+            <h2 className="mt-2 font-display text-2xl">Send it to the kitchen, or ask first</h2>
           </div>
           <button
             type="button"
             onClick={closeDrawer}
-            aria-label="Close enquiry list"
+            aria-label="Close order"
             className="shrink-0 border border-border p-3"
             tabIndex={open ? 0 : -1}
           >
