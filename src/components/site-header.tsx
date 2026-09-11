@@ -37,7 +37,7 @@ export function SiteHeader() {
     >
       <div
         className={cn(
-          "mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 transition-all duration-500 lg:px-10",
+          "mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 transition-all duration-500 sm:gap-4 sm:px-5 lg:px-10",
           scrolled || open
             ? "rounded-2xl border border-bone/10 bg-ink/70 shadow-lift backdrop-blur-xl"
             : "bg-gradient-to-b from-ink/70 to-transparent",
@@ -46,7 +46,7 @@ export function SiteHeader() {
         <Link
           to="/"
           onClick={() => setOpen(false)}
-          className="flex min-w-0 items-center gap-3 leading-none text-bone"
+          className="flex min-w-0 items-center gap-2 leading-none text-bone sm:gap-3"
           aria-label={`${business.name} — home`}
         >
           <img
@@ -55,14 +55,14 @@ export function SiteHeader() {
             aria-hidden="true"
             width={40}
             height={40}
-            className="h-10 w-10 shrink-0 rounded-full"
+            className="h-8 w-8 shrink-0 rounded-full sm:h-10 sm:w-10"
           />
-          <span className="min-w-0">
-            <span className="block font-display text-lg tracking-tight sm:text-xl">
+          <span className="min-w-0 overflow-hidden">
+            <span className="block truncate font-display text-base tracking-tight sm:text-lg lg:text-xl">
               Cultures Resort
             </span>
-            <span className="eyebrow mt-1 block text-[0.6rem] tracking-[0.28em] text-ochre/90">
-              Harare • Zimbabwe
+            <span className="eyebrow mt-1 block truncate text-[0.5rem] tracking-[0.14em] text-ochre/90 sm:text-[0.6rem] sm:tracking-[0.28em]">
+              Traditional African Restaurant
             </span>
           </span>
         </Link>
@@ -114,7 +114,7 @@ export function SiteHeader() {
           aria-expanded={open}
           aria-controls="mobile-nav"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="relative h-11 w-11 text-bone lg:hidden"
+          className="relative h-10 w-10 shrink-0 text-bone sm:h-11 sm:w-11 lg:hidden"
         >
           <span
             className={cn(
