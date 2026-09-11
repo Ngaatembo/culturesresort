@@ -24,8 +24,8 @@ export const business = {
   /** VERIFIED — the restaurant's real, live TripAdvisor listing. */
   tripadvisorHref:
     "https://www.tripadvisor.com/Restaurant_Review-g293760-d26802869-Reviews-Cultures_Resort-Harare_Harare_Province.html",
-  /** VERIFIED — the restaurant's real Google Maps place link, for the "Read our Google reviews" CTA specifically (separate from mapsHref, which is used for directions). */
-  googleReviewsHref: "https://www.google.com/maps/place/?q=place_id:ChIJMTkSNeOlMRkRoK7kK4kZYbE",
+  /** VERIFIED — deep-links straight to the Google reviews list (not the map/place page) for the "Read our Google reviews" CTA specifically. */
+  googleReviewsHref: "https://search.google.com/local/reviews?placeid=ChIJMTkSNeOlMRkRoK7kK4kZYbE",
 } as const;
 
 /**
