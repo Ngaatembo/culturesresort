@@ -17,6 +17,10 @@ import picnicTables from "@/assets/picnic-tables.jpg";
 import porkSizzler from "@/assets/pork-sizzler.jpg";
 import playArea from "@/assets/play-area.jpg";
 import goatChopsPlate from "@/assets/goat-chops-plate.jpg";
+import interiorTrophyWall from "@/assets/interior-trophy-wall.webp";
+import traditionalDrinkPouring from "@/assets/traditional-drink-pouring.webp";
+import potjiePotsTable from "@/assets/potjie-pots-table.webp";
+import gardenGuestsDaytime from "@/assets/garden-guests-daytime.webp";
 
 export const images = {
   garden,
@@ -38,6 +42,10 @@ export const images = {
   porkSizzler,
   playArea,
   goatChopsPlate,
+  interiorTrophyWall,
+  traditionalDrinkPouring,
+  potjiePotsTable,
+  gardenGuestsDaytime,
 };
 
 export type GalleryEntry = {
@@ -172,6 +180,31 @@ export const gallery: GalleryEntry[] = [
     src: goatChopsPlate,
     alt: "Char-grilled ribs and chops with a slice of tomato, served sizzling on a black platter",
     caption: "Char-grilled ribs, straight off the fire",
+    category: "Food",
+  },
+  {
+    src: gardenGuestsDaytime,
+    alt: "Guests seated at picnic tables in the garden on a sunny day, with lion and elephant sculptures among the greenery",
+    caption: "A sunny afternoon in the garden",
+    category: "Garden",
+    tall: true,
+  },
+  {
+    src: interiorTrophyWall,
+    alt: "The indoor dining hall at night, with mounted buffalo, kudu and wildebeest heads on the wood-panelled wall above the tables",
+    caption: "Indoor seating, beneath the trophy wall",
+    category: "Détail",
+  },
+  {
+    src: traditionalDrinkPouring,
+    alt: "Two staff members in branded uniform pouring a traditional drink from a large clay pot into ceramic cups",
+    caption: "A traditional welcome drink, poured from the pot",
+    category: "Culture",
+  },
+  {
+    src: potjiePotsTable,
+    alt: "Small cast-iron three-legged pots of stew on a table, beside plates of grilled offal and mopani worms",
+    caption: "Stews, straight from the pot",
     category: "Food",
   },
 ];
