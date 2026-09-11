@@ -36,8 +36,6 @@ type PendingUpload = {
   alt: string;
 };
 
-// Curated copy for the 15 supplied resort photos. Matching by filename means
-// the admin can select the whole set at once without having to retype the copy.
 const CURATED_BY_FILENAME: Record<string, Omit<PendingUpload, "file">> = {
   "1000324688.jpg": { category: "Food", caption: "A vibrant layered blue, citrus and red cocktail served in a tall glass.", alt: "A vibrant layered blue, citrus and red cocktail served in a tall glass." },
   "1000324689.jpg": { category: "Food", caption: "A generous platter of flame-grilled meat cuts garnished with fresh rosemary.", alt: "A platter of grilled meat cuts garnished with rosemary." },
@@ -63,7 +61,6 @@ function GalleryPage() {
   const [filter, setFilter] = useState<"All" | Category>("All");
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<string | null>(null);
-
   const fileRef = useRef<HTMLInputElement>(null);
   const [pending, setPending] = useState<PendingUpload[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -83,19 +80,19 @@ function GalleryPage() {
   useEffect(load, []);
 
   const remainingBundled = useMemo(() => {
-    const dbCaptions = new Set((photos ?? []).map((p) => p.caption));
-    return bundledGallery.filter((g) => !dbCaptions.has(g.caption));
+    const bundledSources = new Set((photos ?? []).map((p) => p.bundled_source).filter(Boolean));
+    return bundledGallery.filter((g) => !bundledSources.has(g.caption));
   }, [photos]);
 
   const shownBundled = useMemo(
-    () =>
-      filter === "All" ? remainingBundled : remainingBundled.filter((g) => g.category === filter),
+    () => filter === "All" ? remainingBundled : remainingBundled.filter((g) => g.category === filter),
     [remainingBundled, filter],
   );
   const shownUploaded = useMemo(
-    () => (photos ?? []).filter((p) => filter === "All" || p.category === filter),
+    () => (photos ?? []).filter((p) => p.is_deleted === 0 && (filter === "All" || p.category === filter)),
     [photos, filter],
   );
+  const activePhotoCount = shownUploaded.length;
 
   const onImport = async () => {
     setImporting(true);
@@ -103,11 +100,7 @@ function GalleryPage() {
     setError(null);
     try {
       const result = await importBundledGalleryPhotos();
-      setImportResult(
-        `Imported ${result.imported}, skipped ${result.skipped} already-imported` +
-          (result.failed.length ? `, ${result.failed.length} failed` : "") +
-          ".",
-      );
+      setImportResult(`Imported ${result.imported}, skipped ${result.skipped} already-imported` + (result.failed.length ? `, ${result.failed.length} failed` : "") + ".");
       load();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Couldn't import the launch photos.";
@@ -122,28 +115,16 @@ function GalleryPage() {
     const files = Array.from(e.target.files ?? []);
     setUploadResult(null);
     setError(null);
-    setPending(
-      files.map((file) => {
-        const curated = CURATED_BY_FILENAME[file.name];
-        return {
-          file,
-          category: curated?.category ?? "Details",
-          caption: curated?.caption ?? "",
-          alt: curated?.alt ?? "",
-        };
-      }),
-    );
+    setPending(files.map((file) => {
+      const curated = CURATED_BY_FILENAME[file.name];
+      return { file, category: curated?.category ?? "Details", caption: curated?.caption ?? "", alt: curated?.alt ?? "" };
+    }));
   };
 
   const updatePending = (index: number, field: keyof Omit<PendingUpload, "file">, value: string) => {
-    setPending((current) =>
-      current.map((item, i) => (i === index ? { ...item, [field]: value } : item)),
-    );
+    setPending((current) => current.map((item, i) => i === index ? { ...item, [field]: value } : item));
   };
-
-  const removePending = (index: number) => {
-    setPending((current) => current.filter((_, i) => i !== index));
-  };
+  const removePending = (index: number) => setPending((current) => current.filter((_, i) => i !== index));
 
   const onBulkUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,7 +134,6 @@ function GalleryPage() {
     setUploading(true);
     let uploaded = 0;
     let failed = 0;
-
     try {
       for (const item of pending) {
         try {
@@ -168,11 +148,7 @@ function GalleryPage() {
           failed++;
         }
       }
-      setUploadResult(
-        `Uploaded ${uploaded} photo${uploaded === 1 ? "" : "s"}` +
-          (failed ? `, ${failed} failed` : "") +
-          ".",
-      );
+      setUploadResult(`Uploaded ${uploaded} photo${uploaded === 1 ? "" : "s"}` + (failed ? `, ${failed} failed` : "") + ".");
       setPending([]);
       if (fileRef.current) fileRef.current.value = "";
       load();
@@ -182,7 +158,7 @@ function GalleryPage() {
   };
 
   const onDelete = async (id: number) => {
-    setPhotos((prev) => (prev ? prev.filter((p) => p.id !== id) : prev));
+    setPhotos((prev) => prev ? prev.filter((p) => p.id !== id) : prev);
     try {
       await deleteGalleryPhoto({ data: { id } });
     } catch {
@@ -191,16 +167,11 @@ function GalleryPage() {
   };
 
   const onEditField = (id: number, field: "alt" | "caption" | "category", value: string) => {
-    setPhotos((prev) =>
-      prev ? prev.map((p) => (p.id === id ? { ...p, [field]: value } : p)) : prev,
-    );
+    setPhotos((prev) => prev ? prev.map((p) => p.id === id ? { ...p, [field]: value } : p) : prev);
   };
-
   const onSaveMeta = async (p: GalleryPhotoRow) => {
     try {
-      await updateGalleryPhoto({
-        data: { id: p.id, alt: p.alt, caption: p.caption, category: p.category },
-      });
+      await updateGalleryPhoto({ data: { id: p.id, alt: p.alt, caption: p.caption, category: p.category } });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't save that photo's details.");
     }
@@ -208,99 +179,58 @@ function GalleryPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Gallery"
-        description={`${remainingBundled.length + (photos?.length ?? 0)} photos live on the public site right now.`}
-      />
+      <PageHeader title="Gallery" description={`${activePhotoCount + remainingBundled.length} photos live on the public site right now.`} />
 
       {bucketMissing ? (
         <SectionCard title="Setup required" className="border-accent/40">
           <StatusDot tone="warn">
-            The photo storage bucket hasn't been created in Cloudflare yet. In the Cloudflare
-            dashboard: Workers & Pages → R2 → Create bucket → name it exactly{" "}
-            <code className="rounded bg-secondary px-1.5 py-0.5">culturesresort-gallery</code> →
-            create. No other setup needed — the code is already wired to it, uploads will start
-            working the moment the bucket exists.
+            The photo storage bucket hasn't been created in Cloudflare yet. In the Cloudflare dashboard: Workers & Pages → R2 → Create bucket → name it exactly <code className="rounded bg-secondary px-1.5 py-0.5">culturesresort-gallery</code> → create. No other setup needed — the code is already wired to it, uploads will start working the moment the bucket exists.
           </StatusDot>
         </SectionCard>
-      ) : error ? (
-        <ErrorState message={error} onRetry={load} />
-      ) : null}
+      ) : error ? <ErrorState message={error} onRetry={load} /> : null}
 
       {remainingBundled.length > 0 ? (
         <SectionCard
-          title="Make the launch photos fully editable"
-          description="Right now the 20 original photos are bundled with the site's code, so they can't be edited or deleted here. This copies them into the database, one time, so every photo — old and new — works the same way."
+          title="Make the current launch photos editable"
+          description={`The ${remainingBundled.length} bundled launch photos are still read-only. Import them once and they become normal database photos, with persistent edit and delete controls.`}
         >
           {importResult ? <p className="mb-3 text-sm text-muted-foreground">{importResult}</p> : null}
           <Button type="button" onClick={onImport} disabled={importing}>
             <Download className="h-4 w-4" />
-            {importing ? "Importing…" : `Import the ${remainingBundled.length} launch photos`}
+            {importing ? "Importing…" : `Make ${remainingBundled.length} photos editable`}
           </Button>
         </SectionCard>
       ) : null}
 
-      <SectionCard
-        title="Add photos in bulk"
-        description="Select several images at once. The supplied Cultures Resort photos are recognised by filename and get curated category, caption and accessibility text automatically."
-      >
+      <SectionCard title="Add photos in bulk" description="Select several images at once. The supplied Cultures Resort photos are recognised by filename and get curated category, caption and accessibility text automatically.">
         <form onSubmit={onBulkUpload} className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground">Image files</label>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={onFilesSelected}
-              required
-              className="block w-full text-sm text-foreground file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-primary-foreground"
-            />
+            <input ref={fileRef} type="file" accept="image/*" multiple onChange={onFilesSelected} required className="block w-full text-sm text-foreground file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-primary-foreground" />
             <p className="text-xs text-muted-foreground">Images must be under 8MB each. Uploads run one at a time to keep R2 requests reliable.</p>
           </div>
-
           {uploadResult ? <p className="text-sm text-muted-foreground">{uploadResult}</p> : null}
-
           {pending.length > 0 ? (
             <div className="space-y-3">
               <p className="text-sm font-medium">{pending.length} photo{pending.length === 1 ? "" : "s"} ready to upload</p>
               {pending.map((item, index) => (
                 <div key={`${item.file.name}-${index}`} className="grid gap-3 rounded-2xl border border-border bg-card p-3 sm:grid-cols-[96px_1fr_auto]">
-                  <img
-                    src={URL.createObjectURL(item.file)}
-                    alt=""
-                    className="h-24 w-24 rounded-lg object-cover"
-                  />
+                  <img src={URL.createObjectURL(item.file)} alt="" className="h-24 w-24 rounded-lg object-cover" />
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="space-y-1.5">
                       <p className="truncate text-xs font-medium text-muted-foreground">{item.file.name}</p>
-                      <Select
-                        value={item.category}
-                        onValueChange={(value) => updatePending(index, "category", value)}
-                      >
+                      <Select value={item.category} onValueChange={(value) => updatePending(index, "category", value)}>
                         <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                        </SelectContent>
+                        <SelectContent>{CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                       </Select>
                     </div>
                     <Input value={item.caption} onChange={(e) => updatePending(index, "caption", e.target.value)} placeholder="Caption" />
                     <Input className="sm:col-span-2" value={item.alt} onChange={(e) => updatePending(index, "alt", e.target.value)} placeholder="Alt text" />
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => removePending(index)}
-                    aria-label={`Remove ${item.file.name}`}
-                    className="self-start rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                  <button type="button" onClick={() => removePending(index)} aria-label={`Remove ${item.file.name}`} className="self-start rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
                 </div>
               ))}
-              <Button type="submit" disabled={uploading}>
-                <Upload className="h-4 w-4" />
-                {uploading ? "Uploading…" : `Upload ${pending.length} photo${pending.length === 1 ? "" : "s"}`}
-              </Button>
+              <Button type="submit" disabled={uploading}><Upload className="h-4 w-4" />{uploading ? "Uploading…" : `Upload ${pending.length} photo${pending.length === 1 ? "" : "s"}`}</Button>
             </div>
           ) : null}
         </form>
@@ -308,28 +238,14 @@ function GalleryPage() {
 
       <div className="flex flex-wrap gap-2">
         {(["All", ...CATEGORIES] as const).map((c) => (
-          <button
-            key={c}
-            type="button"
-            onClick={() => setFilter(c)}
-            className={cn(
-              "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-              filter === c
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border text-foreground hover:bg-secondary",
-            )}
-          >
-            {c}
-          </button>
+          <button key={c} type="button" onClick={() => setFilter(c)} className={cn("rounded-full border px-4 py-2 text-sm font-medium transition-colors", filter === c ? "border-primary bg-primary text-primary-foreground" : "border-border text-foreground hover:bg-secondary")}>{c}</button>
         ))}
       </div>
 
-      {photos === null && !bucketMissing ? (
-        <LoadingRows rows={3} />
-      ) : (
+      {photos === null && !bucketMissing ? <LoadingRows rows={3} /> : (
         <>
           {shownUploaded.length > 0 ? (
-            <SectionCard title="Photos" description="Editable and deletable — these live in the database.">
+            <SectionCard title="Photos" description="Every imported or uploaded photo can be edited or deleted. Changes persist to the public gallery.">
               <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {shownUploaded.map((p) => (
                   <li key={p.id} className="space-y-2 rounded-2xl border border-border bg-card p-3">
@@ -341,9 +257,7 @@ function GalleryPage() {
                         <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
                         <SelectContent>{CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                       </Select>
-                      <button type="button" onClick={() => onDelete(p.id)} aria-label={`Delete "${p.caption || "this photo"}"`} className="shrink-0 rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      <button type="button" onClick={() => onDelete(p.id)} aria-label={`Delete "${p.caption || "this photo"}"`} className="shrink-0 rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </li>
                 ))}
@@ -357,10 +271,7 @@ function GalleryPage() {
                 {shownBundled.map((g, i) => (
                   <li key={`${g.caption}-${i}`} className="overflow-hidden rounded-2xl border border-border bg-card opacity-75">
                     <img src={g.src} alt={g.alt} loading="lazy" className="aspect-[4/3] w-full object-cover" />
-                    <div className="p-4">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">{g.category}</p>
-                      <p className="mt-1 text-sm text-muted-foreground">{g.caption}</p>
-                    </div>
+                    <div className="p-4"><p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">{g.category}</p><p className="mt-1 text-sm text-muted-foreground">{g.caption}</p></div>
                   </li>
                 ))}
               </ul>
