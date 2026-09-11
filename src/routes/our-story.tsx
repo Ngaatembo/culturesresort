@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
+import { ExperienceGrid } from "@/components/experience-grid";
 import { images } from "@/lib/gallery";
 
 export const Route = createFileRoute("/our-story")({
@@ -55,8 +56,8 @@ function OurStory() {
                 added afterwards.
               </p>
               <p className="border-l-2 border-ochre pl-6 text-foreground">
-                Cultures Resort has been open since 2018. The fuller family story — how it started,
-                who built it — is being written with the owners and will be added here.
+                Established in 2018, Cultures Resort brings traditional African food, hospitality
+                and culture together in a relaxed outdoor setting in Harare.
               </p>
             </div>
           </Reveal>
@@ -67,27 +68,27 @@ function OurStory() {
               <ul className="mt-6 space-y-5 text-sm leading-relaxed text-muted-foreground">
                 <li>
                   <strong className="block font-display text-lg text-foreground">
-                    Traditional cooking
+                    Traditional African Food
                   </strong>
-                  African dishes prepared the long way.
+                  African dishes prepared with care, tradition and time.
                 </li>
                 <li>
                   <strong className="block font-display text-lg text-foreground">
-                    Open ground
+                    Open-Air Experience
                   </strong>
-                  Garden seating, shade and fire rather than a dining room.
+                  Garden seating, shade, fire and nature instead of an ordinary dining room.
                 </li>
                 <li>
                   <strong className="block font-display text-lg text-foreground">
-                    Craft on show
+                    Culture &amp; Craft
                   </strong>
-                  African art and handmade objects throughout.
+                  African art, handmade objects and cultural details throughout the experience.
                 </li>
                 <li>
                   <strong className="block font-display text-lg text-foreground">
-                    Room for everyone
+                    African Hospitality
                   </strong>
-                  Family-friendly, unhurried, sociable.
+                  A welcoming space created for family, friends and shared experiences.
                 </li>
               </ul>
               <Link
@@ -98,6 +99,88 @@ function OurStory() {
               </Link>
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      {/* Food Experience */}
+      <section className="bg-secondary py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+          <Reveal className="max-w-2xl">
+            <p className="eyebrow rule-ochre text-primary">The kitchen</p>
+            <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3rem)] leading-tight">
+              Food with a story.
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Traditional African flavours, prepared with care and served as part of the Cultures
+              experience.
+            </p>
+          </Reveal>
+          <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+            <Reveal className="col-span-2 row-span-2 overflow-hidden rounded-2xl">
+              <img
+                src={images.food}
+                alt="A grilled meat platter with rosemary garnish, served in the evening garden"
+                loading="lazy"
+                className="h-full min-h-64 w-full object-cover object-bottom sm:min-h-full"
+              />
+            </Reveal>
+            <Reveal delay={90} className="overflow-hidden rounded-2xl">
+              <img
+                src={images.goatChopsPlate}
+                alt="Grilled goat chops served on a plate"
+                loading="lazy"
+                className="aspect-square w-full object-cover"
+              />
+            </Reveal>
+            <Reveal delay={140} className="overflow-hidden rounded-2xl">
+              <img
+                src={images.porkSizzler}
+                alt="Sizzling grilled pork served on a hot plate with tomato and onion"
+                loading="lazy"
+                className="aspect-square w-full object-cover"
+              />
+            </Reveal>
+            <Reveal delay={190} className="overflow-hidden rounded-2xl">
+              <img
+                src={images.sadzaPlate}
+                alt="Sadza and covo served on a white plate at an outdoor wooden table"
+                loading="lazy"
+                className="aspect-square w-full object-cover"
+              />
+            </Reveal>
+            <Reveal delay={240} className="overflow-hidden rounded-2xl">
+              <img
+                src={images.traditionalDrinkPouring}
+                alt="Staff pouring a traditional drink from a large clay pot into ceramic cups"
+                loading="lazy"
+                className="aspect-square w-full object-cover"
+              />
+            </Reveal>
+          </div>
+          <Reveal delay={280}>
+            <Link to="/menu" className="eyebrow mt-8 inline-block border-b border-primary pb-2 text-primary">
+              See the full menu →
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* The Cultures Experience */}
+      <section className="bg-background py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+          <Reveal className="max-w-2xl">
+            <p className="eyebrow rule-ochre text-primary">Beyond the table</p>
+            <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3rem)] leading-tight">
+              The Cultures Experience
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+              More than a restaurant — a garden, a gallery of African craft and a place built for
+              spending the afternoon.
+            </p>
+          </Reveal>
+          <div className="mt-12">
+            <ExperienceGrid />
+          </div>
         </div>
       </section>
 
