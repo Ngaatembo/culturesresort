@@ -1,5 +1,6 @@
 import { ExternalLink, Facebook, Instagram, MapPin, Star } from "lucide-react";
 import { Reveal } from "@/components/reveal";
+import { TikTokIcon } from "@/components/tiktok-icon";
 import { useSiteSettings } from "@/lib/site-settings-query";
 
 /**
@@ -31,6 +32,7 @@ export function TrustReviews() {
       label: "Follow on Instagram",
       Icon: Instagram,
     },
+    { key: "tiktok", href: socialLinks.tiktok, label: "Follow on TikTok", Icon: TikTokIcon },
   ].filter((s): s is typeof s & { href: string } => Boolean(s.href));
 
   return (

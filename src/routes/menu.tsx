@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { DishMedia } from "@/components/dish-media";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
@@ -217,9 +218,7 @@ function Menu() {
                             <div className="w-[38%] shrink-0 sm:w-2/5">
                               <DishMedia
                                 imageSrc={photo}
-                                videoSrc={
-                                  item.videoUrl ? `/gallery-image/${item.videoUrl}` : null
-                                }
+                                videoSrc={item.videoUrl ? `/gallery-image/${item.videoUrl}` : null}
                                 alt={item.name}
                                 className="h-full min-h-36"
                               />
@@ -281,8 +280,9 @@ function Menu() {
                   href={business.whatsappHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="eyebrow flex items-center justify-center gap-2 bg-leaf px-7 py-4 text-bone"
+                  className="eyebrow flex items-center justify-center gap-2 border border-border px-7 py-4 hover:bg-secondary"
                 >
+                  <WhatsAppIcon className="h-4 w-4 text-leaf" aria-hidden="true" />
                   WhatsApp us
                 </a>
                 <Link to="/reservations" className="eyebrow border border-border px-7 py-4">

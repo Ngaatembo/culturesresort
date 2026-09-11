@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
+import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { images } from "@/lib/gallery";
 import { createEnquiry } from "@/lib/data/enquiries";
 import { whatsappLink, whatsappMessages } from "@/lib/site-data";
@@ -98,8 +99,9 @@ function Contact() {
                 href={whatsappLink(whatsappMessages.general, business.whatsappNumber)}
                 target="_blank"
                 rel="noreferrer"
-                className="eyebrow flex items-center justify-center gap-2 bg-leaf px-5 py-4 text-bone"
+                className="eyebrow flex items-center justify-center gap-2 border border-border px-5 py-4 text-center hover:bg-secondary"
               >
+                <WhatsAppIcon className="h-4 w-4 text-leaf" aria-hidden="true" />
                 WhatsApp
               </a>
               <a

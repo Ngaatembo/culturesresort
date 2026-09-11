@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
+import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
 import { createBooking } from "@/lib/data/bookings";
@@ -171,8 +172,9 @@ function Events() {
                 href={business.whatsappHref}
                 target="_blank"
                 rel="noreferrer"
-                className="eyebrow flex items-center justify-center gap-2 bg-leaf px-7 py-4 text-bone"
+                className="eyebrow flex items-center justify-center gap-2 border border-border px-7 py-4 hover:bg-secondary"
               >
+                <WhatsAppIcon className="h-4 w-4 text-leaf" aria-hidden="true" />
                 WhatsApp
               </a>
             </div>

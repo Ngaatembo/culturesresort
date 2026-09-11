@@ -241,10 +241,10 @@ export function OrderDrawer() {
             type="button"
             onClick={handleWhatsAppClick}
             disabled={loggingWhatsApp}
-            className="eyebrow mt-4 flex w-full items-center justify-center gap-3 bg-leaf px-6 py-4 text-bone transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-leaf/90 disabled:opacity-70"
+            className="eyebrow mt-4 flex w-full items-center justify-center gap-3 border border-border px-6 py-4 transition-all duration-300 [transition-timing-function:var(--ease-premium)] hover:-translate-y-0.5 hover:bg-secondary disabled:opacity-70"
             tabIndex={open ? 0 : -1}
           >
-            <WhatsAppIcon className="h-4 w-4" />
+            <WhatsAppIcon className="h-4 w-4 text-leaf" />
             {lines.length
               ? `Send ${count} item${count === 1 ? "" : "s"} on WhatsApp`
               : "Ask on WhatsApp"}

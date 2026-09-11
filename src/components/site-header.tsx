@@ -184,9 +184,9 @@ export function SiteHeader() {
             href={whatsappLink(whatsappMessages.general, business.whatsappNumber)}
             target="_blank"
             rel="noreferrer"
-            className="eyebrow mt-3 flex items-center justify-center gap-3 bg-leaf px-5 py-4 text-bone"
+            className="eyebrow mt-3 flex items-center justify-center gap-3 border border-border px-5 py-4 text-center"
           >
-            <WhatsAppIcon className="h-4 w-4" aria-hidden="true" />
+            <WhatsAppIcon className="h-4 w-4 text-leaf" aria-hidden="true" />
             Chat on WhatsApp
           </a>
           <a
