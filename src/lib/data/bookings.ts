@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
 import { authMiddleware } from "@/lib/auth/functions";
+import { sendNotificationEmail } from "./notify";
 
 export type BookingStatus = "pending" | "confirmed" | "declined" | "completed" | "cancelled";
 
@@ -41,6 +42,22 @@ export const createBooking = createServerFn({ method: "POST" })
 
     const bookingId = result.meta.last_row_id;
     if (!bookingId) throw new Error("Could not create the booking.");
+
+    await sendNotificationEmail(
+      `New booking enquiry — ${data.eventType}`,
+      [
+        `${data.guestName} (${data.guestPhone})`,
+        data.guestEmail ? `Email: ${data.guestEmail}` : null,
+        `Event type: ${data.eventType}`,
+        data.eventDate ? `Date: ${data.eventDate}` : null,
+        data.guests ? `Guests: ${data.guests}` : null,
+        data.requirements ? `Requirements: ${data.requirements}` : null,
+        data.message ? `Message: ${data.message}` : null,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    );
+
     return { bookingId };
   });
 

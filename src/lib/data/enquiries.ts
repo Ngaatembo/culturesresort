@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
 import { authMiddleware } from "@/lib/auth/functions";
+import { sendNotificationEmail } from "./notify";
 
 export type EnquiryStatus = "new" | "read" | "responded" | "closed";
 
@@ -30,6 +31,19 @@ export const createEnquiry = createServerFn({ method: "POST" })
 
     const enquiryId = result.meta.last_row_id;
     if (!enquiryId) throw new Error("Could not save the enquiry.");
+
+    await sendNotificationEmail(
+      "New enquiry",
+      [
+        `${data.name}`,
+        data.phone ? `Phone: ${data.phone}` : null,
+        data.email ? `Email: ${data.email}` : null,
+        `Message: ${data.message}`,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    );
+
     return { enquiryId };
   });
 

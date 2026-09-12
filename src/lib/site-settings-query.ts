@@ -24,6 +24,8 @@ const FALLBACK_SETTINGS: SiteSettings = {
   visitDetails,
   eventTypes: [...eventTypes],
   eventRequirements: [...eventRequirements],
+  closureBanner: { enabled: false, message: "" },
+  notifications: { enabled: false, email: "" },
 };
 
 /**

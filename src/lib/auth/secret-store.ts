@@ -31,3 +31,27 @@ export async function getOrCreateSecret(key: string, bytes = 48): Promise<string
     .first<{ value: string }>();
   return row!.value;
 }
+
+/** Reads an explicitly-provided secret (e.g. a third-party API key). Returns
+ * null if it hasn't been set — unlike getOrCreateSecret, nothing is invented. */
+export async function getSecret(key: string): Promise<string | null> {
+  const db = getDb();
+  const row = await db
+    .prepare("SELECT value FROM app_secrets WHERE key = ?")
+    .bind(key)
+    .first<{ value: string }>();
+  return row?.value ?? null;
+}
+
+/** Stores or overwrites an explicitly-provided secret (e.g. a Resend API key
+ * pasted in from the admin panel). Same table as getOrCreateSecret so it
+ * survives redeploys the same way. */
+export async function setSecret(key: string, value: string): Promise<void> {
+  const db = getDb();
+  await db
+    .prepare(
+      "INSERT INTO app_secrets (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+    )
+    .bind(key, value)
+    .run();
+}

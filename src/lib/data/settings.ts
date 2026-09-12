@@ -26,6 +26,8 @@ export type SocialLinks = {
 };
 export type OpeningHour = { day: string; hours: string };
 export type VisitDetail = { label: string; value: string };
+export type ClosureBanner = { enabled: boolean; message: string };
+export type NotificationPrefs = { enabled: boolean; email: string };
 
 export type SiteSettings = {
   business: BusinessInfo;
@@ -34,6 +36,8 @@ export type SiteSettings = {
   visitDetails: VisitDetail[];
   eventTypes: string[];
   eventRequirements: string[];
+  closureBanner: ClosureBanner;
+  notifications: NotificationPrefs;
 };
 
 const KEYS = {
@@ -43,6 +47,8 @@ const KEYS = {
   visitDetails: "visit_details",
   eventTypes: "event_types",
   eventRequirements: "event_requirements",
+  closureBanner: "closure_banner",
+  notifications: "notifications",
 } as const;
 
 /** Public — read by every page that used to import these from site-data.ts. */
@@ -76,6 +82,8 @@ export const getSiteSettings = createServerFn({ method: "GET" }).handler(
       visitDetails: parse(KEYS.visitDetails, []),
       eventTypes: parse(KEYS.eventTypes, []),
       eventRequirements: parse(KEYS.eventRequirements, []),
+      closureBanner: parse(KEYS.closureBanner, { enabled: false, message: "" }),
+      notifications: parse(KEYS.notifications, { enabled: false, email: "" }),
     };
   },
 );

@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ClosureBanner } from "@/components/closure-banner";
 import { MobileActionBar } from "@/components/mobile-action-bar";
 import { WhatsAppFab } from "@/components/whatsapp-fab";
 import { OrderDrawer } from "@/components/order-drawer";
@@ -180,6 +181,7 @@ function RootComponent() {
             Skip to content
           </a>
           <SiteHeader />
+          <ClosureBanner />
           <main id="main">
             <Outlet />
           </main>
