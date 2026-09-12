@@ -115,6 +115,90 @@ export const setMenuItemPrice = createServerFn({ method: "POST" })
     return { ok: true, priceCents };
   });
 
+/** Renames a menu item and/or updates its description. */
+export const setMenuItemDetails = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((data: { id: number; name: string; description: string }) => data)
+  .handler(async ({ data }) => {
+    const name = data.name.trim();
+    if (!name) {
+      throw new Error("The name can't be empty.");
+    }
+    const db = getDb();
+    await db
+      .prepare(
+        "UPDATE menu_items SET name = ?, description = ?, updated_at = datetime('now') WHERE id = ?",
+      )
+      .bind(name, data.description.trim(), data.id)
+      .run();
+    return { ok: true as const };
+  });
+
+/** Adds a brand-new dish or beverage to an existing category, at the end of its list. */
+export const createMenuItem = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator(
+    (data: {
+      kind: MenuKind;
+      category_slug: string;
+      category_title: string;
+      name: string;
+      description: string;
+      price: number;
+    }) => data,
+  )
+  .handler(async ({ data }) => {
+    const name = data.name.trim();
+    if (!name) {
+      throw new Error("Enter a name for the new item.");
+    }
+    if (!Number.isFinite(data.price) || data.price < 0) {
+      throw new Error("Enter a valid price (or leave blank for On request).");
+    }
+    const db = getDb();
+    const priceCents = Math.round(data.price * 100);
+    const maxOrder = await db
+      .prepare("SELECT COALESCE(MAX(sort_order), 0) as m FROM menu_items WHERE category_slug = ?")
+      .bind(data.category_slug)
+      .first<{ m: number }>();
+
+    const result = await db
+      .prepare(
+        "INSERT INTO menu_items (kind, category_slug, category_title, name, description, price_cents, featured, available, sort_order) VALUES (?, ?, ?, ?, ?, ?, 0, 1, ?)",
+      )
+      .bind(
+        data.kind,
+        data.category_slug,
+        data.category_title,
+        name,
+        data.description.trim(),
+        priceCents,
+        (maxOrder?.m ?? 0) + 1,
+      )
+      .run();
+
+    return { ok: true as const, id: Number(result.meta.last_row_id) };
+  });
+
+/** Permanently removes a menu item (and any uploaded photo/clip it had). */
+export const deleteMenuItem = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((data: { id: number }) => data)
+  .handler(async ({ data }) => {
+    const db = getDb();
+    const existing = await db
+      .prepare("SELECT image_url, video_url FROM menu_items WHERE id = ?")
+      .bind(data.id)
+      .first<{ image_url: string | null; video_url: string | null }>();
+    if (existing) {
+      const bucket = getGalleryBucket();
+      if (existing.image_url) await bucket.delete(existing.image_url).catch(() => {});
+      if (existing.video_url) await bucket.delete(existing.video_url).catch(() => {});
+    }
+    await db.prepare("DELETE FROM menu_items WHERE id = ?").bind(data.id).run();
+    return { ok: true as const };
+  });
+
 /**
  * Uploads a photo for one menu item, replacing whatever image it had
  * before (old R2 object is deleted so the bucket doesn't accumulate
