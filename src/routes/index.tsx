@@ -455,12 +455,12 @@ function Home() {
           <Reveal>
             <p className="eyebrow rule-ochre mx-auto text-ochre">The hand behind the fire</p>
             <h2 className="mt-6 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-tight">
-              Cooked over fire, the traditional way.
+              A lifetime in the kitchen.
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-bone/85">
-              Cultures' kitchen is led by Chef Joseph, who cooks traditional African food over open
-              fire and charcoal — the same slow, unhurried approach that shapes every plate that
-              leaves this kitchen today.
+              Cultures' kitchen is led by Chef Joseph, trained in the fire rather than the
+              classroom — the same slow, unhurried approach passed down through years at the
+              flame shapes every plate that leaves this kitchen today.
             </p>
           </Reveal>
         </div>
