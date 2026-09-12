@@ -49,6 +49,7 @@ function Home() {
   const [signatureDishes, setSignatureDishes] = useState<PreviewDish[] | null>(null);
   const [craftMuted, setCraftMuted] = useState(true);
   const craftVideoRef = useRef<HTMLVideoElement>(null);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
   const { add, has } = useOrder();
 
   useEffect(() => {
@@ -56,6 +57,24 @@ function Home() {
       setPlayVideo(true);
     }
   }, []);
+
+  // Belt-and-braces autoplay: React's `muted` JSX attribute doesn't always
+  // sync to the underlying DOM property in time for the browser's autoplay
+  // check, especially on a <video> that only mounts after the page has
+  // already loaded (as this one does, swapping in once `playVideo` flips).
+  // Setting `.muted` imperatively before calling `.play()` avoids that gap —
+  // without it, a blocked autoplay just silently freezes on the poster
+  // frame, which looks identical to "the video never loaded".
+  useEffect(() => {
+    if (!playVideo) return;
+    const el = heroVideoRef.current;
+    if (!el) return;
+    el.muted = true;
+    el.play().catch(() => {
+      // Autoplay can still be blocked by the browser (e.g. data-saver
+      // mode) — the poster frame remains a reasonable fallback either way.
+    });
+  }, [playVideo]);
 
   useEffect(() => {
     getMenu()
@@ -77,6 +96,7 @@ function Home() {
         <ParallaxImage strength={44} className="absolute inset-0 h-full w-full">
           {playVideo ? (
             <video
+              ref={heroVideoRef}
               src={gardenLoop}
               poster={images.garden}
               autoPlay
