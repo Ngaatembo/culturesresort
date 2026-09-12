@@ -41,9 +41,9 @@ const CATEGORY_IMAGE: Record<string, keyof typeof images> = {
   "main-meals": "food",
   grills: "garden",
   sides: "food",
-  "traditional-drinks": "craft",
+  "traditional-drinks": "traditionalDrinkPouring",
   cocktails: "drums",
-  "soft-drinks": "garden",
+  "soft-drinks": "gardenGuestsDaytime",
 };
 
 type Course = MenuKind;
