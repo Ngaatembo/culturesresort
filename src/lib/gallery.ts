@@ -21,6 +21,10 @@ import interiorTrophyWall from "@/assets/interior-trophy-wall.webp";
 import traditionalDrinkPouring from "@/assets/traditional-drink-pouring.webp";
 import potjiePotsTable from "@/assets/potjie-pots-table.webp";
 import gardenGuestsDaytime from "@/assets/garden-guests-daytime.webp";
+import fireRibsFlame from "@/assets/fire-ribs-flame.webp";
+import sadzaGreensMoody from "@/assets/sadza-greens-moody.webp";
+import cocktailLayered from "@/assets/cocktail-layered.webp";
+import ricePotjiePot from "@/assets/rice-potjie-pot.webp";
 
 export const images = {
   garden,
@@ -46,6 +50,10 @@ export const images = {
   traditionalDrinkPouring,
   potjiePotsTable,
   gardenGuestsDaytime,
+  fireRibsFlame,
+  sadzaGreensMoody,
+  cocktailLayered,
+  ricePotjiePot,
 };
 
 export type GalleryEntry = {
@@ -185,8 +193,8 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: interiorTrophyWall,
-    alt: "The indoor dining hall at night, with mounted buffalo, kudu and wildebeest heads on the wood-panelled wall above the tables",
-    caption: "Indoor seating, beneath the trophy wall",
+    alt: "The covered dining pavilion in daylight, with mounted kudu and wildebeest heads on the wood-panelled wall above rows of wooden tables and chairs",
+    caption: "Covered seating, beneath the trophy wall",
     category: "Details",
   },
   {
@@ -200,5 +208,30 @@ export const gallery: GalleryEntry[] = [
     alt: "Small cast-iron three-legged pots of stew on a table, beside plates of grilled offal and mopani worms",
     caption: "Stews, straight from the pot",
     category: "Fire",
+  },
+  {
+    src: fireRibsFlame,
+    alt: "Grilled ribs and chops on a wire rack directly over open flame and glowing coals",
+    caption: "Straight over the coals",
+    category: "Fire",
+  },
+  {
+    src: sadzaGreensMoody,
+    alt: "A close-up plate of sadza and chopped greens, with a traditional clay pot softly out of focus behind it",
+    caption: "Sadza and greens, plated",
+    category: "Food",
+    tall: true,
+  },
+  {
+    src: cocktailLayered,
+    alt: "A tall layered cocktail in blue, orange and red on a wooden table in the garden",
+    caption: "A cocktail to start the evening",
+    category: "Details",
+  },
+  {
+    src: ricePotjiePot,
+    alt: "A dome of tomato rice on a white plate, with a small traditional pot of stew served on the side",
+    caption: "Rice and stew, from the pot",
+    category: "Food",
   },
 ];

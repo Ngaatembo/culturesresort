@@ -79,7 +79,16 @@ export const openingHours = [
   { day: "Sunday", hours: "10:00 AM – 10:00 PM" },
 ];
 
-export type ImageKey = "garden" | "food" | "craft" | "drums" | "gardenGuestsDaytime";
+export type ImageKey =
+  | "garden"
+  | "food"
+  | "craft"
+  | "drums"
+  | "gardenGuestsDaytime"
+  | "fireRibsFlame"
+  | "sadzaGreensMoody"
+  | "cocktailLayered"
+  | "ricePotjiePot";
 
 export type MenuItem = {
   name: string;
