@@ -40,8 +40,13 @@ function OurStory() {
           <Reveal className="lg:col-span-7">
             <div className="space-y-7 text-base leading-relaxed text-muted-foreground sm:text-lg">
               <p className="font-display text-2xl leading-snug text-foreground sm:text-3xl">
-                We wanted somewhere African food could be served the way it is served at home —
-                generously, slowly, and in the open air.
+                Cultures Resort started as a family's idea — that African food deserved a place to
+                be served the way it is at home: generously, unhurried, in the open air.
+              </p>
+              <p>
+                The name was not an afterthought. The family chose it deliberately, to say plainly
+                what they stand for — African heritage, held with pride, from the food on the plate
+                to the craft on the walls.
               </p>
               <p>
                 Cultures Resort stands on the corner of Chiremba and Southey Road, on the Hillside
@@ -50,14 +55,16 @@ function OurStory() {
                 guests move between the two as the day cools.
               </p>
               <p>
-                The kitchen works with traditional recipes and traditional drinks. Nothing is rushed
-                to the table before it is ready. Around it, carved wood, woven fibre and hand-dyed
-                cloth from across the continent are part of the fabric of the place, not decoration
-                added afterwards.
+                The kitchen works with traditional recipes and traditional drinks — every guest is
+                welcomed with a cup of maheu the moment they arrive. Nothing is rushed to the table
+                before it is ready. Around it, carved wood, woven fibre and hand-dyed cloth from
+                across the continent are part of the fabric of the place, not decoration added
+                afterwards.
               </p>
               <p className="border-l-2 border-ochre pl-6 text-foreground">
-                Established in 2018, Cultures Resort brings traditional African food, hospitality
-                and culture together in a relaxed outdoor setting in Harare.
+                Established in 2018 and still run by the family that founded it, Cultures Resort
+                brings traditional African food, hospitality and culture together in a relaxed
+                outdoor setting in Harare.
               </p>
             </div>
           </Reveal>

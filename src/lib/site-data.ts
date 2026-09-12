@@ -310,13 +310,17 @@ export const experiences = [
   },
 ] satisfies Array<{ title: string; headline?: string; body: string; imageKey: ImageKey }>;
 
-/** The kinds of gathering guests can enquire about. Nothing is promised here. */
+/** The kinds of gathering guests can enquire about — hosted at Cultures Resort
+ * or catered off-site, wherever the guest needs it. Nothing is promised here. */
 export const eventTypes = [
   "Birthday or celebration",
   "Family gathering",
   "Friends' outing",
   "Business lunch or team function",
+  "Wedding",
+  "Roora / traditional ceremony",
   "Cultural event",
+  "Off-site catering (at your venue)",
   "Something else",
 ] as const;
 

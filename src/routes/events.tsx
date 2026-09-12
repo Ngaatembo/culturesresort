@@ -11,16 +11,17 @@ import { useSiteSettings } from "@/lib/site-settings-query";
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
-      { title: "Events & Functions | Cultures Resort, Harare" },
+      { title: "Events, Functions & Catering | Cultures Resort, Harare" },
       {
         name: "description",
         content:
-          "Enquire about birthdays, family gatherings, business lunches and functions at Cultures Resort, Corner Chiremba & Southey Road, Hillside, Harare.",
+          "Birthdays, family gatherings, weddings, roora and functions at Cultures Resort, Hillside, Harare — hosted on the grounds or catered at your own venue.",
       },
-      { property: "og:title", content: "Events & Functions | Cultures Resort" },
+      { property: "og:title", content: "Events, Functions & Catering | Cultures Resort" },
       {
         property: "og:description",
-        content: "Group bookings and celebrations in an African garden setting in Harare.",
+        content:
+          "Group bookings, celebrations and off-site catering in and beyond an African garden setting in Harare.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -66,11 +67,28 @@ function Events() {
     <>
       <PageHeader
         eyebrow="Events & functions"
-        title="Gatherings under the trees"
-        intro="Birthdays, family gatherings, outings with friends or a business lunch — the grounds can host groups up to 200 guests. Tell us what you have in mind and the team will come back to you directly."
+        title="Gatherings under the trees — or wherever you're hosting"
+        intro="Birthdays, family gatherings, weddings, roora and business functions — host at Cultures Resort (groups up to 200 guests) or have the team cater at your own venue. Tell us what you have in mind and the team will come back to you directly."
         image={images.drums}
         imageAlt="The dining pavilion lit up at night with a leopard sculpture on the lawn"
       />
+
+      <section className="bg-clay py-16 text-bone lg:py-24">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+          <Reveal className="max-w-2xl">
+            <p className="eyebrow text-ochre">Catering, wherever you need it</p>
+            <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3rem)] leading-tight">
+              A family business, wherever the occasion takes us.
+            </h2>
+            <p className="mt-5 text-base leading-relaxed text-bone/80 sm:text-lg">
+              Catering is a big part of what this family business does — weddings, roora and
+              traditional ceremonies, birthdays, family functions, and gatherings of every kind. If
+              you'd rather host at your own venue, the team can bring the food and the fire to you.
+              Wherever you're asked, that's where they'll go.
+            </p>
+          </Reveal>
+        </div>
+      </section>
 
       {siteEvents.length > 0 ? (
         <section className="bg-background py-16 lg:py-20">

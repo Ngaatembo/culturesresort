@@ -446,15 +446,15 @@ function Home() {
         </div>
       </section>
 
-      {/* Maheu — understated welcome moment, not guaranteed every visit */}
+      {/* Maheu — client-confirmed as a daily welcome ritual for every arriving guest */}
       <section className="bg-clay py-14 text-bone">
         <div className="mx-auto max-w-7xl px-5 text-center lg:px-10">
           <Reveal>
             <p className="eyebrow text-ochre">Start with a taste of home</p>
             <p className="mt-3 font-display text-2xl italic leading-snug lg:text-3xl">Maheu</p>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-bone/80">
-              Guests are sometimes welcomed with maheu, a traditional fermented grain drink — a
-              small, informal touch when it's on offer, not a fixed part of every visit.
+              Every guest is welcomed with a cup of maheu, a traditional fermented grain drink, the
+              moment they arrive — a small gesture that sets the tone for the visit.
             </p>
           </Reveal>
         </div>
@@ -539,6 +539,19 @@ function Home() {
               </Link>
             </Reveal>
           </div>
+        </div>
+      </section>
+
+      {/* Catering teaser — brief, links out to the full Events/Catering page */}
+      <section className="border-y border-border bg-background py-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-5 text-center sm:flex-row sm:justify-between sm:text-left lg:px-10">
+          <p className="text-sm leading-relaxed text-muted-foreground sm:max-w-xl">
+            <span className="font-display text-lg text-foreground">Also catering weddings,</span>{" "}
+            roora, birthdays and family functions — at Cultures Resort or wherever you're hosting.
+          </p>
+          <Link to="/events" className="eyebrow shrink-0 border-b border-primary pb-1 text-primary">
+            Enquire about catering →
+          </Link>
         </div>
       </section>
 
