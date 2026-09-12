@@ -111,12 +111,6 @@ export const gallery: GalleryEntry[] = [
     category: "People",
   },
   {
-    src: interiorDeck,
-    alt: "Covered wooden deck seating under a thatched roof",
-    caption: "Covered deck seating",
-    category: "Garden",
-  },
-  {
     src: elephantBridge,
     alt: "A life-size elephant sculpture beside a raised wooden walkway, with a signpost showing distances to African destinations",
     caption: "The elephant, and the walkway through the grounds",
