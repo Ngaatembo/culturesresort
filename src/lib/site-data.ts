@@ -323,11 +323,13 @@ export const eventRequirements = [
 
 /**
  * Practical visiting details, shown on Menu/Events pages. Sourced from a
- * mix of the owner's direct confirmation (parking) and current public
- * listings/reviews (vegetarian options, card payments) — the two still
- * genuinely unconfirmed facts (exact max group size, exact advance-notice
- * window) are deliberately phrased as "on request" / "recommended" rather
- * than given invented numbers. All editable from the dashboard.
+ * mix of the owner's direct confirmation (parking, group capacity),
+ * current public listings/reviews (vegetarian options, payments,
+ * takeout/delivery, wheelchair access — per the restaurant's TripAdvisor
+ * listing) — the two still genuinely unconfirmed facts (exact advance-
+ * notice window, exact max group size beyond the confirmed 200) are
+ * deliberately phrased as "on request" / "recommended" rather than given
+ * invented numbers. All editable from the dashboard.
  */
 export const visitDetails = [
   { label: "Parking", value: "Guarded on-site parking available" },
@@ -337,7 +339,12 @@ export const visitDetails = [
     value: "Group bookings and celebrations welcome — hosts up to 200 guests",
   },
   { label: "Dietary options", value: "Vegetarian options available" },
-  { label: "Payments", value: "Cash, Ecocash, bank transfer, and Visa accepted" },
+  {
+    label: "Payments",
+    value: "Cash, Ecocash, bank transfer, and card payments (Visa) accepted",
+  },
+  { label: "Takeout & delivery", value: "Both available" },
+  { label: "Accessibility", value: "Wheelchair accessible" },
   { label: "Drinks", value: "Fully licensed restaurant & bar" },
   { label: "Group reservations", value: "Advance booking recommended for larger groups" },
 ];
