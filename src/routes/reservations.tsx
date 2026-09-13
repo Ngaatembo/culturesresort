@@ -112,6 +112,11 @@ function Reservations() {
                 <a href={business.phoneHref} className="eyebrow border border-border px-7 py-4">
                   Call {business.phoneDisplay}
                 </a>
+{business.phoneDisplay2 ? (
+  <a href={business.phoneHref2 ?? undefined} className="eyebrow border border-border px-7 py-4">
+    Call {business.phoneDisplay2}
+  </a>
+) : null}
                 <a
                   href={`${business.whatsappHref}?text=${encodeURIComponent(
                     `Hello Cultures Resort, I'd like to request a table for ${submitted.guests} on ${submitted.date} at ${submitted.time}. Name: ${submitted.name}.`,

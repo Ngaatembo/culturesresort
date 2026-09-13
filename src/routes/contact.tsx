@@ -213,7 +213,15 @@ function Contact() {
                     reach them sooner, call{" "}
                     <a href={business.phoneHref} className="text-primary underline">
                       {business.phoneDisplay}
-                    </a>{" "}
+                    </a>
+                    {business.phoneDisplay2 ? (
+                      <>
+                        {" "}or{" "}
+                        <a href={business.phoneHref2 ?? undefined} className="text-primary underline">
+                          {business.phoneDisplay2}
+                        </a>
+                      </>
+                    ) : null}{" "}
                     or email{" "}
                     <a
                       href={`mailto:${business.email}`}

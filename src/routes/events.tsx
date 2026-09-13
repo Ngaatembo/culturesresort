@@ -188,6 +188,11 @@ function Events() {
               <a href={business.phoneHref} className="eyebrow border border-border px-7 py-4">
                 Call {business.phoneDisplay}
               </a>
+{business.phoneDisplay2 ? (
+  <a href={business.phoneHref2 ?? undefined} className="eyebrow border border-border px-7 py-4">
+    Call {business.phoneDisplay2}
+  </a>
+) : null}
               <a
                 href={business.whatsappHref}
                 target="_blank"
@@ -211,7 +216,15 @@ function Events() {
                     directly. To reach them sooner, call{" "}
                     <a href={business.phoneHref} className="text-primary underline">
                       {business.phoneDisplay}
-                    </a>{" "}
+                    </a>
+                    {business.phoneDisplay2 ? (
+                      <>
+                        {" "}or{" "}
+                        <a href={business.phoneHref2 ?? undefined} className="text-primary underline">
+                          {business.phoneDisplay2}
+                        </a>
+                      </>
+                    ) : null}{" "}
                     or email{" "}
                     <a
                       href={`mailto:${business.email}`}
