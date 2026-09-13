@@ -313,6 +313,14 @@ function Reservations() {
                 >
                   {business.phoneDisplay}
                 </a>
+                {business.phoneDisplay2 ? (
+                  <a
+                    href={business.phoneHref2 ?? undefined}
+                    className="mt-1 block font-display text-lg hover:text-primary"
+                  >
+                    {business.phoneDisplay2}
+                  </a>
+                ) : null}
                 <a
                   href={`mailto:${business.email}`}
                   className="mt-2 block break-all text-muted-foreground hover:text-primary"

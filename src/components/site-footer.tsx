@@ -45,6 +45,11 @@ export function SiteFooter() {
           <a href={business.phoneHref} className="block hover:text-ochre">
             {business.phoneDisplay}
           </a>
+          {business.phoneDisplay2 ? (
+            <a href={business.phoneHref2 ?? undefined} className="block hover:text-ochre">
+              {business.phoneDisplay2}
+            </a>
+          ) : null}
           <a href={`mailto:${business.email}`} className="block hover:text-ochre">
             {business.email}
           </a>
