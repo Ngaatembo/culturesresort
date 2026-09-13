@@ -95,7 +95,8 @@ function GalleryPage() {
 
   const remainingBundled = useMemo(() => {
     const bundledSources = new Set((photos ?? []).map((p) => p.bundled_source).filter(Boolean));
-    return bundledGallery.filter((g) => !bundledSources.has(g.caption));
+    const uploadedCaptions = new Set((photos ?? []).filter((p) => p.is_deleted === 0).map((p) => p.caption));
+    return bundledGallery.filter((g) => !bundledSources.has(g.caption) && !uploadedCaptions.has(g.caption));
   }, [photos]);
 
   const shownBundled = useMemo(
