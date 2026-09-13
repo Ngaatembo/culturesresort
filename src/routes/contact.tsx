@@ -68,10 +68,15 @@ function Contact() {
               </div>
               <div>
                 <dt className="eyebrow text-muted-foreground">Phone</dt>
-                <dd className="mt-2">
-                  <a href={business.phoneHref} className="font-display text-xl hover:text-primary">
+                <dd className="mt-2 space-y-1">
+                  <a href={business.phoneHref} className="block font-display text-xl hover:text-primary">
                     {business.phoneDisplay}
                   </a>
+                  {business.phoneDisplay2 ? (
+                    <a href={business.phoneHref2 ?? undefined} className="block font-display text-xl hover:text-primary">
+                      {business.phoneDisplay2}
+                    </a>
+                  ) : null}
                 </dd>
               </div>
               <div>

@@ -19,6 +19,8 @@ type FieldDef = { key: keyof BusinessInfo; label: string };
 const BUSINESS_FIELDS: FieldDef[] = [
   { key: "phoneDisplay", label: "Phone (displayed)" },
   { key: "phoneHref", label: "Phone link (tel:...)" },
+  { key: "phoneDisplay2", label: "Second phone (displayed, optional)" },
+  { key: "phoneHref2", label: "Second phone link (tel:..., optional)" },
   { key: "whatsappNumber", label: "WhatsApp number (digits only, e.g. 263...)" },
   { key: "email", label: "Email" },
   { key: "emailAlt", label: "Alternate email" },
@@ -98,7 +100,7 @@ function ContactPage() {
                 <div key={f.key} className="space-y-1.5">
                   <label className="text-xs font-medium text-muted-foreground">{f.label}</label>
                   <Input
-                    value={business[f.key]}
+                    value={business[f.key] ?? ""}
                     onChange={(e) =>
                       setBusiness((b) => (b ? { ...b, [f.key]: e.target.value } : b))
                     }

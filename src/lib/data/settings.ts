@@ -8,6 +8,8 @@ export type BusinessInfo = {
   addressShort: string;
   phoneDisplay: string;
   phoneHref: string;
+  phoneDisplay2: string | null;
+  phoneHref2: string | null;
   whatsappNumber: string;
   whatsappHref: string;
   email: string;

@@ -13,6 +13,8 @@ export const business = {
   addressShort: "Cnr Chiremba & Southey Rd, Hillside, Harare",
   phoneDisplay: "+263 77 295 1308",
   phoneHref: "tel:+263772951308",
+  phoneDisplay2: "+263 78 213 5257",
+  phoneHref2: "tel:+263782135257",
   /** Same number as the phone line until a separate WhatsApp number is supplied. */
   whatsappNumber: "263772951308",
   whatsappHref: "https://wa.me/263772951308",
