@@ -61,42 +61,44 @@
 :root {
   --radius: 0.2rem;
   /*
-   * Palette aligned to the master brand brief's named colours:
-   * primary dark #181815, warm ivory #F1E8D7, warm white #F8F3E9,
-   * earth brown #684936, antique gold #C89B3C (sparing use only —
-   * icons/labels/accents, never a background), deep warm red #B92324
-   * (CTAs/active states), soft sand #D8C49A (supporting neutral).
-   * Existing token NAMES are kept (--ink, --ochre, --clay, --bone,
-   * --primary...) so every component that already references them
-   * picks up the new hexes automatically — no per-component rework.
+   * Palette aligned to the new logo's warm earth-tone identity:
+   * cream background #F5EDE0, near-black brown wordmark #2B211A,
+   * terracotta/burnt-orange #C1502E (CTAs/active states, replaces the
+   * old deep red), muted mustard-gold #D9A441 (sparing accent use —
+   * icons/labels, never a background, replaces the old antique gold),
+   * olive/forest green #4B5320 as a tertiary accent, soft sand #D8C49A
+   * (supporting neutral). Existing token NAMES are kept (--ink, --ochre,
+   * --clay, --bone, --primary...) so every component that already
+   * references them picks up the new hexes automatically — no
+   * per-component rework.
    */
-  --background: #f1e8d7;
-  --foreground: #181815;
+  --background: #f5ede0;
+  --foreground: #2b211a;
   --card: #f8f3e9;
-  --card-foreground: #181815;
+  --card-foreground: #2b211a;
   --popover: #f8f3e9;
-  --popover-foreground: #181815;
-  --primary: #b92324;
+  --popover-foreground: #2b211a;
+  --primary: #c1502e;
   --primary-foreground: #f8f3e9;
   --secondary: #d8c49a;
-  --secondary-foreground: #181815;
+  --secondary-foreground: #2b211a;
   --muted: #e9dcc0;
   --muted-foreground: #6b5d4c;
-  --accent: #c89b3c;
-  --accent-foreground: #181815;
+  --accent: #d9a441;
+  --accent-foreground: #2b211a;
   --destructive: oklch(0.52 0.19 27);
   --destructive-foreground: oklch(0.98 0.01 82);
   --border: #dccba8;
   --input: #dccba8;
-  --ring: #b92324;
+  --ring: #c1502e;
 
-  --ember: #d9791f;
-  --ochre: #c89b3c;
+  --ember: #c1502e;
+  --ochre: #d9a441;
   --clay: #684936;
   --bone: #f8f3e9;
   --sand: #d8c49a;
-  --ink: #181815;
-  --leaf: oklch(0.5 0.1 134);
+  --ink: #2b211a;
+  --leaf: #4b5320;
   --success: oklch(0.5 0.1 145);
   --success-foreground: oklch(0.98 0.01 82);
 
