@@ -30,6 +30,14 @@ import lambChopsPlatter from "@/assets/lamb-chops-platter.jpg";
 import steakOnGrillTomato from "@/assets/steak-on-grill-tomato.jpg";
 import sadzaCouscousTwoPlates from "@/assets/sadza-couscous-two-plates.jpg";
 import kuduStatueGarden from "@/assets/kudu-statue-garden.jpg";
+import wholeGrilledChicken from "@/assets/whole-grilled-chicken.jpg";
+import meatOverOpenCoals from "@/assets/meat-over-open-coals.jpg";
+import entranceBananaLeaves from "@/assets/entrance-banana-leaves.jpg";
+import staffPotOnHead from "@/assets/staff-pot-on-head.jpg";
+import interiorThatchedHall from "@/assets/interior-thatched-hall.jpg";
+import feastPlatterMixed from "@/assets/feast-platter-mixed.jpg";
+import sausagesOnGrill from "@/assets/sausages-on-grill.jpg";
+import lambChopsWideTray from "@/assets/lamb-chops-wide-tray.jpg";
 
 export const images = {
   garden,
@@ -64,6 +72,14 @@ export const images = {
   steakOnGrillTomato,
   sadzaCouscousTwoPlates,
   kuduStatueGarden,
+  wholeGrilledChicken,
+  meatOverOpenCoals,
+  entranceBananaLeaves,
+  staffPotOnHead,
+  interiorThatchedHall,
+  feastPlatterMixed,
+  sausagesOnGrill,
+  lambChopsWideTray,
 };
 
 export type GalleryEntry = {
@@ -257,5 +273,56 @@ export const gallery: GalleryEntry[] = [
     caption: "The kudu, keeping watch over the garden",
     category: "Garden",
     tall: true,
+  },
+  {
+    src: wholeGrilledChicken,
+    alt: "A whole butterflied chicken, char-grilled and garnished with fresh rosemary",
+    caption: "Whole chicken, straight off the fire",
+    category: "Fire",
+    tall: true,
+  },
+  {
+    src: meatOverOpenCoals,
+    alt: "Grilled meat cooking on the grate over live charcoal and open flame",
+    caption: "Over the open coals",
+    category: "Fire",
+  },
+  {
+    src: entranceBananaLeaves,
+    alt: "The thatched entrance to Cultures Resort framed by banana leaves, with a chalkboard menu sign out front",
+    caption: "The entrance, under the banana leaves",
+    category: "Garden",
+    tall: true,
+  },
+  {
+    src: staffPotOnHead,
+    alt: "A staff member in traditional dress balancing a clay pot on her head at the resort's entrance",
+    caption: "A traditional welcome at the entrance",
+    category: "People",
+    tall: true,
+  },
+  {
+    src: interiorThatchedHall,
+    alt: "The main thatched dining hall with mounted kudu, buffalo and antelope trophies on the wall",
+    caption: "Under the thatch, surrounded by the bush",
+    category: "Details",
+  },
+  {
+    src: feastPlatterMixed,
+    alt: "A large mixed platter with sadza, brown rice, jollof rice, grilled chicken, greens and gravy",
+    caption: "The feast platter, for sharing",
+    category: "Food",
+  },
+  {
+    src: sausagesOnGrill,
+    alt: "Grilled sausages (boerewors) on the grill, garnished with rosemary",
+    caption: "Boerewors, off the grill",
+    category: "Fire",
+  },
+  {
+    src: lambChopsWideTray,
+    alt: "A wide tray of grilled lamb chops garnished with rosemary",
+    caption: "Lamb chops, fresh off the coals",
+    category: "Fire",
   },
 ];
