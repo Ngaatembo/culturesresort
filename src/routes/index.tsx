@@ -53,9 +53,24 @@ function Home() {
   const { add, has } = useOrder();
 
   useEffect(() => {
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setPlayVideo(true);
-    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Don't even attempt the hero/fire videos on a connection that can't
+    // sustain them — this is what caused the "video keeps halting" symptom:
+    // the browser starts playback, immediately outruns its buffer on a slow
+    // link, and repeatedly stalls/rebuffers instead of ever completing a
+    // smooth loop. Skipping straight to the static image is both faster and
+    // visually steadier on 2G/3G or data-saver connections.
+    const nav = navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+    };
+    const conn = nav.connection;
+    const isSlow =
+      conn?.saveData === true ||
+      (conn?.effectiveType && ["slow-2g", "2g", "3g"].includes(conn.effectiveType));
+    if (isSlow) return;
+
+    setPlayVideo(true);
   }, []);
 
   // Belt-and-braces autoplay: React's `muted` JSX attribute doesn't always
@@ -65,6 +80,12 @@ function Home() {
   // Setting `.muted` imperatively before calling `.play()` avoids that gap —
   // without it, a blocked autoplay just silently freezes on the poster
   // frame, which looks identical to "the video never loaded".
+  //
+  // We also watch for repeated buffering stalls: on a connection that's
+  // borderline (rather than clearly slow up front), the video can still
+  // start and then keep freezing mid-playback. If it stalls more than a
+  // couple of times, we give up and drop back to the static poster image
+  // rather than leaving a half-frozen video on screen.
   useEffect(() => {
     if (!playVideo) return;
     const el = heroVideoRef.current;
@@ -74,6 +95,18 @@ function Home() {
       // Autoplay can still be blocked by the browser (e.g. data-saver
       // mode) — the poster frame remains a reasonable fallback either way.
     });
+
+    let stallCount = 0;
+    const onStall = () => {
+      stallCount += 1;
+      if (stallCount > 2) setPlayVideo(false);
+    };
+    el.addEventListener("waiting", onStall);
+    el.addEventListener("stalled", onStall);
+    return () => {
+      el.removeEventListener("waiting", onStall);
+      el.removeEventListener("stalled", onStall);
+    };
   }, [playVideo]);
 
   useEffect(() => {
