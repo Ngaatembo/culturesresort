@@ -49,7 +49,8 @@ function EnquiriesPage() {
     setEnquiries((prev) => (prev ? prev.map((e) => (e.id === id ? { ...e, status } : e)) : prev));
     try {
       await updateEnquiryStatus({ data: { id, status } });
-    } catch {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't update that status.");
       load();
     }
   };

@@ -47,7 +47,8 @@ function KitchenPage() {
     setOrders((prev) => (prev ? prev.map((o) => (o.id === id ? { ...o, status } : o)) : prev));
     try {
       await updateOrderStatus({ data: { id, status } });
-    } catch {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't update that order.");
       load();
     }
   };

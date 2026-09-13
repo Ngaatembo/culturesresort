@@ -113,7 +113,8 @@ function EventsPage() {
     setActive((prev) => (prev && prev.id === id ? { ...prev, status } : prev));
     try {
       await updateBookingStatus({ data: { id, status } });
-    } catch {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't update that status.");
       load();
     }
   };
@@ -203,10 +204,12 @@ function EventsPage() {
                       variant="outline"
                       className="text-destructive hover:bg-destructive/10"
                       onClick={async () => {
+                        if (!window.confirm(`Delete "${e.title}"? This removes it from the public Events page and can't be undone.`)) return;
                         setSiteEvents((prev) => (prev ? prev.filter((x) => x.id !== e.id) : prev));
                         try {
                           await deleteSiteEvent({ data: { id: e.id } });
-                        } catch {
+                        } catch (err) {
+                          setSiteEventsError(err instanceof Error ? err.message : "Couldn't delete that event.");
                           loadSiteEvents();
                         }
                       }}

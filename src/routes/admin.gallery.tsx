@@ -70,6 +70,7 @@ function GalleryPage() {
   const [pending, setPending] = useState<PendingUpload[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState<string | null>(null);
+  const [uploadFailures, setUploadFailures] = useState<string[]>([]);
   const [homepageImages, setHomepageImagesState] = useState<HomepageImages>({});
   const [replacingId, setReplacingId] = useState<number | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{ id: number; usedIn: string[] } | null>(null);
@@ -146,9 +147,17 @@ function GalleryPage() {
     if (!pending.length) return;
     setError(null);
     setUploadResult(null);
+    setUploadFailures([]);
+
+    const missing = pending.filter((item) => !item.caption.trim() || !item.alt.trim());
+    if (missing.length > 0) {
+      setUploadFailures(missing.map((item) => `${item.file.name}: add both a caption and alt text before uploading`));
+      return;
+    }
+
     setUploading(true);
     let uploaded = 0;
-    let failed = 0;
+    const failures: string[] = [];
     try {
       for (const item of pending) {
         try {
@@ -159,11 +168,12 @@ function GalleryPage() {
           form.set("category", item.category);
           await uploadGalleryPhoto({ data: form });
           uploaded++;
-        } catch {
-          failed++;
+        } catch (err) {
+          failures.push(`${item.file.name}: ${err instanceof Error ? err.message : "upload failed"}`);
         }
       }
-      setUploadResult(`Uploaded ${uploaded} photo${uploaded === 1 ? "" : "s"}` + (failed ? `, ${failed} failed` : "") + ".");
+      setUploadResult(`Uploaded ${uploaded} photo${uploaded === 1 ? "" : "s"}` + (failures.length ? `, ${failures.length} failed (see below).` : "."));
+      setUploadFailures(failures);
       setPending([]);
       if (fileRef.current) fileRef.current.value = "";
       load();
@@ -281,6 +291,11 @@ function GalleryPage() {
             <p className="text-xs text-muted-foreground">Images must be under 8MB each. Uploads run one at a time to keep R2 requests reliable.</p>
           </div>
           {uploadResult ? <p className="text-sm text-muted-foreground">{uploadResult}</p> : null}
+          {uploadFailures.length > 0 ? (
+            <ul className="list-inside list-disc text-xs text-destructive">
+              {uploadFailures.map((f) => <li key={f}>{f}</li>)}
+            </ul>
+          ) : null}
           {pending.length > 0 ? (
             <div className="space-y-3">
               <p className="text-sm font-medium">{pending.length} photo{pending.length === 1 ? "" : "s"} ready to upload</p>
@@ -295,8 +310,8 @@ function GalleryPage() {
                         <SelectContent>{CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                       </Select>
                     </div>
-                    <Input value={item.caption} onChange={(e) => updatePending(index, "caption", e.target.value)} placeholder="Caption" />
-                    <Input className="sm:col-span-2" value={item.alt} onChange={(e) => updatePending(index, "alt", e.target.value)} placeholder="Alt text" />
+                    <Input value={item.caption} onChange={(e) => updatePending(index, "caption", e.target.value)} placeholder="Caption (short phrase, required)" maxLength={80} required aria-required="true" />
+                    <Input className="sm:col-span-2" value={item.alt} onChange={(e) => updatePending(index, "alt", e.target.value)} placeholder="Alt text — describe the photo (required)" required aria-required="true" />
                   </div>
                   <button type="button" onClick={() => removePending(index)} aria-label={`Remove ${item.file.name}`} className="self-start rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
                 </div>
@@ -326,7 +341,11 @@ function GalleryPage() {
           {shownUploaded.length > 0 ? (
             <SectionCard title="Photos" description="Every imported or uploaded photo can be edited, replaced, assigned to a homepage section, or deleted. Changes persist to the public site.">
               <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {shownUploaded.map((p) => (
+                {shownUploaded.map((p) => {
+                  const missingCaption = !p.caption.trim();
+                  const missingAlt = !p.alt.trim();
+                  const longCaption = p.caption.trim().length > 80;
+                  return (
                   <li key={p.id} className="space-y-2 rounded-2xl border border-border bg-card p-3">
                     <div className="relative">
                       <img src={`/gallery-image/${p.r2_key}`} alt={p.alt} loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover" />
@@ -334,8 +353,17 @@ function GalleryPage() {
                         <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-ink/60 text-xs font-medium text-bone">Replacing…</div>
                       ) : null}
                     </div>
-                    <Input value={p.caption} onChange={(e) => onEditField(p.id, "caption", e.target.value)} onBlur={() => onSaveMeta(p)} placeholder="Caption" />
-                    <Input value={p.alt} onChange={(e) => onEditField(p.id, "alt", e.target.value)} onBlur={() => onSaveMeta(p)} placeholder="Alt text" />
+                    {missingCaption || missingAlt ? (
+                      <p className="rounded-lg bg-destructive/10 px-2 py-1.5 text-[11px] font-medium text-destructive">
+                        {missingCaption && missingAlt ? "Missing caption and alt text" : missingCaption ? "Missing caption" : "Missing alt text"} — add {missingCaption && missingAlt ? "both" : "it"} below.
+                      </p>
+                    ) : longCaption ? (
+                      <p className="rounded-lg bg-accent/20 px-2 py-1.5 text-[11px] font-medium text-accent-foreground">
+                        Caption is long ({p.caption.trim().length} characters) — consider shortening to a phrase.
+                      </p>
+                    ) : null}
+                    <Input value={p.caption} onChange={(e) => onEditField(p.id, "caption", e.target.value)} onBlur={() => onSaveMeta(p)} placeholder="Caption" className={missingCaption ? "border-destructive" : undefined} />
+                    <Input value={p.alt} onChange={(e) => onEditField(p.id, "alt", e.target.value)} onBlur={() => onSaveMeta(p)} placeholder="Alt text" className={missingAlt ? "border-destructive" : undefined} />
                     <div className="flex items-center justify-between gap-2">
                       <Select value={p.category} onValueChange={(v) => { onEditField(p.id, "category", v); onSaveMeta({ ...p, category: v }); }}>
                         <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
@@ -363,7 +391,8 @@ function GalleryPage() {
                       </div>
                     </div>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             </SectionCard>
           ) : null}

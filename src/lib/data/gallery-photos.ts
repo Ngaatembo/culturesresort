@@ -42,12 +42,18 @@ export const uploadGalleryPhoto = createServerFn({ method: "POST" })
     if (file.size > 8 * 1024 * 1024) {
       throw new Error("Images must be under 8MB.");
     }
-    return {
-      file,
-      alt: String(data.get("alt") ?? ""),
-      caption: String(data.get("caption") ?? ""),
-      category: String(data.get("category") ?? "Details"),
-    };
+    const alt = String(data.get("alt") ?? "").trim();
+    const caption = String(data.get("caption") ?? "").trim();
+    if (!alt) {
+      throw new Error(`Add alt text for "${file.name}" before uploading (for accessibility and search).`);
+    }
+    if (!caption) {
+      throw new Error(`Add a short caption for "${file.name}" before uploading.`);
+    }
+    if (caption.length > 80) {
+      throw new Error(`The caption for "${file.name}" is too long (${caption.length} characters) — keep it to a short phrase, under 80 characters. Longer descriptions belong in alt text, not the caption shown under the photo.`);
+    }
+    return { file, alt, caption, category: String(data.get("category") ?? "Details") };
   })
   .handler(async ({ data }) => {
     const bucket = getGalleryBucket();

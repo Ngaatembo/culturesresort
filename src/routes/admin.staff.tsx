@@ -91,7 +91,8 @@ function StaffPage() {
     }
   };
 
-  const onRemove = async (id: number) => {
+  const onRemove = async (id: number, email: string) => {
+    if (!window.confirm(`Remove ${email}'s access? They won't be able to log in anymore. This can't be undone.`)) return;
     setRemovingId(id);
     setError(null);
     try {
@@ -201,7 +202,7 @@ function StaffPage() {
                 {s.id !== selfId && !s.is_developer ? (
                   <button
                     type="button"
-                    onClick={() => onRemove(s.id)}
+                    onClick={() => onRemove(s.id, s.email)}
                     disabled={removingId === s.id}
                     aria-label={`Remove ${s.email}`}
                     className="rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"

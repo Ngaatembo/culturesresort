@@ -120,7 +120,8 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
     );
     try {
       await setMenuItemAvailability({ data: { id: item.id, available: next } });
-    } catch {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't update availability.");
       load();
     }
   };

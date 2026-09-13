@@ -67,7 +67,8 @@ function OrdersPage() {
     setActive((prev) => (prev && prev.id === id ? { ...prev, status } : prev));
     try {
       await updateOrderStatus({ data: { id, status } });
-    } catch {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't update that order.");
       load();
     }
   };

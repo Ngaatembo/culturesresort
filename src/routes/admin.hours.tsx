@@ -49,7 +49,7 @@ function HoursPage() {
     <div className="space-y-6">
       <PageHeader
         title="Opening Hours"
-        description="These hours appear on the contact page and in the footer — changes here go live immediately."
+        description="These hours appear on the contact page — changes here go live immediately."
       />
 
       {error ? <ErrorState message={error} onRetry={load} /> : null}

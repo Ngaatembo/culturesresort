@@ -61,7 +61,8 @@ function ReservationsPage() {
     setActive((prev) => (prev && prev.id === id ? { ...prev, status } : prev));
     try {
       await updateBookingStatus({ data: { id, status } });
-    } catch {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't update that status.");
       load();
     }
   };
