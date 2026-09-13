@@ -320,6 +320,88 @@ function Home() {
         </div>
       </section>
 
+      {/* Moments — a real photo grid (not a flattened collage) so every tile stays crisp */}
+      <section className="bg-background py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+          <Reveal className="mb-10 text-center">
+            <p className="eyebrow rule-ochre mx-auto text-primary">In one look</p>
+            <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
+              Food, fire, craft and garden
+            </h2>
+          </Reveal>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:gap-3">
+            <Reveal className="col-span-2 row-span-2 overflow-hidden rounded-2xl">
+              <img
+                src={images.pavilionWide}
+                alt="The thatched dining pavilion seen across the lawn, with a stone path and crocodile and antelope sculptures"
+                loading="lazy"
+                width={1024}
+                height={1536}
+                className="h-full min-h-[16rem] w-full object-cover"
+              />
+            </Reveal>
+            <Reveal delay={60} className="overflow-hidden rounded-2xl">
+              <img
+                src={images.craft}
+                alt="A staff member in traditional beadwork admiring a hand-drawn buffalo artwork on the brick pavilion wall"
+                loading="lazy"
+                width={1145}
+                height={1374}
+                className="aspect-square w-full object-cover"
+              />
+            </Reveal>
+            <Reveal delay={90} className="overflow-hidden rounded-2xl">
+              <img
+                src={images.goatChopsPlate}
+                alt="A seared steak and chop platter garnished with rosemary, tomato and onion, served in the garden"
+                loading="lazy"
+                width={1024}
+                height={1536}
+                className="aspect-square w-full object-cover"
+              />
+            </Reveal>
+            <Reveal delay={120} className="overflow-hidden rounded-2xl">
+              <img
+                src={cultureImg}
+                alt="A staff member in traditional-pattern uniform beside African paintings and art on display"
+                loading="lazy"
+                width={940}
+                height={1674}
+                className="aspect-square w-full object-cover"
+              />
+            </Reveal>
+            <Reveal delay={150} className="overflow-hidden rounded-2xl">
+              <img
+                src={images.waterfall}
+                alt="A rock-built water feature in the garden, with the thatched pavilion behind it"
+                loading="lazy"
+                width={1024}
+                height={1536}
+                className="aspect-square w-full object-cover"
+              />
+            </Reveal>
+            <Reveal delay={180} className="col-span-2 overflow-hidden rounded-2xl">
+              <img
+                src={images.ricePotjiePot}
+                alt="A dome of tomato rice and cooked greens on a white plate, with a small potjie pot of stew and the pavilion behind"
+                loading="lazy"
+                width={1536}
+                height={1024}
+                className="aspect-[16/9] w-full object-cover sm:aspect-[21/9]"
+              />
+            </Reveal>
+          </div>
+          <Reveal delay={210} className="mt-8 text-center">
+            <Link
+              to="/gallery"
+              className="eyebrow inline-block border-b border-primary pb-2 text-primary"
+            >
+              See the full gallery →
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
       {/* Food */}
       <section className="bg-clay text-bone">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-1 px-1 pt-1 lg:grid-cols-3 lg:gap-2 lg:px-2 lg:pt-2">
