@@ -143,10 +143,10 @@ function Home() {
             />
           ) : (
             <img
-              src={images.gardenGuestsDaytime}
-              alt="Guests dining in the garden among thatched pavilions and animal sculptures"
-              width={1920}
-              height={1280}
+              src={images.gardenPicnicSunlit}
+              alt="Sunlit garden dining area with red picnic tables, umbrellas, and animal sculptures among the trees"
+              width={1448}
+              height={1086}
               className="h-[122%] w-full object-cover"
               fetchPriority="high"
             />

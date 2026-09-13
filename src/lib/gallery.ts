@@ -25,6 +25,7 @@ import fireRibsFlame from "@/assets/fire-ribs-flame.webp";
 import sadzaGreensMoody from "@/assets/sadza-greens-moody.webp";
 import cocktailLayered from "@/assets/cocktail-layered.webp";
 import ricePotjiePot from "@/assets/rice-potjie-pot.webp";
+import gardenPicnicSunlit from "@/assets/garden-picnic-sunlit.webp";
 
 export const images = {
   garden,
@@ -54,6 +55,7 @@ export const images = {
   sadzaGreensMoody,
   cocktailLayered,
   ricePotjiePot,
+  gardenPicnicSunlit,
 };
 
 export type GalleryEntry = {
