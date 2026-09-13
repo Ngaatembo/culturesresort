@@ -9,6 +9,8 @@ import { listGalleryPhotos } from "@/lib/data/gallery-photos";
 import { cn } from "@/lib/utils";
 
 const categories = ["All", "People", "Food", "Fire", "Garden", "Culture", "Details"] as const;
+/** Fixed, sensible reading order for the grouped "All" view — not just insertion order. */
+const SECTION_ORDER = ["Garden", "Food", "Fire", "Culture", "People", "Details"] as const;
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -21,6 +23,39 @@ export const Route = createFileRoute("/gallery")({
   }),
   component: Gallery,
 });
+
+function GalleryCard({
+  img,
+  spanClass,
+  delay,
+  onOpen,
+}: {
+  img: GalleryEntry;
+  spanClass: string;
+  delay: number;
+  onOpen: () => void;
+}) {
+  return (
+    <Reveal as="li" delay={delay} className={cn("h-full min-w-0", spanClass)}>
+      <button
+        type="button"
+        onClick={onOpen}
+        className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-border bg-card text-left shadow-sm transition-shadow duration-300 hover:shadow-lift"
+        aria-label={`Open image: ${img.caption}`}
+      >
+        <span className={cn("relative block w-full flex-1 overflow-hidden lg:aspect-auto", spanClass ? "aspect-[4/3]" : img.tall ? "aspect-[3/4]" : "aspect-[4/3]")}>
+          <img src={img.src} alt={img.alt} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <span className="eyebrow absolute left-3 top-3 rounded-full bg-ink/70 px-3 py-1.5 text-[10px] text-bone backdrop-blur-sm">
+            {img.category}
+          </span>
+        </span>
+        <span className="line-clamp-2 px-4 py-3 text-sm leading-snug text-foreground">
+          {img.caption}
+        </span>
+      </button>
+    </Reveal>
+  );
+}
 
 function Gallery() {
   const craftImg = useSlotImage("craft", images.craft);
@@ -51,10 +86,25 @@ function Gallery() {
     return [...uploaded, ...bundledGallery.filter((g) => !bundledSources.has(g.caption) && !uploadedCaptions.has(g.caption))];
   }, [uploaded, bundledSources]);
 
-  const shown = useMemo(
-    () => filter === "All" ? gallery : gallery.filter((g) => g.category === filter),
-    [gallery, filter],
+  // Grouped by category, in a fixed reading order, regardless of upload order —
+  // this is what keeps "all the garden photos together, all the food together"
+  // instead of an interleaved feed.
+  const sections = useMemo(() => {
+    return SECTION_ORDER.map((category) => ({
+      category,
+      photos: gallery.filter((g) => g.category === category),
+    })).filter((s) => s.photos.length > 0);
+  }, [gallery]);
+
+  const shownSections = useMemo(
+    () => filter === "All" ? sections : sections.filter((s) => s.category === filter),
+    [sections, filter],
   );
+
+  const spanFor = (localIndex: number) => {
+    const pattern = localIndex % 7;
+    return pattern === 0 ? "lg:col-span-2 lg:row-span-2" : pattern === 4 ? "col-span-2 lg:col-span-2 lg:row-span-1" : "";
+  };
 
   return (
     <>
@@ -66,25 +116,27 @@ function Gallery() {
               <button key={c} type="button" onClick={() => setFilter(c)} aria-pressed={filter === c} className={cn("eyebrow border px-5 py-3 transition-colors", filter === c ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-secondary")}>{c}</button>
             ))}
           </div>
-          <ul className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:auto-rows-[220px]">
-            {shown.map((img, i) => {
-              const pattern = i % 7;
-              const spanClass = pattern === 0 ? "lg:col-span-2 lg:row-span-2" : pattern === 4 ? "col-span-2 lg:col-span-2 lg:row-span-1" : "";
-              return (
-                <Reveal as="li" key={`${img.caption}-${i}`} delay={(i % 4) * 70} className={cn("h-full min-w-0", spanClass)}>
-                  <button type="button" onClick={() => setIndex(gallery.indexOf(img))} className="group flex w-full flex-col rounded-2xl border border-border bg-card p-2 text-left shadow-sm transition-shadow duration-300 hover:shadow-lift lg:h-full" aria-label={`Open image: ${img.caption}`}>
-                    <span className={cn("block w-full flex-1 overflow-hidden rounded-xl lg:aspect-auto", spanClass ? "aspect-[4/3]" : img.tall ? "aspect-[3/4]" : "aspect-[4/3]")}>
-                      <img src={img.src} alt={img.alt} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                    </span>
-                    <span className="mt-2 flex items-center justify-between gap-3 rounded-xl border border-border bg-secondary px-3 py-2">
-                      <span className="min-w-0 truncate text-sm text-muted-foreground">{img.caption}</span>
-                      <span className="eyebrow shrink-0 text-primary">{img.category}</span>
-                    </span>
-                  </button>
-                </Reveal>
-              );
-            })}
-          </ul>
+
+          <div className="mt-12 space-y-16">
+            {shownSections.map((section) => (
+              <div key={section.category}>
+                {filter === "All" ? (
+                  <p className="eyebrow rule-ochre mb-6 text-primary">{section.category}</p>
+                ) : null}
+                <ul className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:auto-rows-[220px]">
+                  {section.photos.map((img, i) => (
+                    <GalleryCard
+                      key={`${img.caption}-${i}`}
+                      img={img}
+                      spanClass={spanFor(i)}
+                      delay={(i % 4) * 70}
+                      onOpen={() => setIndex(gallery.indexOf(img))}
+                    />
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
       <Lightbox images={gallery.map((g) => ({ src: g.src, alt: g.alt, caption: g.caption }))} index={index} onClose={() => setIndex(null)} onIndexChange={setIndex} />
