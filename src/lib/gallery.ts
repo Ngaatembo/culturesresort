@@ -25,6 +25,11 @@ import sadzaGreensMoody from "@/assets/sadza-greens-moody.webp";
 import cocktailLayered from "@/assets/cocktail-layered.webp";
 import ricePotjiePot from "@/assets/rice-potjie-pot.webp";
 import gardenPicnicSunlit from "@/assets/garden-picnic-sunlit.webp";
+import craftShopPicnicTables from "@/assets/craft-shop-picnic-tables.jpg";
+import lambChopsPlatter from "@/assets/lamb-chops-platter.jpg";
+import steakOnGrillTomato from "@/assets/steak-on-grill-tomato.jpg";
+import sadzaCouscousTwoPlates from "@/assets/sadza-couscous-two-plates.jpg";
+import kuduStatueGarden from "@/assets/kudu-statue-garden.jpg";
 
 export const images = {
   garden,
@@ -54,6 +59,11 @@ export const images = {
   cocktailLayered,
   ricePotjiePot,
   gardenPicnicSunlit,
+  craftShopPicnicTables,
+  lambChopsPlatter,
+  steakOnGrillTomato,
+  sadzaCouscousTwoPlates,
+  kuduStatueGarden,
 };
 
 export type GalleryEntry = {
@@ -215,5 +225,37 @@ export const gallery: GalleryEntry[] = [
     alt: "A dome of tomato rice and cooked greens on a white plate, with a small potjie pot of stew and the pavilion behind",
     caption: "Rice and stew, from the pot",
     category: "Food",
+  },
+  {
+    src: craftShopPicnicTables,
+    alt: "Picnic tables in front of the African Art & Crafts shop, with zebra and camel sculptures on the lawn",
+    caption: "Picnic tables by the craft shop",
+    category: "Garden",
+  },
+  {
+    src: lambChopsPlatter,
+    alt: "A platter of grilled lamb chops fanned out with a rosemary sprig at the centre",
+    caption: "Grilled lamb chops, plated",
+    category: "Fire",
+  },
+  {
+    src: steakOnGrillTomato,
+    alt: "Grilled steaks on a cast-iron griddle over the fire, garnished with a tomato slice and rosemary",
+    caption: "Steaks, straight off the grill",
+    category: "Fire",
+    tall: true,
+  },
+  {
+    src: sadzaCouscousTwoPlates,
+    alt: "Two plates of sadza and couscous with cooked greens, with the African Art & Crafts shop in the background",
+    caption: "Sadza and couscous, side by side",
+    category: "Food",
+  },
+  {
+    src: kuduStatueGarden,
+    alt: "A kudu sculpture in the garden with the thatched pavilion, zebra and elephant sculptures behind",
+    caption: "The kudu, keeping watch over the garden",
+    category: "Garden",
+    tall: true,
   },
 ];
