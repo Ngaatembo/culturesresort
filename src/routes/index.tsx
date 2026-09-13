@@ -15,6 +15,7 @@ import { useOrder } from "@/lib/order";
 import { LogoIntroOverlay } from "@/components/site/logo-intro-overlay";
 import { useSlotImage } from "@/lib/homepage-images";
 import fireGrill from "@/assets/fire-nyama-choma.jpg";
+import chefFireRibs from "@/assets/chef-fire-ribs-closeup.jpg";
 import fireCookingLoop from "@/assets/video/fire-cooking-loop.mp4";
 import gardenLoop from "@/assets/video/garden-loop.mp4";
 import { cn } from "@/lib/utils";
@@ -563,11 +564,11 @@ function Home() {
       {/* Chef / story */}
       <section className="relative overflow-hidden bg-ink text-bone">
         <img
-          src={fireGrill}
+          src={chefFireRibs}
           alt=""
           aria-hidden="true"
-          width={1600}
-          height={1067}
+          width={1254}
+          height={1254}
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover opacity-25"
         />
