@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestUrl } from "@tanstack/react-start/server";
-import { getDb, getGalleryBucket } from "./cf";
+import { getDb, getGalleryBucket, getAssetsBinding } from "./cf";
 import { authMiddleware } from "@/lib/auth/functions";
 import { gallery as bundledGallery } from "@/lib/gallery";
 import { HOMEPAGE_IMAGE_SLOTS, type HomepageImages } from "./settings";
@@ -234,7 +233,7 @@ export const importBundledGalleryPhotos = createServerFn({ method: "POST" })
   .handler(async () => {
     const db = getDb();
     const bucket = getGalleryBucket();
-    const origin = getRequestUrl().origin;
+    const assets = getAssetsBinding();
 
     const { results: existing } = await db
       .prepare("SELECT bundled_source, caption FROM gallery_photos")
@@ -257,13 +256,22 @@ export const importBundledGalleryPhotos = createServerFn({ method: "POST" })
         continue;
       }
       try {
-        const assetUrl = new URL(photo.src, origin).toString();
-        const res = await fetch(assetUrl);
+        // photo.src is a bundled asset path (e.g. "/assets/garden-abc123.jpg").
+        // The hostname here is arbitrary — only the pathname is used to
+        // match against the Worker's own bundled static assets.
+        const assetUrl = new URL(photo.src, "https://assets.local").toString();
+        const res = await assets.fetch(new Request(assetUrl));
         if (!res.ok) {
-          failed.push(photo.caption);
+          failed.push(`${photo.caption} (HTTP ${res.status} reading ${photo.src})`);
           continue;
         }
         const contentType = res.headers.get("content-type") ?? "image/jpeg";
+        if (!contentType.startsWith("image/")) {
+          // Most common failure mode: the asset path didn't match anything
+          // and the SPA fallback (index.html) was returned instead.
+          failed.push(`${photo.caption} (got "${contentType}" instead of an image for ${photo.src})`);
+          continue;
+        }
         const ext = contentType.split("/")[1]?.replace(/[^a-z0-9]/gi, "") || "jpg";
         const key = `gallery/imported-${Date.now()}-${crypto.randomUUID()}.${ext}`;
         await bucket.put(key, await res.arrayBuffer(), { httpMetadata: { contentType } });
@@ -276,8 +284,8 @@ export const importBundledGalleryPhotos = createServerFn({ method: "POST" })
           .bind(key, photo.alt, photo.caption, photo.category, order, photo.caption)
           .run();
         imported++;
-      } catch {
-        failed.push(photo.caption);
+      } catch (err) {
+        failed.push(`${photo.caption} (${err instanceof Error ? err.message : "unknown error"})`);
       }
     }
 

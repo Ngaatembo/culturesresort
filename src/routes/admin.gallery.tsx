@@ -65,6 +65,7 @@ function GalleryPage() {
   const [filter, setFilter] = useState<"All" | Category>("All");
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<string | null>(null);
+  const [importFailures, setImportFailures] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   const [pending, setPending] = useState<PendingUpload[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -109,14 +110,16 @@ function GalleryPage() {
   const onImport = async () => {
     setImporting(true);
     setImportResult(null);
+    setImportFailures([]);
     setError(null);
     try {
       const result = await importBundledGalleryPhotos();
-      setImportResult(`Imported ${result.imported}, skipped ${result.skipped} already-imported` + (result.failed.length ? `, ${result.failed.length} failed` : "") + ".");
+      setImportResult(`Imported ${result.imported}, skipped ${result.skipped} already-imported` + (result.failed.length ? `, ${result.failed.length} failed (see below).` : "."));
+      setImportFailures(result.failed);
       load();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Couldn't import the launch photos.";
-      setBucketMissing(message.includes("GALLERY"));
+      setBucketMissing(message.includes("GALLERY") || message.includes("ASSETS"));
       setError(message);
     } finally {
       setImporting(false);
@@ -258,6 +261,11 @@ function GalleryPage() {
           description={`The ${remainingBundled.length} bundled launch photos are still read-only. Import them once and they become normal database photos, with persistent edit and delete controls.`}
         >
           {importResult ? <p className="mb-3 text-sm text-muted-foreground">{importResult}</p> : null}
+          {importFailures.length > 0 ? (
+            <ul className="mb-3 list-inside list-disc text-xs text-destructive">
+              {importFailures.map((f) => <li key={f}>{f}</li>)}
+            </ul>
+          ) : null}
           <Button type="button" onClick={onImport} disabled={importing}>
             <Download className="h-4 w-4" />
             {importing ? "Importing…" : `Make ${remainingBundled.length} photos editable`}

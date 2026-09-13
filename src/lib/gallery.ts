@@ -107,12 +107,6 @@ export const gallery: GalleryEntry[] = [
     category: "Culture",
   },
   {
-    src: staffWelcome,
-    alt: "A staff member in branded uniform welcoming guests beside the curio display",
-    caption: "Friendly staff, ready to welcome you",
-    category: "People",
-  },
-  {
     src: elephantBridge,
     alt: "A life-size elephant sculpture beside a raised wooden walkway, with a signpost showing distances to African destinations",
     caption: "The elephant, and the walkway through the grounds",

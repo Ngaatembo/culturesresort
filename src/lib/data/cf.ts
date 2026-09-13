@@ -95,3 +95,24 @@ export function getEnvVar(name: string): string | undefined {
   const env = (globalThis as unknown as { __env__?: Record<string, string | undefined> }).__env__;
   return env?.[name] ?? (typeof process !== "undefined" ? process.env[name] : undefined);
 }
+
+/**
+ * Returns the Worker's static-assets binding (see getDb() for how/why this
+ * works) — the correct, documented way for a Worker to read back its own
+ * bundled files server-side. A plain global `fetch()` to the Worker's own
+ * public URL is NOT reliable for this: depending on routing/asset-handling
+ * config it can silently return the SPA's index.html fallback instead of
+ * the actual image, which is what made bundled-photo import fail silently.
+ * Requires a `wrangler.jsonc` with an `assets` binding named `ASSETS`
+ * (already present here for serving the built frontend).
+ */
+export function getAssetsBinding(): { fetch(input: Request | string): Promise<Response> } {
+  const env = (globalThis as unknown as { __env__?: { ASSETS?: { fetch(input: Request | string): Promise<Response> } } }).__env__;
+  const assets = env?.ASSETS;
+  if (!assets) {
+    throw new Error(
+      'Static assets binding "ASSETS" is not available in this environment. Run `wrangler dev` (or deploy to Cloudflare) rather than the plain Vite dev server.',
+    );
+  }
+  return assets;
+}
