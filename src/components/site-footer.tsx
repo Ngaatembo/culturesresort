@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram } from "lucide-react";
+import { TikTokIcon } from "@/components/tiktok-icon";
+import { XIcon } from "@/components/x-icon";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { whatsappLink, whatsappMessages } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
@@ -56,7 +58,7 @@ export function SiteFooter() {
             href={business.mapsHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="eyebrow border border-bone/30 px-7 py-4 hover:bg-bone/10"
+            className="eyebrow hidden border border-bone/30 px-7 py-4 hover:bg-bone/10 lg:inline-flex"
           >
             Get directions
           </a>
@@ -64,7 +66,7 @@ export function SiteFooter() {
             href={whatsappLink(whatsappMessages.general, business.whatsappNumber)}
             target="_blank"
             rel="noopener noreferrer"
-            className="eyebrow flex items-center gap-2 border border-bone/30 px-7 py-4 hover:bg-bone/10"
+            className="eyebrow hidden items-center gap-2 border border-bone/30 px-7 py-4 hover:bg-bone/10 lg:inline-flex"
           >
             <WhatsAppIcon className="h-4 w-4" aria-hidden="true" />
             WhatsApp
@@ -92,6 +94,28 @@ export function SiteFooter() {
               className="hover:text-ochre"
             >
               <Facebook className="h-5 w-5" aria-hidden="true" />
+            </a>
+          )}
+          {socialLinks.tiktok && (
+            <a
+              href={socialLinks.tiktok}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Cultures Resort on TikTok"
+              className="hover:text-ochre"
+            >
+              <TikTokIcon className="h-5 w-5" />
+            </a>
+          )}
+          {socialLinks.x && (
+            <a
+              href={socialLinks.x}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Cultures Resort on X"
+              className="hover:text-ochre"
+            >
+              <XIcon className="h-5 w-5" />
             </a>
           )}
         </div>
