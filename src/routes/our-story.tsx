@@ -32,7 +32,7 @@ function OurStory() {
         title="Built around a table, not a trend"
         intro="Cultures Resort is a traditional African restaurant in Hillside, Harare — a place for food, craft and company."
         image={images.craft}
-        imageAlt="A staff member hand-painting a buffalo mural on the brick wall of the dining pavilion"
+        imageAlt="A staff member in traditional beadwork admiring a hand-drawn buffalo artwork on the brick pavilion wall"
       />
 
       <section className="grain bg-background py-16 lg:py-24">
@@ -126,7 +126,7 @@ function OurStory() {
             <Reveal className="col-span-2 row-span-2 overflow-hidden rounded-2xl">
               <img
                 src={images.food}
-                alt="A grilled meat platter with rosemary garnish, served in the evening garden"
+                alt="Grilled chicken and steaks smoking on an open charcoal grill, with fresh vegetables alongside"
                 loading="lazy"
                 className="h-full min-h-64 w-full object-cover object-bottom sm:min-h-full"
               />
@@ -134,7 +134,7 @@ function OurStory() {
             <Reveal delay={90} className="overflow-hidden rounded-2xl">
               <img
                 src={images.goatChopsPlate}
-                alt="Grilled goat chops served on a plate"
+                alt="A seared steak and chop platter garnished with rosemary, tomato and onion"
                 loading="lazy"
                 className="aspect-square w-full object-cover"
               />
@@ -158,7 +158,7 @@ function OurStory() {
             <Reveal delay={240} className="overflow-hidden rounded-2xl">
               <img
                 src={images.traditionalDrinkPouring}
-                alt="Staff pouring a traditional drink from a large clay pot into ceramic cups"
+                alt="A staff member in traditional dress and beadwork reaching into a large clay pot"
                 loading="lazy"
                 className="aspect-square w-full object-cover"
               />

@@ -70,7 +70,7 @@ export type GalleryEntry = {
 export const gallery: GalleryEntry[] = [
   {
     src: pavilionWide,
-    alt: "The thatched dining pavilion with guests seated, a stone path, and a crocodile sculpture on the lawn",
+    alt: "The thatched dining pavilion seen across the lawn, with a stone path and crocodile and antelope sculptures",
     caption: "The dining pavilion and grounds",
     category: "Garden",
     tall: true,
@@ -89,8 +89,8 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: craft,
-    alt: "A staff member hand-painting a buffalo mural on the brick wall of the dining pavilion",
-    caption: "Hand-painted art on the pavilion walls",
+    alt: "A staff member in traditional beadwork admiring a hand-drawn buffalo artwork on the brick pavilion wall",
+    caption: "African art on the pavilion walls",
     category: "Details",
     tall: true,
   },
@@ -102,9 +102,9 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: drums,
-    alt: "The dining pavilion lit up at night with a leopard sculpture on the lawn",
-    caption: "The grounds after dark",
-    category: "Garden",
+    alt: "A staff member in traditional-pattern uniform beside African paintings and art on display",
+    caption: "Art and culture on display",
+    category: "Culture",
   },
   {
     src: staffWelcome,
@@ -138,8 +138,8 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: food,
-    alt: "A grilled meat platter with rosemary garnish and cocktails, served in the evening garden",
-    caption: "Dinner in the garden, after dark",
+    alt: "Grilled chicken and steaks smoking on an open charcoal grill, with fresh vegetables and a potjie pot alongside",
+    caption: "Straight off the open-fire grill",
     category: "Food",
     tall: true,
   },
@@ -176,8 +176,8 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: goatChopsPlate,
-    alt: "Char-grilled ribs and chops with a slice of tomato, served sizzling on a black platter",
-    caption: "Char-grilled ribs, straight off the fire",
+    alt: "A seared steak and chop platter garnished with rosemary, tomato and onion, served in the garden",
+    caption: "Seared steaks, straight to the table",
     category: "Fire",
   },
   {
@@ -195,8 +195,8 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: traditionalDrinkPouring,
-    alt: "Two staff members in branded uniform pouring a traditional drink from a large clay pot into ceramic cups",
-    caption: "A traditional welcome drink, poured from the pot",
+    alt: "A staff member in traditional dress and beadwork reaching into a large clay pot on a wooden table",
+    caption: "Traditional dress and handcrafted clay pots",
     category: "People",
   },
   {
@@ -226,7 +226,7 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: ricePotjiePot,
-    alt: "A dome of tomato rice on a white plate, with a small traditional pot of stew served on the side",
+    alt: "A dome of tomato rice and cooked greens on a white plate, with a small potjie pot of stew and the pavilion behind",
     caption: "Rice and stew, from the pot",
     category: "Food",
   },

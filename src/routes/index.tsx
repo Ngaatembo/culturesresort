@@ -322,7 +322,7 @@ function Home() {
           <div className="col-span-2 aspect-[16/11] overflow-hidden lg:col-span-2 lg:aspect-auto">
             <img
               src={images.food}
-              alt="A grilled meat platter with rosemary garnish and cocktails, served in the evening garden"
+              alt="Grilled chicken and steaks smoking on an open charcoal grill, with fresh vegetables and a potjie pot alongside"
               width={590}
               height={1095}
               loading="lazy"
@@ -572,7 +572,7 @@ function Home() {
       <section className="relative overflow-hidden">
         <img
           src={images.drums}
-          alt="Drummer and dancers performing beside a fire in the courtyard"
+          alt="A staff member in traditional-pattern uniform beside African paintings and art on display"
           width={1600}
           height={1067}
           loading="lazy"

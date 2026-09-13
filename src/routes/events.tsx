@@ -70,7 +70,7 @@ function Events() {
         title="Gatherings under the trees — or wherever you're hosting"
         intro="Birthdays, family gatherings, weddings, roora and business functions — host at Cultures Resort (groups up to 200 guests) or have the team cater at your own venue. Tell us what you have in mind and the team will come back to you directly."
         image={images.drums}
-        imageAlt="The dining pavilion lit up at night with a leopard sculpture on the lawn"
+        imageAlt="A staff member in traditional-pattern uniform beside African paintings and art on display"
       />
 
       <section className="bg-clay py-16 text-bone lg:py-24">

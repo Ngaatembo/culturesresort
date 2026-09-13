@@ -45,7 +45,7 @@ function Experience() {
           <div className="aspect-[4/3] lg:aspect-auto lg:min-h-[50vh]">
             <img
               src={images.drums}
-              alt="The dining pavilion lit up at night with a leopard sculpture on the lawn"
+              alt="A staff member in traditional-pattern uniform beside African paintings and art on display"
               width={1600}
               height={1067}
               loading="lazy"
