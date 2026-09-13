@@ -142,7 +142,7 @@ function NotificationsCard() {
   return (
     <SectionCard title="Email notifications" className="border-accent/40">
       <p className="text-sm text-muted-foreground">
-        Sends an email (via Resend) every time a new booking or enquiry comes in from the website.
+        Sends an email (via Resend) every time a new order, booking or enquiry comes in from the website.
       </p>
 
       <div className="mt-4 space-y-4">

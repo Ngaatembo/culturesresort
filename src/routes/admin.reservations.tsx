@@ -41,6 +41,18 @@ export const Route = createFileRoute("/admin/reservations")({
 
 const STATUSES: BookingStatus[] = ["pending", "confirmed", "declined", "completed", "cancelled"];
 
+/** The reservation form stores the requested time as "Time: HH:MM" in the
+ * shared `requirements` column (event enquiries use that same column for a
+ * comma-separated list of requirements instead — this parse only applies
+ * here, on the Table reservation view). Pulling it out into its own
+ * field/column matters in practice: without it, staff had to open every
+ * single reservation to find out what time the guest is arriving. */
+function parseRequestedTime(requirements: string | null): string | null {
+  if (!requirements) return null;
+  const match = requirements.match(/^Time:\s*(.+)$/);
+  return match?.[1] ?? null;
+}
+
 function ReservationsPage() {
   const [bookings, setBookings] = useState<BookingRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -137,6 +149,7 @@ function ReservationsPage() {
                 <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   <th className="py-2 pr-4">Guest</th>
                   <th className="py-2 pr-4">Date</th>
+                  <th className="py-2 pr-4">Time</th>
                   <th className="py-2 pr-4">Guests</th>
                   <th className="py-2 pr-4">Requested</th>
                   <th className="py-2 pr-4">Status</th>
@@ -163,6 +176,7 @@ function ReservationsPage() {
                       <p className="text-xs text-muted-foreground">{b.guest_phone}</p>
                     </td>
                     <td className="py-3.5 pr-4">{b.event_date ?? "—"}</td>
+                    <td className="py-3.5 pr-4 font-medium">{parseRequestedTime(b.requirements) ?? "—"}</td>
                     <td className="py-3.5 pr-4">{b.guests ?? "—"}</td>
                     <td className="py-3.5 pr-4 text-xs text-muted-foreground">
                       {formatDateTime(b.created_at)}
@@ -202,10 +216,24 @@ function ReservationsPage() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      Requested time
+                    </p>
+                    <p className="mt-1 font-medium text-foreground">{parseRequestedTime(active.requirements) ?? "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                       Phone
                     </p>
                     <p className="mt-1 font-medium text-foreground">{active.guest_phone}</p>
                   </div>
+                  {active.guest_email ? (
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Email
+                      </p>
+                      <p className="mt-1 font-medium text-foreground">{active.guest_email}</p>
+                    </div>
+                  ) : null}
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                       Status
@@ -215,16 +243,14 @@ function ReservationsPage() {
                     </div>
                   </div>
                 </div>
-                {(active.requirements || active.message) && (
+                {active.message ? (
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                       Notes
                     </p>
-                    <p className="mt-1 text-foreground">
-                      {[active.requirements, active.message].filter(Boolean).join(" — ")}
-                    </p>
+                    <p className="mt-1 text-foreground">{active.message}</p>
                   </div>
-                )}
+                ) : null}
               </div>
               <DrawerFooter className="flex-row flex-wrap gap-2">
                 {STATUSES.filter((s) => s !== active.status).map((s) => (

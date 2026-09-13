@@ -99,7 +99,7 @@ export const sendTestNotification = createServerFn({ method: "POST" })
         from: DEFAULT_FROM,
         to: [prefs.email],
         subject: "Cultures Resort — test notification",
-        text: "If you're reading this, booking and enquiry email notifications are working.",
+        text: "If you're reading this, order, booking and enquiry email notifications are working.",
       }),
     });
 

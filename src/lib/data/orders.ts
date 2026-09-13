@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
 import { authMiddleware } from "@/lib/auth/functions";
+import { sendNotificationEmail } from "./notify";
 
 export type OrderStatus = "pending" | "preparing" | "completed" | "cancelled";
 
@@ -51,6 +52,20 @@ export const placeOrder = createServerFn({ method: "POST" })
         .bind(orderId, line.menuItemId ?? null, line.name, line.priceCents, line.qty)
         .run();
     }
+
+    await sendNotificationEmail(
+      `New order #${orderId} — ${(totalCents / 100).toFixed(2)}`,
+      [
+        `${customerName} (${customerPhone})`,
+        "",
+        ...lines.map((l) => `${l.qty} x ${l.name} — $${((l.priceCents * l.qty) / 100).toFixed(2)}`),
+        "",
+        `Total: $${(totalCents / 100).toFixed(2)}`,
+        notes ? `Notes: ${notes}` : null,
+      ]
+        .filter((line) => line !== null)
+        .join("\n"),
+    );
 
     return { orderId, totalCents };
   });
