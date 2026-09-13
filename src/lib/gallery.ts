@@ -6,7 +6,6 @@ import interiorDeck from "@/assets/interior-deck.jpg";
 import sadzaPlate from "@/assets/sadza-plate.jpg";
 import jollofPlate from "@/assets/jollof-plate.jpg";
 import craftBaskets from "@/assets/craft-art-baskets.jpg";
-import craftClayPot from "@/assets/craft-clay-pot.jpg";
 import pavilionWide from "@/assets/pavilion-wide.jpg";
 import curioShop from "@/assets/curio-shop.jpg";
 import waterfall from "@/assets/waterfall.jpg";
@@ -36,7 +35,6 @@ export const images = {
   sadzaPlate,
   jollofPlate,
   craftBaskets,
-  craftClayPot,
   pavilionWide,
   curioShop,
   waterfall,
@@ -155,12 +153,6 @@ export const gallery: GalleryEntry[] = [
     caption: "Local art and woven baskets on display",
     category: "Culture",
     tall: true,
-  },
-  {
-    src: craftClayPot,
-    alt: "A staff member in traditional dress arranging a large clay pot",
-    caption: "Traditional dress and handcrafted clay pots",
-    category: "Culture",
   },
   {
     src: playArea,
