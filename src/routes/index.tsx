@@ -13,10 +13,12 @@ import { getMenu, type MenuItemOut } from "@/lib/data/menu";
 import { dishPhotos } from "@/lib/dish-photos";
 import { useOrder } from "@/lib/order";
 import { LogoIntroOverlay } from "@/components/site/logo-intro-overlay";
+import { VideoTourModal } from "@/components/video-tour-modal";
 import { useSlotImage } from "@/lib/homepage-images";
 import fireGrill from "@/assets/fire-nyama-choma.jpg";
 import chefFireRibs from "@/assets/chef-fire-ribs-closeup.jpg";
 import fireCookingLoop from "@/assets/video/fire-cooking-loop.mp4";
+import entranceTour from "@/assets/video/entrance-tour.mp4";
 import gardenLoop from "@/assets/video/garden-loop.mp4";
 import { cn } from "@/lib/utils";
 
@@ -49,6 +51,7 @@ function Home() {
   const { business } = useSiteSettings();
   const [playVideo, setPlayVideo] = useState(false);
   const [heroEnded, setHeroEnded] = useState(false);
+  const [tourOpen, setTourOpen] = useState(false);
   const heroImg = useSlotImage("hero", images.waterfall);
   const cultureImg = useSlotImage("drums", images.drums);
   const foodImg = useSlotImage("food", images.food);
@@ -191,15 +194,14 @@ function Home() {
               >
                 Explore the menu
               </Link>
-              <a
-                href="https://vt.tiktok.com/ZSqfhjd2x/"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => setTourOpen(true)}
                 className="group eyebrow flex items-center justify-center gap-2 px-8 py-5 text-bone/75 transition-colors hover:text-bone"
               >
                 <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                 Take a 1-min tour
-              </a>
+              </button>
             </div>
           </Reveal>
           <Reveal delay={340}>
@@ -775,6 +777,13 @@ function Home() {
           </Reveal>
         </div>
       </section>
+
+      <VideoTourModal
+        open={tourOpen}
+        onClose={() => setTourOpen(false)}
+        src={entranceTour}
+        poster={images.entranceBananaLeaves}
+      />
     </>
   );
 }
