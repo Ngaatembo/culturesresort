@@ -46,6 +46,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { business } = useSiteSettings();
   const [playVideo, setPlayVideo] = useState(false);
+  const [heroEnded, setHeroEnded] = useState(false);
   const [signatureDishes, setSignatureDishes] = useState<PreviewDish[] | null>(null);
   const [craftMuted, setCraftMuted] = useState(true);
   const craftVideoRef = useRef<HTMLVideoElement>(null);
@@ -127,23 +128,23 @@ function Home() {
       {/* Hero */}
       <section className="relative flex min-h-[92svh] items-end overflow-hidden">
         <ParallaxImage strength={44} className="absolute inset-0 h-full w-full">
-          {playVideo ? (
+          {playVideo && !heroEnded ? (
             <video
               ref={heroVideoRef}
               src={gardenLoop}
               poster={images.garden}
               autoPlay
               muted
-              loop
               playsInline
               preload="metadata"
               aria-hidden="true"
+              onEnded={() => setHeroEnded(true)}
               className="h-[122%] w-full object-cover"
             />
           ) : (
             <img
-              src={images.garden}
-              alt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
+              src={images.gardenGuestsDaytime}
+              alt="Guests dining in the garden among thatched pavilions and animal sculptures"
               width={1920}
               height={1280}
               className="h-[122%] w-full object-cover"
