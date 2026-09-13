@@ -181,8 +181,8 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: traditionalDrinkPouring,
-    alt: "A staff member in traditional dress and beadwork reaching into a large clay pot on a wooden table",
-    caption: "Traditional dress and handcrafted clay pots",
+    alt: "Two staff members in branded caps preparing maheu and traditional snacks beside large clay pots and calabashes",
+    caption: "Maheu and traditional snacks, ready to serve",
     category: "People",
   },
   {

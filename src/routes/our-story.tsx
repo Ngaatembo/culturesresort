@@ -161,7 +161,7 @@ function OurStory() {
             <Reveal delay={240} className="overflow-hidden rounded-2xl">
               <img
                 src={images.traditionalDrinkPouring}
-                alt="A staff member in traditional dress and beadwork reaching into a large clay pot"
+                alt="Two staff members in branded caps preparing maheu and traditional snacks beside large clay pots and calabashes"
                 loading="lazy"
                 className="aspect-square w-full object-cover"
               />

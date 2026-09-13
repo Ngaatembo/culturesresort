@@ -593,7 +593,7 @@ function Home() {
           <Reveal className="overflow-hidden rounded-2xl">
             <img
               src={images.traditionalDrinkPouring}
-              alt="A staff member in traditional dress and beadwork reaching into a large clay pot"
+              alt="Two staff members in branded caps preparing maheu and traditional snacks beside large clay pots and calabashes"
               loading="lazy"
               width={896}
               height={1120}
