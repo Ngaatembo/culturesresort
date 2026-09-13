@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { adminSetup, adminSetupStatus } from "@/lib/auth/functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import logoMark from "@/assets/logo-mark.png";
 
 export const Route = createFileRoute("/admin/setup")({
@@ -102,9 +103,8 @@ function SetupPage() {
             <label htmlFor="password" className="text-sm font-medium text-foreground">
               Password (8+ characters)
             </label>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               autoComplete="new-password"
               required
               minLength={8}
@@ -116,9 +116,8 @@ function SetupPage() {
             <label htmlFor="confirm" className="text-sm font-medium text-foreground">
               Confirm password
             </label>
-            <Input
+            <PasswordInput
               id="confirm"
-              type="password"
               autoComplete="new-password"
               required
               minLength={8}

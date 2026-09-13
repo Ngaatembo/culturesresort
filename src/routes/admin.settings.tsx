@@ -11,6 +11,7 @@ import { getResendKeyStatus, sendTestNotification, setResendKey } from "@/lib/da
 import { PageHeader, SectionCard, StatusDot } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/admin/settings")({
@@ -165,8 +166,7 @@ function NotificationsCard() {
               : "Not set yet — create a free key at resend.com/api-keys and paste it here."}
           </p>
           <div className="mt-2 flex max-w-sm flex-wrap gap-2">
-            <Input
-              type="password"
+            <PasswordInput
               value={apiKeyInput}
               onChange={(e) => setApiKeyInput(e.target.value)}
               placeholder="re_••••••••••••"

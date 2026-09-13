@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { adminLogin, adminSetupStatus } from "@/lib/auth/functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import logoMark from "@/assets/logo-mark.png";
 
 export const Route = createFileRoute("/admin/login")({
@@ -88,9 +89,8 @@ function LoginPage() {
             <label htmlFor="password" className="text-sm font-medium text-foreground">
               Password
             </label>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               autoComplete="current-password"
               required
               value={password}

@@ -6,6 +6,7 @@ import { createStaffAccount, listStaff, removeStaffAccount } from "@/lib/auth/fu
 import type { AdminRole } from "@/lib/auth/admin-users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Select,
   SelectContent,
@@ -156,8 +157,7 @@ function StaffPage() {
             <label className="text-xs font-medium text-muted-foreground">
               Password (8+ characters)
             </label>
-            <Input
-              type="password"
+            <PasswordInput
               required
               minLength={8}
               value={password}
