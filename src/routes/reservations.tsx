@@ -1,10 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
-import { useSlotImage } from "@/lib/homepage-images";
 import { createBooking } from "@/lib/data/bookings";
 import { useSiteSettings } from "@/lib/site-settings-query";
 
@@ -50,7 +49,7 @@ const empty: Values = {
 
 function Reservations() {
   const { business } = useSiteSettings();
-  const gardenImg = useSlotImage("garden", images.garden);
+  const welcomeImg = images.staffPotOnHead;
   const [values, setValues] = useState<Values>(empty);
   const [errors, setErrors] = useState<Partial<Record<keyof Values, string>>>({});
   const [submitted, setSubmitted] = useState<Values | null>(null);
@@ -83,8 +82,8 @@ function Reservations() {
         <PageHeader
           eyebrow="Reservations"
           title="Request received"
-          image={gardenImg}
-          imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
+          image={welcomeImg}
+          imageAlt="A staff member in traditional dress balancing a clay pot on her head at the resort's entrance"
         />
         <section className="bg-background py-16 lg:py-24">
           <div className="mx-auto max-w-2xl px-5 lg:px-10">
@@ -145,12 +144,21 @@ function Reservations() {
         eyebrow="Reservations"
         title="Request a table"
         intro="Tell us when you'd like to come. The restaurant confirms every booking personally."
-        image={gardenImg}
-        imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
+        image={welcomeImg}
+        imageAlt="A staff member in traditional dress balancing a clay pot on her head at the resort's entrance"
       />
 
       <section className="bg-background py-16 lg:py-24">
-        <div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-12 lg:px-10">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+          <p className="text-sm text-muted-foreground">
+            Planning a wedding, roora, or larger group function instead?{" "}
+            <Link to="/events" className="text-primary underline underline-offset-2">
+              Enquire about catering
+            </Link>
+            .
+          </p>
+        </div>
+        <div className="mx-auto grid max-w-7xl gap-14 px-5 pt-8 lg:grid-cols-12 lg:px-10">
           <Reveal className="lg:col-span-7">
             <form
               className="border border-border bg-card p-8 lg:p-12"
