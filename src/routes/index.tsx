@@ -506,11 +506,21 @@ function Home() {
 
       {/* Maheu — client-confirmed as a daily welcome ritual for every arriving guest */}
       <section className="bg-clay py-14 text-bone">
-        <div className="mx-auto max-w-7xl px-5 text-center lg:px-10">
-          <Reveal>
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 lg:grid-cols-2 lg:gap-16 lg:px-10">
+          <Reveal className="overflow-hidden rounded-2xl">
+            <img
+              src={images.traditionalDrinkPouring}
+              alt="A staff member in traditional dress and beadwork reaching into a large clay pot"
+              loading="lazy"
+              width={896}
+              height={1120}
+              className="aspect-[4/5] w-full object-cover"
+            />
+          </Reveal>
+          <Reveal delay={90} className="text-center lg:text-left">
             <p className="eyebrow text-ochre">Start with a taste of home</p>
             <p className="mt-3 font-display text-2xl italic leading-snug lg:text-3xl">Maheu</p>
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-bone/80">
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-bone/80 lg:mx-0">
               Every guest is welcomed with a cup of maheu, a traditional fermented grain drink, the
               moment they arrive — a small gesture that sets the tone for the visit.
             </p>
