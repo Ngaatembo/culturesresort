@@ -21,7 +21,7 @@ export const business = {
   email: "culturesresort@gmail.com",
   emailAlt: "culturesresortzimbabwe@gmail.com",
   /** VERIFIED — exact GPS pin for the venue, confirmed by the owner. */
-  mapsHref: "https://www.google.com/maps/search/?api=1&query=-17.8362078%2C31.0696115",
+  mapsHref: "https://www.google.com/maps/search/?api=1&query=Cultures+Resort%2C+Hillside%2C+Harare&query_place_id=ChIJMTkSNeOlMRkRoK7kK4kZYbE",
   mapsEmbedHref: "https://www.google.com/maps?q=-17.8362078,31.0696115&output=embed",
   /** VERIFIED — the restaurant's real, live TripAdvisor listing. */
   tripadvisorHref:
