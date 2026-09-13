@@ -43,6 +43,7 @@ import plainRice from "@/assets/dishes/plain-rice.jpg";
 import homemadeCake from "@/assets/dishes/homemade-cake.jpg";
 import wildDriedFruits from "@/assets/dishes/wild-dried-fruits.jpg";
 import zimTeaCoffee from "@/assets/dishes/zim-tea-coffee.jpg";
+import softDrinkGlass from "@/assets/soft-drink-glass.jpg";
 
 export const dishPhotos: Record<string, string> = {
   "Kuku Choma": kukuChoma,
@@ -89,4 +90,5 @@ export const dishPhotos: Record<string, string> = {
   "Homemade Cake Slice": homemadeCake,
   "Wild Dried Fruits": wildDriedFruits,
   "Best Zimbabwean Tea / Coffee": zimTeaCoffee,
+  "Soft Drink": softDrinkGlass,
 };
