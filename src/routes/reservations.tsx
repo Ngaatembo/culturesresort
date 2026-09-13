@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
+import { useSlotImage } from "@/lib/homepage-images";
 import { createBooking } from "@/lib/data/bookings";
 import { useSiteSettings } from "@/lib/site-settings-query";
 
@@ -49,6 +50,7 @@ const empty: Values = {
 
 function Reservations() {
   const { business } = useSiteSettings();
+  const gardenImg = useSlotImage("garden", images.garden);
   const [values, setValues] = useState<Values>(empty);
   const [errors, setErrors] = useState<Partial<Record<keyof Values, string>>>({});
   const [submitted, setSubmitted] = useState<Values | null>(null);
@@ -81,7 +83,7 @@ function Reservations() {
         <PageHeader
           eyebrow="Reservations"
           title="Request received"
-          image={images.garden}
+          image={gardenImg}
           imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
         />
         <section className="bg-background py-16 lg:py-24">
@@ -143,7 +145,7 @@ function Reservations() {
         eyebrow="Reservations"
         title="Request a table"
         intro="Tell us when you'd like to come. The restaurant confirms every booking personally."
-        image={images.garden}
+        image={gardenImg}
         imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
       />
 

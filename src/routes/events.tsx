@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
+import { useSlotImage } from "@/lib/homepage-images";
 import { createBooking } from "@/lib/data/bookings";
 import { listPublicEvents, type SiteEventRow } from "@/lib/data/site-events";
 import { useSiteSettings } from "@/lib/site-settings-query";
@@ -50,6 +51,7 @@ const steps = [
 
 function Events() {
   const { business, eventRequirements, eventTypes, visitDetails } = useSiteSettings();
+  const cultureImg = useSlotImage("drums", images.drums);
   const [siteEvents, setSiteEvents] = useState<SiteEventRow[]>([]);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +71,7 @@ function Events() {
         eyebrow="Events & functions"
         title="Gatherings under the trees — or wherever you're hosting"
         intro="Birthdays, family gatherings, weddings, roora and business functions — host at Cultures Resort (groups up to 200 guests) or have the team cater at your own venue. Tell us what you have in mind and the team will come back to you directly."
-        image={images.drums}
+        image={cultureImg}
         imageAlt="A staff member in traditional-pattern uniform beside African paintings and art on display"
       />
 

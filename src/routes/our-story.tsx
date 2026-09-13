@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { ExperienceGrid } from "@/components/experience-grid";
 import { images } from "@/lib/gallery";
+import { useSlotImage } from "@/lib/homepage-images";
 
 export const Route = createFileRoute("/our-story")({
   head: () => ({
@@ -25,13 +26,15 @@ export const Route = createFileRoute("/our-story")({
 });
 
 function OurStory() {
+  const craftImg = useSlotImage("craft", images.craft);
+  const foodImg = useSlotImage("food", images.food);
   return (
     <>
       <PageHeader
         eyebrow="Our story"
         title="Built around a table, not a trend"
         intro="Cultures Resort is a traditional African restaurant in Hillside, Harare — a place for food, craft and company."
-        image={images.craft}
+        image={craftImg}
         imageAlt="A staff member in traditional beadwork admiring a hand-drawn buffalo artwork on the brick pavilion wall"
       />
 
@@ -125,7 +128,7 @@ function OurStory() {
           <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
             <Reveal className="col-span-2 row-span-2 overflow-hidden rounded-2xl">
               <img
-                src={images.food}
+                src={foodImg}
                 alt="Grilled chicken and steaks smoking on an open charcoal grill, with fresh vegetables alongside"
                 loading="lazy"
                 className="h-full min-h-64 w-full object-cover object-bottom sm:min-h-full"

@@ -26,6 +26,7 @@ const FALLBACK_SETTINGS: SiteSettings = {
   eventRequirements: [...eventRequirements],
   closureBanner: { enabled: false, message: "" },
   notifications: { enabled: false, email: "" },
+  homepageImages: {},
 };
 
 /**

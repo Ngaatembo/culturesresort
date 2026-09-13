@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
 import { experiences } from "@/lib/site-data";
+import { useSlotImage } from "@/lib/homepage-images";
 
 /**
  * The four pillars as four different chapters, not four identical cards —
@@ -15,6 +16,13 @@ import { experiences } from "@/lib/site-data";
  */
 export function ExperienceGrid() {
   const [garden, fire, decor, family] = experiences;
+  // imageKey happens to equal the managed slot name for garden/fire/decor
+  // ("garden" / "food" / "craft"), so an admin-assigned Media Library photo
+  // for that slot swaps in here automatically; family's imageKey isn't a
+  // managed slot, so it always uses its bundled photo.
+  const gardenSrc = useSlotImage(garden?.imageKey ?? "garden", images[garden?.imageKey ?? "garden"]);
+  const fireSrc = useSlotImage(fire?.imageKey ?? "food", images[fire?.imageKey ?? "food"]);
+  const decorSrc = useSlotImage(decor?.imageKey ?? "craft", images[decor?.imageKey ?? "craft"]);
   if (!garden || !fire || !decor || !family) return null;
 
   return (
@@ -25,7 +33,7 @@ export function ExperienceGrid() {
         className="card-tactile group relative overflow-hidden rounded-2xl lg:row-span-2"
       >
         <img
-          src={images[garden.imageKey]}
+          src={gardenSrc}
           alt=""
           aria-hidden="true"
           loading="lazy"
@@ -50,7 +58,7 @@ export function ExperienceGrid() {
         className="card-tactile grid grid-cols-[minmax(0,7rem)_1fr] gap-4 overflow-hidden rounded-2xl border border-border bg-card p-4 sm:grid-cols-[minmax(0,9rem)_1fr] lg:p-5"
       >
         <img
-          src={images[fire.imageKey]}
+          src={fireSrc}
           alt=""
           aria-hidden="true"
           loading="lazy"
@@ -66,7 +74,7 @@ export function ExperienceGrid() {
       <Reveal as="li" delay={180} className="relative overflow-visible">
         <div className="card-tactile group overflow-hidden rounded-2xl">
           <img
-            src={images[decor.imageKey]}
+            src={decorSrc}
             alt=""
             aria-hidden="true"
             loading="lazy"

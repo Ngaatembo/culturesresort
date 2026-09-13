@@ -13,6 +13,7 @@ import { getMenu, type MenuItemOut } from "@/lib/data/menu";
 import { dishPhotos } from "@/lib/dish-photos";
 import { useOrder } from "@/lib/order";
 import { LogoIntroOverlay } from "@/components/site/logo-intro-overlay";
+import { useSlotImage } from "@/lib/homepage-images";
 import fireGrill from "@/assets/fire-nyama-choma.jpg";
 import fireCookingLoop from "@/assets/video/fire-cooking-loop.mp4";
 import gardenLoop from "@/assets/video/garden-loop.mp4";
@@ -47,6 +48,9 @@ function Home() {
   const { business } = useSiteSettings();
   const [playVideo, setPlayVideo] = useState(false);
   const [heroEnded, setHeroEnded] = useState(false);
+  const heroImg = useSlotImage("hero", images.gardenPicnicSunlit);
+  const cultureImg = useSlotImage("drums", images.drums);
+  const foodImg = useSlotImage("food", images.food);
   const [signatureDishes, setSignatureDishes] = useState<PreviewDish[] | null>(null);
   const [craftMuted, setCraftMuted] = useState(true);
   const craftVideoRef = useRef<HTMLVideoElement>(null);
@@ -143,7 +147,7 @@ function Home() {
             />
           ) : (
             <img
-              src={images.gardenPicnicSunlit}
+              src={heroImg}
               alt="Sunlit garden dining area with red picnic tables, umbrellas, and animal sculptures among the trees"
               width={1448}
               height={1086}
@@ -321,7 +325,7 @@ function Home() {
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-1 px-1 pt-1 lg:grid-cols-3 lg:gap-2 lg:px-2 lg:pt-2">
           <div className="col-span-2 aspect-[16/11] overflow-hidden lg:col-span-2 lg:aspect-auto">
             <img
-              src={images.food}
+              src={foodImg}
               alt="Grilled chicken and steaks smoking on an open charcoal grill, with fresh vegetables and a potjie pot alongside"
               width={590}
               height={1095}
@@ -367,7 +371,7 @@ function Home() {
                         imageSrc={
                           dish.imageUrl
                             ? `/gallery-image/${dish.imageUrl}`
-                            : (dishPhotos[dish.name] ?? images.food)
+                            : (dishPhotos[dish.name] ?? foodImg)
                         }
                         videoSrc={dish.videoUrl ? `/gallery-image/${dish.videoUrl}` : null}
                         alt={dish.name}
@@ -571,7 +575,7 @@ function Home() {
       {/* Culture band */}
       <section className="relative overflow-hidden">
         <img
-          src={images.drums}
+          src={cultureImg}
           alt="A staff member in traditional-pattern uniform beside African paintings and art on display"
           width={1600}
           height={1067}

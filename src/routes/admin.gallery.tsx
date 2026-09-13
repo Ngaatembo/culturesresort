@@ -1,15 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Download, Trash2, Upload } from "lucide-react";
+import { Download, ImagePlus, Trash2, Upload } from "lucide-react";
 import { gallery as bundledGallery } from "@/lib/gallery";
 import {
+  checkGalleryPhotoUsage,
   deleteGalleryPhoto,
   importBundledGalleryPhotos,
   listGalleryPhotos,
+  replaceGalleryPhoto,
   updateGalleryPhoto,
   uploadGalleryPhoto,
   type GalleryPhotoRow,
 } from "@/lib/data/gallery-photos";
+import { getSiteSettings, setHomepageImageSlot, HOMEPAGE_IMAGE_SLOTS } from "@/lib/data/settings";
+import type { HomepageImages } from "@/lib/data/settings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -65,6 +69,11 @@ function GalleryPage() {
   const [pending, setPending] = useState<PendingUpload[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState<string | null>(null);
+  const [homepageImages, setHomepageImagesState] = useState<HomepageImages>({});
+  const [replacingId, setReplacingId] = useState<number | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ id: number; usedIn: string[] } | null>(null);
+  const replaceFileRef = useRef<HTMLInputElement>(null);
+  const replaceTargetId = useRef<number | null>(null);
 
   const load = () => {
     setError(null);
@@ -76,6 +85,9 @@ function GalleryPage() {
         setBucketMissing(message.includes("GALLERY"));
         setError(message);
       });
+    getSiteSettings()
+      .then((s) => setHomepageImagesState(s.homepageImages ?? {}))
+      .catch(() => {});
   };
   useEffect(load, []);
 
@@ -158,11 +170,28 @@ function GalleryPage() {
   };
 
   const onDelete = async (id: number) => {
-    setPhotos((prev) => prev ? prev.filter((p) => p.id !== id) : prev);
     try {
-      await deleteGalleryPhoto({ data: { id } });
-    } catch {
+      const result = await deleteGalleryPhoto({ data: { id } });
+      if (!result.ok) {
+        setConfirmDelete({ id, usedIn: result.usedIn });
+        return;
+      }
+      setPhotos((prev) => (prev ? prev.filter((p) => p.id !== id) : prev));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't delete that photo.");
+    }
+  };
+
+  const onConfirmDelete = async () => {
+    if (!confirmDelete) return;
+    const { id } = confirmDelete;
+    setConfirmDelete(null);
+    try {
+      await deleteGalleryPhoto({ data: { id, force: true } });
+      setPhotos((prev) => (prev ? prev.filter((p) => p.id !== id) : prev));
       load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't delete that photo.");
     }
   };
 
@@ -174,6 +203,40 @@ function GalleryPage() {
       await updateGalleryPhoto({ data: { id: p.id, alt: p.alt, caption: p.caption, category: p.category } });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't save that photo's details.");
+    }
+  };
+
+  const onClickReplace = (id: number) => {
+    replaceTargetId.current = id;
+    replaceFileRef.current?.click();
+  };
+  const onReplaceFileChosen = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const id = replaceTargetId.current;
+    e.target.value = "";
+    if (!file || id == null) return;
+    setReplacingId(id);
+    setError(null);
+    try {
+      const form = new FormData();
+      form.set("id", String(id));
+      form.set("file", file);
+      await replaceGalleryPhoto({ data: form });
+      load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't replace that photo.");
+    } finally {
+      setReplacingId(null);
+    }
+  };
+
+  const onTogglePlacement = async (photo: GalleryPhotoRow, slotKey: string, checked: boolean) => {
+    setHomepageImagesState((prev) => ({ ...prev, [slotKey]: checked ? photo.r2_key : null }));
+    try {
+      await setHomepageImageSlot({ data: { slot: slotKey as never, r2Key: checked ? photo.r2_key : null } });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't update that placement.");
+      load();
     }
   };
 
@@ -242,14 +305,27 @@ function GalleryPage() {
         ))}
       </div>
 
+      <input
+        ref={replaceFileRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={onReplaceFileChosen}
+      />
+
       {photos === null && !bucketMissing ? <LoadingRows rows={3} /> : (
         <>
           {shownUploaded.length > 0 ? (
-            <SectionCard title="Photos" description="Every imported or uploaded photo can be edited or deleted. Changes persist to the public gallery.">
+            <SectionCard title="Photos" description="Every imported or uploaded photo can be edited, replaced, assigned to a homepage section, or deleted. Changes persist to the public site.">
               <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {shownUploaded.map((p) => (
                   <li key={p.id} className="space-y-2 rounded-2xl border border-border bg-card p-3">
-                    <img src={`/gallery-image/${p.r2_key}`} alt={p.alt} loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover" />
+                    <div className="relative">
+                      <img src={`/gallery-image/${p.r2_key}`} alt={p.alt} loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover" />
+                      {replacingId === p.id ? (
+                        <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-ink/60 text-xs font-medium text-bone">Replacing…</div>
+                      ) : null}
+                    </div>
                     <Input value={p.caption} onChange={(e) => onEditField(p.id, "caption", e.target.value)} onBlur={() => onSaveMeta(p)} placeholder="Caption" />
                     <Input value={p.alt} onChange={(e) => onEditField(p.id, "alt", e.target.value)} onBlur={() => onSaveMeta(p)} placeholder="Alt text" />
                     <div className="flex items-center justify-between gap-2">
@@ -257,7 +333,26 @@ function GalleryPage() {
                         <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
                         <SelectContent>{CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                       </Select>
-                      <button type="button" onClick={() => onDelete(p.id)} aria-label={`Delete "${p.caption || "this photo"}"`} className="shrink-0 rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
+                      <div className="flex shrink-0 items-center gap-1">
+                        <button type="button" onClick={() => onClickReplace(p.id)} disabled={replacingId === p.id} aria-label={`Replace "${p.caption || "this photo"}"`} className="rounded-lg p-2 text-muted-foreground hover:bg-secondary hover:text-foreground"><ImagePlus className="h-4 w-4" /></button>
+                        <button type="button" onClick={() => onDelete(p.id)} aria-label={`Delete "${p.caption || "this photo"}"`} className="rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
+                      </div>
+                    </div>
+                    <div className="border-t border-border pt-2">
+                      <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Website placement</p>
+                      <div className="flex flex-wrap gap-x-3 gap-y-1">
+                        {HOMEPAGE_IMAGE_SLOTS.map((slot) => (
+                          <label key={slot.key} className="flex items-center gap-1.5 text-xs text-foreground">
+                            <input
+                              type="checkbox"
+                              checked={homepageImages[slot.key] === p.r2_key}
+                              onChange={(e) => onTogglePlacement(p, slot.key, e.target.checked)}
+                              className="h-3.5 w-3.5 rounded border-border"
+                            />
+                            {slot.label}
+                          </label>
+                        ))}
+                      </div>
                     </div>
                   </li>
                 ))}
@@ -266,7 +361,7 @@ function GalleryPage() {
           ) : null}
 
           {shownBundled.length > 0 ? (
-            <SectionCard title="Launch photos (not yet imported)" description="Import them above to make these editable and deletable too.">
+            <SectionCard title="Launch photos (not yet imported)" description="Import them above to make these editable, replaceable and assignable to a homepage section.">
               <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {shownBundled.map((g, i) => (
                   <li key={`${g.caption}-${i}`} className="overflow-hidden rounded-2xl border border-border bg-card opacity-75">
@@ -279,6 +374,30 @@ function GalleryPage() {
           ) : null}
         </>
       )}
+
+      {confirmDelete ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-lift">
+            <h3 className="font-display text-lg">Delete this photo?</h3>
+            <p className="mt-3 text-sm text-muted-foreground">
+              This photo is currently used in:
+            </p>
+            <ul className="mt-2 list-inside list-disc text-sm font-medium text-foreground">
+              {confirmDelete.usedIn.map((label) => <li key={label}>{label}</li>)}
+            </ul>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Deleting it will remove it from {confirmDelete.usedIn.length === 1 ? "that section" : "these sections"} — they'll fall back to their default photo instead.
+            </p>
+            <div className="mt-6 flex justify-end gap-2">
+              <Button type="button" variant="secondary" onClick={() => setConfirmDelete(null)}>Cancel</Button>
+              <Button type="button" variant="destructive" onClick={onConfirmDelete}>
+                <Trash2 className="h-4 w-4" />
+                Delete anyway
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

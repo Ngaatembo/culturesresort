@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { ExperienceGrid } from "@/components/experience-grid";
 import { images } from "@/lib/gallery";
+import { useSlotImage } from "@/lib/homepage-images";
 
 export const Route = createFileRoute("/experience")({
   head: () => ({
@@ -24,13 +25,15 @@ export const Route = createFileRoute("/experience")({
 });
 
 function Experience() {
+  const gardenImg = useSlotImage("garden", images.garden);
+  const cultureImg = useSlotImage("drums", images.drums);
   return (
     <>
       <PageHeader
         eyebrow="The experience"
         title="Open air, open fire, open afternoon"
         intro="What the grounds feel like, and how a visit tends to unfold."
-        image={images.garden}
+        image={gardenImg}
         imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
       />
 
@@ -44,7 +47,7 @@ function Experience() {
         <div className="mx-auto grid max-w-7xl lg:grid-cols-2">
           <div className="aspect-[4/3] lg:aspect-auto lg:min-h-[50vh]">
             <img
-              src={images.drums}
+              src={cultureImg}
               alt="A staff member in traditional-pattern uniform beside African paintings and art on display"
               width={1600}
               height={1067}

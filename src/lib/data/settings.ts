@@ -28,6 +28,8 @@ export type OpeningHour = { day: string; hours: string };
 export type VisitDetail = { label: string; value: string };
 export type ClosureBanner = { enabled: boolean; message: string };
 export type NotificationPrefs = { enabled: boolean; email: string };
+/** Slot name -> gallery_photos.r2_key (or null to use the bundled default). */
+export type HomepageImages = Record<string, string | null>;
 
 export type SiteSettings = {
   business: BusinessInfo;
@@ -38,6 +40,7 @@ export type SiteSettings = {
   eventRequirements: string[];
   closureBanner: ClosureBanner;
   notifications: NotificationPrefs;
+  homepageImages: HomepageImages;
 };
 
 const KEYS = {
@@ -49,6 +52,7 @@ const KEYS = {
   eventRequirements: "event_requirements",
   closureBanner: "closure_banner",
   notifications: "notifications",
+  homepageImages: "homepage_images",
 } as const;
 
 /** Public — read by every page that used to import these from site-data.ts. */
@@ -84,6 +88,7 @@ export const getSiteSettings = createServerFn({ method: "GET" }).handler(
       eventRequirements: parse(KEYS.eventRequirements, []),
       closureBanner: parse(KEYS.closureBanner, { enabled: false, message: "" }),
       notifications: parse(KEYS.notifications, { enabled: false, email: "" }),
+      homepageImages: parse(KEYS.homepageImages, {} as HomepageImages),
     };
   },
 );
@@ -105,6 +110,39 @@ export const updateSiteSetting = createServerFn({ method: "POST" })
         "INSERT INTO site_settings (key, value, updated_at) VALUES (?, ?, datetime('now')) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at",
       )
       .bind(dbKey, JSON.stringify(data.value))
+      .run();
+    return { ok: true as const };
+  });
+
+/** Named homepage image slots an admin can assign a gallery photo to. */
+export const HOMEPAGE_IMAGE_SLOTS = [
+  { key: "hero", label: "Homepage Hero" },
+  { key: "garden", label: "The Garden" },
+  { key: "food", label: "Open Fire Cooking" },
+  { key: "craft", label: "African Art & Décor" },
+  { key: "drums", label: "Culture band" },
+] as const;
+export type HomepageImageSlotKey = (typeof HOMEPAGE_IMAGE_SLOTS)[number]["key"];
+
+/** Admin-only — assigns (or clears, when r2Key is null) one homepage slot to a
+ * gallery photo without touching the other slots. Read-modify-write on the
+ * single `homepage_images` JSON row. */
+export const setHomepageImageSlot = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((data: { slot: HomepageImageSlotKey; r2Key: string | null }) => data)
+  .handler(async ({ data }) => {
+    const db = getDb();
+    const row = await db
+      .prepare("SELECT value FROM site_settings WHERE key = ?")
+      .bind(KEYS.homepageImages)
+      .first<{ value: string }>();
+    const current: HomepageImages = row ? (JSON.parse(row.value) as HomepageImages) : {};
+    current[data.slot] = data.r2Key;
+    await db
+      .prepare(
+        "INSERT INTO site_settings (key, value, updated_at) VALUES (?, ?, datetime('now')) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at",
+      )
+      .bind(KEYS.homepageImages, JSON.stringify(current))
       .run();
     return { ok: true as const };
   });

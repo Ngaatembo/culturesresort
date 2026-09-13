@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { Lightbox } from "@/components/lightbox";
 import { gallery as bundledGallery, images, type GalleryEntry } from "@/lib/gallery";
+import { useSlotImage } from "@/lib/homepage-images";
 import { listGalleryPhotos } from "@/lib/data/gallery-photos";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/gallery")({
 });
 
 function Gallery() {
+  const craftImg = useSlotImage("craft", images.craft);
   const [filter, setFilter] = useState<(typeof categories)[number]>("All");
   const [index, setIndex] = useState<number | null>(null);
   const [uploaded, setUploaded] = useState<GalleryEntry[]>([]);
@@ -56,7 +58,7 @@ function Gallery() {
 
   return (
     <>
-      <PageHeader eyebrow="Gallery" title="The garden, the plates, the evening" intro="The garden, the grounds, the plates and the people — as they really are." image={images.craft} imageAlt="Carved mask, woven basket and clay pot" />
+      <PageHeader eyebrow="Gallery" title="The garden, the plates, the evening" intro="The garden, the grounds, the plates and the people — as they really are." image={craftImg} imageAlt="Carved mask, woven basket and clay pot" />
       <section className="bg-background py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <div className="flex flex-wrap gap-2">

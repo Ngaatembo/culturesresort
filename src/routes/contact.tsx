@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { images } from "@/lib/gallery";
+import { useSlotImage } from "@/lib/homepage-images";
 import { createEnquiry } from "@/lib/data/enquiries";
 import { whatsappLink, whatsappMessages } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/contact")({
 
 function Contact() {
   const { business, openingHours } = useSiteSettings();
+  const gardenImg = useSlotImage("garden", images.garden);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -39,7 +41,7 @@ function Contact() {
         eyebrow="Contact"
         title="Corner Chiremba & Southey Road"
         intro="Hillside, Harare, Zimbabwe."
-        image={images.garden}
+        image={gardenImg}
         imageAlt="Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables"
       />
 

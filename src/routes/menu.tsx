@@ -6,6 +6,7 @@ import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { DishMedia } from "@/components/dish-media";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
+import { useSlotImage } from "@/lib/homepage-images";
 import { useOrder } from "@/lib/order";
 import { getMenu, type MenuCategoryOut, type MenuKind } from "@/lib/data/menu";
 import { dishPhotos } from "@/lib/dish-photos";
@@ -50,6 +51,7 @@ type Course = MenuKind;
 
 function Menu() {
   const { business, visitDetails } = useSiteSettings();
+  const foodImg = useSlotImage("food", images.food);
   const [course, setCourse] = useState<Course>("food");
   const [active, setActive] = useState<string>("all");
   const [menuData, setMenuData] = useState<Record<MenuKind, MenuCategoryOut[]> | null>(null);
@@ -83,7 +85,7 @@ function Menu() {
         eyebrow="Food & beverages"
         title="Traditional plates, served family style"
         intro="Add anything you'd like to try and check out online or on WhatsApp. Items, prices and availability are managed by the Cultures team, so a few are still marked On request while the full list is loaded."
-        image={images.food}
+        image={foodImg}
         imageAlt="Grilled chicken and steaks smoking on an open charcoal grill, with fresh vegetables and a potjie pot alongside"
         imagePosition="bottom"
       />
