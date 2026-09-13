@@ -48,7 +48,7 @@ function Home() {
   const { business } = useSiteSettings();
   const [playVideo, setPlayVideo] = useState(false);
   const [heroEnded, setHeroEnded] = useState(false);
-  const heroImg = useSlotImage("hero", images.gardenPicnicSunlit);
+  const heroImg = useSlotImage("hero", images.waterfall);
   const cultureImg = useSlotImage("drums", images.drums);
   const foodImg = useSlotImage("food", images.food);
   const [signatureDishes, setSignatureDishes] = useState<PreviewDish[] | null>(null);
@@ -148,9 +148,9 @@ function Home() {
           ) : (
             <img
               src={heroImg}
-              alt="Sunlit garden dining area with red picnic tables, umbrellas, and animal sculptures among the trees"
-              width={1448}
-              height={1086}
+              alt="A rock-built water feature in the garden, with the thatched pavilion behind it"
+              width={1024}
+              height={1536}
               className="h-[122%] w-full object-cover"
               fetchPriority="high"
             />
