@@ -94,9 +94,15 @@ export function OrderDrawer() {
         aria-hidden={!open}
         className={cn(
           "fixed inset-x-0 bottom-0 z-[95] flex max-h-[88vh] flex-col bg-background transition-transform duration-500 ease-out sm:inset-y-0 sm:left-auto sm:right-0 sm:max-h-none sm:w-[26rem]",
+          // Use the classic `transform` property (not the newer standalone
+          // `translate` property Tailwind generates by default) so this
+          // still works on older Chrome/ChromeOS builds that don't support
+          // it yet — those browsers were silently ignoring the slide
+          // in/out entirely, leaving the drawer permanently stuck open
+          // and unclosable.
           open
-            ? "translate-y-0 sm:translate-x-0"
-            : "translate-y-full sm:translate-y-0 sm:translate-x-full",
+            ? "[transform:translateY(0)] sm:[transform:translateX(0)]"
+            : "[transform:translateY(100%)] sm:[transform:translateX(100%)]",
         )}
       >
         <div className="pattern-band h-1.5 w-full shrink-0" aria-hidden="true" />
