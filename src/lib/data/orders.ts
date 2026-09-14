@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
-import { authMiddleware } from "@/lib/auth/functions";
+import { ordersViewMiddleware } from "@/lib/auth/functions";
 import { sendNotificationEmail } from "./notify";
 
 export type OrderStatus = "pending" | "preparing" | "completed" | "cancelled";
@@ -90,9 +90,12 @@ type OrderItemRow = {
 
 export type OrderWithItems = OrderRow & { items: OrderItemRow[] };
 
-/** Recent orders for the admin dashboard, most recent first. */
+/** Recent orders for the admin dashboard, most recent first. Owner, manager
+ * and staff get the full operational view; kitchen gets read access too
+ * (that's the whole point of the kitchen queue) but see updateOrderStatus
+ * below for how their write access is restricted. */
 export const listOrders = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
+  .middleware([ordersViewMiddleware])
   .handler(async (): Promise<OrderWithItems[]> => {
     const db = getDb();
     const { results: orders } = await db
@@ -111,11 +114,39 @@ export const listOrders = createServerFn({ method: "GET" })
     return orders.map((o) => ({ ...o, items: items.filter((i) => i.order_id === o.id) }));
   });
 
+/**
+ * Kitchen accounts only move an order forward through the kitchen
+ * workflow (New → Preparing → Ready) — they can't cancel an order, jump
+ * straight to "completed" from "pending", or move a status backwards.
+ * Everyone else (owner/manager/staff) can set any status, matching the
+ * existing Orders page workflow.
+ */
+const KITCHEN_ALLOWED_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
+  pending: ["preparing"],
+  preparing: ["completed"],
+  completed: [],
+  cancelled: [],
+};
+
 export const updateOrderStatus = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([ordersViewMiddleware])
   .validator((data: { id: number; status: OrderStatus }) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const db = getDb();
+
+    if (context.admin?.role === "kitchen") {
+      const current = await db
+        .prepare("SELECT status FROM orders WHERE id = ?")
+        .bind(data.id)
+        .first<{ status: OrderStatus }>();
+      const allowed = current ? KITCHEN_ALLOWED_TRANSITIONS[current.status] : [];
+      if (!current || !allowed.includes(data.status)) {
+        throw new Error(
+          "Kitchen accounts can only move an order forward: New → Preparing → Ready.",
+        );
+      }
+    }
+
     await db
       .prepare("UPDATE orders SET status = ?, updated_at = datetime('now') WHERE id = ?")
       .bind(data.status, data.id)

@@ -41,7 +41,9 @@ export async function listAdminUsers(): Promise<
 > {
   const db = getDb();
   const { results } = await db
-    .prepare("SELECT id, email, role, is_developer, created_at FROM admin_users ORDER BY created_at ASC")
+    .prepare(
+      "SELECT id, email, role, is_developer, created_at FROM admin_users ORDER BY created_at ASC",
+    )
     .all<Omit<AdminUser, "password_hash" | "password_salt">>();
   return results;
 }
@@ -58,6 +60,14 @@ export async function createAdminUser(
       "INSERT INTO admin_users (email, password_hash, password_salt, role) VALUES (?, ?, ?, ?)",
     )
     .bind(email.trim().toLowerCase(), hash, salt, role)
+    .run();
+}
+
+export async function updateAdminRole(id: number, role: AdminRole): Promise<void> {
+  const db = getDb();
+  await db
+    .prepare("UPDATE admin_users SET role = ?, updated_at = datetime('now') WHERE id = ?")
+    .bind(role, id)
     .run();
 }
 

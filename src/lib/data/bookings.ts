@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
-import { authMiddleware } from "@/lib/auth/functions";
+import { managerUpMiddleware, staffUpMiddleware } from "@/lib/auth/functions";
 import { sendNotificationEmail } from "./notify";
 
 export type BookingStatus = "pending" | "confirmed" | "declined" | "completed" | "cancelled";
@@ -75,8 +75,11 @@ export type BookingRow = {
   created_at: string;
 };
 
+/** All bookings (reservations + event enquiries alike) — owner/manager/staff.
+ * Read-only visibility; see updateBookingStatus vs updateReservationStatus
+ * below for how the two write paths are actually scoped. */
 export const listBookings = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
+  .middleware([staffUpMiddleware])
   .handler(async () => {
     const db = getDb();
     const { results } = await db
@@ -85,11 +88,51 @@ export const listBookings = createServerFn({ method: "GET" })
     return results;
   });
 
+/** The literal event_type value the booking form uses for a table reservation
+ * (as opposed to a wedding/birthday/function enquiry). Kept here as the one
+ * place both write paths below agree on it. */
+export const TABLE_RESERVATION_TYPE = "Table reservation";
+
+/**
+ * Owner/manager only — updates the status of ANY booking, reservation or
+ * event enquiry alike. Used by the Events & Functions admin page. Staff
+ * must use updateReservationStatus below instead, which is scoped to
+ * table reservations only.
+ */
 export const updateBookingStatus = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: { id: number; status: BookingStatus }) => data)
   .handler(async ({ data }) => {
     const db = getDb();
+    await db
+      .prepare("UPDATE bookings SET status = ?, updated_at = datetime('now') WHERE id = ?")
+      .bind(data.status, data.id)
+      .run();
+    return { ok: true };
+  });
+
+/**
+ * Owner/manager/staff — updates a booking's status, but only if that
+ * booking is a table reservation. This is what actually enforces "Staff
+ * can manage reservations, but not event/function bookings" server-side —
+ * the Reservations admin page already only *shows* table reservations, but
+ * without this check a staff account could otherwise call
+ * updateBookingStatus directly (e.g. via a hand-crafted request) against a
+ * wedding enquiry's id and change it. Re-checking the row's own event_type
+ * here closes that gap regardless of what the UI does or doesn't show.
+ */
+export const updateReservationStatus = createServerFn({ method: "POST" })
+  .middleware([staffUpMiddleware])
+  .validator((data: { id: number; status: BookingStatus }) => data)
+  .handler(async ({ data }) => {
+    const db = getDb();
+    const target = await db
+      .prepare("SELECT event_type FROM bookings WHERE id = ?")
+      .bind(data.id)
+      .first<{ event_type: string }>();
+    if (!target || target.event_type !== TABLE_RESERVATION_TYPE) {
+      throw new Error("This isn't a table reservation — use the Events & Functions page instead.");
+    }
     await db
       .prepare("UPDATE bookings SET status = ?, updated_at = datetime('now') WHERE id = ?")
       .bind(data.status, data.id)

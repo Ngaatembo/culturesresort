@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Mail, Phone, Search } from "lucide-react";
+import { Mail, MessageCircle, Phone, Search } from "lucide-react";
 import {
   listEnquiries,
   updateEnquiryStatus,
   type EnquiryRow,
   type EnquiryStatus,
 } from "@/lib/data/enquiries";
+import { customerWhatsAppLink } from "@/lib/whatsapp";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -141,6 +142,19 @@ function EnquiriesPage() {
                         className="inline-flex items-center gap-1 font-medium text-accent-foreground hover:underline"
                       >
                         <Phone className="h-3.5 w-3.5" aria-hidden="true" /> {e.phone}
+                      </a>
+                    ) : null}
+                    {e.phone ? (
+                      <a
+                        href={customerWhatsAppLink(
+                          e.phone,
+                          `Hi ${e.name}, this is Cultures Resort — following up on your enquiry.`,
+                        )}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 font-medium text-accent-foreground hover:underline"
+                      >
+                        <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" /> WhatsApp
                       </a>
                     ) : null}
                     {e.email ? (

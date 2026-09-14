@@ -8,13 +8,14 @@ import { listEnquiries, type EnquiryRow } from "@/lib/data/enquiries";
 import { getSiteSettings } from "@/lib/data/settings";
 import { listGalleryPhotos } from "@/lib/data/gallery-photos";
 import { getAdminSession } from "@/lib/auth/functions";
+import { useAdminRole } from "@/lib/auth/use-admin-role";
+import logoMark from "@/assets/logo-mark.png";
 import {
   EmptyState,
   ErrorState,
   formatMoney,
   formatTimeAgo,
   LoadingRows,
-  PageHeader,
   SectionCard,
   StatCard,
   StatusDot,
@@ -36,13 +37,16 @@ function buildActivity(
   orders: OrderWithItems[],
   bookings: BookingRow[],
   enquiries: EnquiryRow[],
+  canViewAmounts: boolean,
 ): ActivityEntry[] {
   const entries: ActivityEntry[] = [
     ...orders.map((o) => ({
       key: `order-${o.id}`,
       time: o.created_at,
       title: `Order #${o.id}`,
-      detail: `${o.customer_name} · ${formatMoney(o.total_cents)}`,
+      detail: canViewAmounts
+        ? `${o.customer_name} · ${formatMoney(o.total_cents)}`
+        : `${o.customer_name} · ${o.items.length} item${o.items.length === 1 ? "" : "s"}`,
       href: "/admin/orders",
     })),
     ...bookings.map((b) => ({
@@ -65,6 +69,7 @@ function buildActivity(
 }
 
 function Overview() {
+  const { canViewAmounts } = useAdminRole();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [activity, setActivity] = useState<ActivityEntry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -78,7 +83,14 @@ function Overview() {
     Promise.all([getDashboardStats(), listOrders(), listBookings(), listEnquiries()])
       .then(([s, orders, bookings, enquiries]) => {
         setStats(s);
-        setActivity(buildActivity(orders.slice(0, 8), bookings.slice(0, 8), enquiries.slice(0, 8)));
+        setActivity(
+          buildActivity(
+            orders.slice(0, 8),
+            bookings.slice(0, 8),
+            enquiries.slice(0, 8),
+            canViewAmounts,
+          ),
+        );
       })
       .catch((err) =>
         setError(err instanceof Error ? err.message : "Could not load the dashboard."),
@@ -91,44 +103,65 @@ function Overview() {
       .catch(() => setGalleryOk(false));
   };
 
-  useEffect(load, []);
+  useEffect(load, [canViewAmounts]);
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title={`${greeting}, Cultures 👋`}
-        description="Here's what's happening across Cultures Resort today."
-      />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex items-center gap-3">
+          <img
+            src={logoMark}
+            alt="Cultures Resort"
+            className="h-11 w-11 shrink-0 rounded-full object-cover"
+          />
+          <div>
+            <h1 className="text-[28px] font-bold leading-tight text-foreground">
+              {greeting}, Cultures 👋
+            </h1>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              Here's what's happening across Cultures Resort today.
+            </p>
+          </div>
+        </div>
+      </div>
 
       {error ? <ErrorState message={error} onRetry={load} /> : null}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div
+        className={`grid gap-4 sm:grid-cols-2 ${canViewAmounts ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}
+      >
         <StatCard
           label="Today's orders"
           value={stats ? String(stats.todaysOrders) : "…"}
           hint={
             stats ? `${stats.pendingOrders} pending · ${stats.beingPrepared} in kitchen` : undefined
           }
+          to="/admin/orders"
         />
         <StatCard
           label="Reservations"
           value={stats ? String(stats.pendingBookings) : "…"}
           hint="Awaiting confirmation"
+          to="/admin/reservations"
         />
         <StatCard
           label="New enquiries"
           value={stats ? String(stats.newEnquiries) : "…"}
           hint="From the contact form"
+          to="/admin/enquiries"
         />
-        <StatCard
-          label="Today's revenue"
-          value={stats ? formatMoney(stats.todaysRevenueCents) : "…"}
-          hint="From today's orders"
-          tone="success"
-        />
+        {canViewAmounts ? (
+          <StatCard
+            label="Today's revenue"
+            value={stats ? formatMoney(stats.todaysRevenueCents) : "…"}
+            hint="From today's orders"
+            tone="success"
+            to="/admin/orders"
+          />
+        ) : null}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">

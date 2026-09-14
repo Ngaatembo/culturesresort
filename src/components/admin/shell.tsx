@@ -1,10 +1,9 @@
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   Activity,
   ChefHat,
-  ClipboardList,
   Contact2,
   Image as ImageIcon,
   LayoutGrid,
@@ -14,11 +13,13 @@ import {
   Settings as SettingsIcon,
   ShieldCheck,
   ShoppingBag,
+  User,
   UtensilsCrossed,
   Wine,
   Clock,
   CalendarDays,
   CalendarCheck2,
+  ClipboardList,
 } from "lucide-react";
 import {
   Sidebar,
@@ -36,7 +37,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { adminLogout, getAdminSession } from "@/lib/auth/functions";
+import { adminLogout } from "@/lib/auth/functions";
+import { ROUTE_ROLES } from "@/lib/auth/permissions";
+import type { AdminRole } from "@/lib/auth/admin-users";
 import logoMark from "@/assets/logo-mark.png";
 
 type NavItem = {
@@ -44,7 +47,6 @@ type NavItem = {
   label: string;
   icon: typeof LayoutGrid;
   badge?: number | undefined;
-  ownerOnly?: boolean;
 };
 
 type NavGroup = {
@@ -97,7 +99,7 @@ function buildNav(counts: Partial<Record<string, number>>): NavGroup[] {
     {
       label: "System",
       items: [
-        { to: "/admin/staff", label: "Staff & Users", icon: ShieldCheck, ownerOnly: true },
+        { to: "/admin/staff", label: "Staff & Users", icon: ShieldCheck },
         { to: "/admin/settings", label: "Settings", icon: SettingsIcon },
         { to: "/admin/activity", label: "Activity Log", icon: Activity },
       ],
@@ -144,21 +146,21 @@ function LogoutButton() {
 }
 
 export function AdminSidebar({
+  role,
   counts = {},
 }: {
+  role: AdminRole | null;
   counts?: Partial<Record<string, number>> | undefined;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const [isOwner, setIsOwner] = useState(false);
 
-  useEffect(() => {
-    getAdminSession().then((s) => setIsOwner(s?.role === "owner"));
-  }, []);
-
+  // ROUTE_ROLES (lib/auth/permissions.ts) is the single source of truth for
+  // who can see which page — same list the /admin route guard checks, so
+  // the sidebar never offers a link that would just bounce the user back.
   const groups = buildNav(counts)
     .map((group) => ({
       ...group,
-      items: group.items.filter((item) => !item.ownerOnly || isOwner),
+      items: group.items.filter((item) => !role || (ROUTE_ROLES[item.to] ?? []).includes(role)),
     }))
     .filter((group) => group.items.length > 0);
 
@@ -173,7 +175,7 @@ export function AdminSidebar({
           />
           <div className="min-w-0 group-data-[collapsible=icon]:hidden">
             <p className="truncate text-sm font-bold text-sidebar-foreground">Cultures Resort</p>
-            <p className="truncate text-xs text-sidebar-foreground/60">Owner dashboard</p>
+            <p className="truncate text-xs text-sidebar-foreground/60">Admin dashboard</p>
           </div>
         </div>
       </SidebarHeader>
@@ -198,6 +200,18 @@ export function AdminSidebar({
               <Link to="/">
                 <ClipboardList />
                 <span>View public site</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={pathname === "/admin/account"}
+              tooltip="My account"
+            >
+              <Link to="/admin/account">
+                <User />
+                <span>My account</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -227,6 +241,7 @@ function titleFromPath(pathname: string) {
     "/admin/staff": "Staff & Users",
     "/admin/settings": "Settings",
     "/admin/activity": "Activity Log",
+    "/admin/account": "My Account",
   };
   return map[pathname] ?? "Dashboard";
 }
@@ -244,19 +259,75 @@ export function AdminTopbar() {
 export function AdminShell({
   children,
   counts,
+  role,
 }: {
   children: ReactNode;
   counts?: Partial<Record<string, number>> | undefined;
+  role: AdminRole | null;
 }) {
   return (
     <div className="admin">
       <SidebarProvider>
-        <AdminSidebar counts={counts} />
+        <AdminSidebar role={role} counts={counts} />
         <SidebarInset>
           <AdminTopbar />
           <main className="min-w-0 flex-1 space-y-6 p-4 lg:p-8">{children}</main>
         </SidebarInset>
       </SidebarProvider>
+    </div>
+  );
+}
+
+/**
+ * Deliberately minimal chrome for kitchen accounts — no multi-section
+ * sidebar, just the queue and a way to sign out or change a password. Per
+ * the RBAC spec: "The Kitchen interface should not look like the full
+ * admin dashboard."
+ */
+export function KitchenShell({ children }: { children: ReactNode }) {
+  const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const onLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await adminLogout();
+    } finally {
+      navigate({ to: "/admin/login" });
+    }
+  };
+
+  return (
+    <div className="admin flex min-h-screen flex-col bg-background">
+      <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur">
+        <div className="flex items-center gap-2.5">
+          <img
+            src={logoMark}
+            alt="Cultures Resort"
+            className="h-8 w-8 shrink-0 rounded-full object-cover"
+          />
+          <p className="text-sm font-bold text-foreground">Kitchen</p>
+        </div>
+        <div className="flex items-center gap-1">
+          <Link
+            to="/admin/account"
+            className="rounded-lg p-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+            aria-label="My account"
+          >
+            <User className="h-4 w-4" />
+          </Link>
+          <button
+            type="button"
+            onClick={onLogout}
+            disabled={loggingOut}
+            aria-label="Log out"
+            className="rounded-lg p-2 text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-50"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
+        </div>
+      </header>
+      <main className="min-w-0 flex-1 space-y-6 p-4 lg:p-8">{children}</main>
     </div>
   );
 }

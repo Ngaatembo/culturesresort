@@ -19,6 +19,7 @@ import { Route as MenuRouteImport } from './routes/menu'
 import { Route as OurStoryRouteImport } from './routes/our-story'
 import { Route as ReservationsRouteImport } from './routes/reservations'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminAccountRouteImport } from './routes/admin.account'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminBeveragesRouteImport } from './routes/admin.beverages'
 import { Route as AdminContactRouteImport } from './routes/admin.contact'
@@ -85,6 +86,11 @@ const ReservationsRoute = ReservationsRouteImport.update({
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAccountRoute = AdminAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminActivityRoute = AdminActivityRouteImport.update({
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/menu': typeof MenuRoute
   '/our-story': typeof OurStoryRoute
   '/reservations': typeof ReservationsRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/beverages': typeof AdminBeveragesRoute
   '/admin/contact': typeof AdminContactRoute
@@ -211,6 +218,7 @@ export interface FileRoutesByTo {
   '/menu': typeof MenuRoute
   '/our-story': typeof OurStoryRoute
   '/reservations': typeof ReservationsRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/beverages': typeof AdminBeveragesRoute
   '/admin/contact': typeof AdminContactRoute
@@ -241,6 +249,7 @@ export interface FileRoutesById {
   '/menu': typeof MenuRoute
   '/our-story': typeof OurStoryRoute
   '/reservations': typeof ReservationsRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/beverages': typeof AdminBeveragesRoute
   '/admin/contact': typeof AdminContactRoute
@@ -272,6 +281,7 @@ export interface FileRouteTypes {
     | '/menu'
     | '/our-story'
     | '/reservations'
+    | '/admin/account'
     | '/admin/activity'
     | '/admin/beverages'
     | '/admin/contact'
@@ -300,6 +310,7 @@ export interface FileRouteTypes {
     | '/menu'
     | '/our-story'
     | '/reservations'
+    | '/admin/account'
     | '/admin/activity'
     | '/admin/beverages'
     | '/admin/contact'
@@ -329,6 +340,7 @@ export interface FileRouteTypes {
     | '/menu'
     | '/our-story'
     | '/reservations'
+    | '/admin/account'
     | '/admin/activity'
     | '/admin/beverages'
     | '/admin/contact'
@@ -432,6 +444,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/account': {
+      id: '/admin/account'
+      path: '/account'
+      fullPath: '/admin/account'
+      preLoaderRoute: typeof AdminAccountRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/activity': {
@@ -557,6 +576,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAccountRoute: typeof AdminAccountRoute
   AdminActivityRoute: typeof AdminActivityRoute
   AdminBeveragesRoute: typeof AdminBeveragesRoute
   AdminContactRoute: typeof AdminContactRoute
@@ -577,6 +597,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAccountRoute: AdminAccountRoute,
   AdminActivityRoute: AdminActivityRoute,
   AdminBeveragesRoute: AdminBeveragesRoute,
   AdminContactRoute: AdminContactRoute,

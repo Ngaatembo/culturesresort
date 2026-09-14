@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getSecret, setSecret } from "@/lib/auth/secret-store";
-import { authMiddleware } from "@/lib/auth/functions";
+import { ownerOnlyMiddleware } from "@/lib/auth/functions";
 import { getDb } from "./cf";
 
 const RESEND_KEY_SECRET_NAME = "resend_api_key";
@@ -51,7 +51,7 @@ export async function sendNotificationEmail(subject: string, text: string): Prom
 
 /** Admin-only — whether a Resend API key has been set, without ever exposing its value. */
 export const getResendKeyStatus = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
+  .middleware([ownerOnlyMiddleware])
   .handler(async () => {
     const value = await getSecret(RESEND_KEY_SECRET_NAME);
     return { isSet: !!value };
@@ -59,7 +59,7 @@ export const getResendKeyStatus = createServerFn({ method: "GET" })
 
 /** Admin-only — stores (or overwrites) the Resend API key used for notification emails. */
 export const setResendKey = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([ownerOnlyMiddleware])
   .validator((data: { apiKey: string }) => data)
   .handler(async ({ data }) => {
     const key = data.apiKey.trim();
@@ -72,7 +72,7 @@ export const setResendKey = createServerFn({ method: "POST" })
 
 /** Admin-only — sends a one-off test email to confirm the Resend key + address actually work. */
 export const sendTestNotification = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([ownerOnlyMiddleware])
   .handler(async () => {
     const db = getDb();
     const row = await db

@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
-import { authMiddleware } from "@/lib/auth/functions";
+import { staffUpMiddleware } from "@/lib/auth/functions";
 import { sendNotificationEmail } from "./notify";
 
 export type EnquiryStatus = "new" | "read" | "responded" | "closed";
@@ -58,7 +58,7 @@ export type EnquiryRow = {
 };
 
 export const listEnquiries = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
+  .middleware([staffUpMiddleware])
   .handler(async () => {
     const db = getDb();
     const { results } = await db
@@ -68,7 +68,7 @@ export const listEnquiries = createServerFn({ method: "GET" })
   });
 
 export const updateEnquiryStatus = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([staffUpMiddleware])
   .validator((data: { id: number; status: EnquiryStatus }) => data)
   .handler(async ({ data }) => {
     const db = getDb();

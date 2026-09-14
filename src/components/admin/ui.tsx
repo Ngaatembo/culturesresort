@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import { AlertCircle, Inbox, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -95,14 +96,19 @@ export function StatCard({
   value,
   hint,
   tone = "neutral",
+  to,
 }: {
   label: string;
   value: string;
   hint?: string | undefined;
   tone?: "neutral" | "accent" | "success" | "danger";
+  /** When set, the whole card becomes a link to that admin page — lets
+   * "Pending orders: 3" actually take you to the Orders page instead of
+   * just sitting there as a number. */
+  to?: string;
 }) {
-  return (
-    <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
+  const content = (
+    <>
       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
       <p
         className={cn(
@@ -116,8 +122,21 @@ export function StatCard({
         {value}
       </p>
       {hint ? <p className="mt-1.5 text-xs text-muted-foreground">{hint}</p> : null}
-    </div>
+    </>
   );
+
+  if (to) {
+    return (
+      <Link
+        to={to}
+        className="block rounded-2xl border border-border bg-card p-5 shadow-card transition-colors hover:border-primary/40 hover:bg-secondary/40"
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className="rounded-2xl border border-border bg-card p-5 shadow-card">{content}</div>;
 }
 
 export function EmptyState({

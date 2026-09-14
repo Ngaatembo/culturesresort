@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
-import { authMiddleware } from "@/lib/auth/functions";
+import { ownerOnlyMiddleware } from "@/lib/auth/functions";
+import { logAdminActivity } from "./activity-log-write";
 
 export type BusinessInfo = {
   name: string;
@@ -99,9 +100,9 @@ const SETTING_KEYS = new Set<string>(Object.values(KEYS));
 
 /** Admin-only — overwrites one settings group at a time. */
 export const updateSiteSetting = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([ownerOnlyMiddleware])
   .validator((data: { key: keyof typeof KEYS; value: unknown }) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const dbKey = KEYS[data.key];
     if (!dbKey || !SETTING_KEYS.has(dbKey)) {
       throw new Error(`Unknown settings key: ${String(data.key)}`);
@@ -113,6 +114,13 @@ export const updateSiteSetting = createServerFn({ method: "POST" })
       )
       .bind(dbKey, JSON.stringify(data.value))
       .run();
+    if (context.admin) {
+      await logAdminActivity(
+        { email: context.admin.email, role: context.admin.role },
+        "Changed business setting",
+        data.key,
+      );
+    }
     return { ok: true as const };
   });
 
@@ -130,7 +138,7 @@ export type HomepageImageSlotKey = (typeof HOMEPAGE_IMAGE_SLOTS)[number]["key"];
  * gallery photo without touching the other slots. Read-modify-write on the
  * single `homepage_images` JSON row. */
 export const setHomepageImageSlot = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([ownerOnlyMiddleware])
   .validator((data: { slot: HomepageImageSlotKey; r2Key: string | null }) => data)
   .handler(async ({ data }) => {
     const db = getDb();

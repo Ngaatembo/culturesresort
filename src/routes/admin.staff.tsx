@@ -2,7 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { getAdminSession } from "@/lib/auth/functions";
-import { createStaffAccount, listStaff, removeStaffAccount } from "@/lib/auth/functions";
+import {
+  createStaffAccount,
+  listStaff,
+  removeStaffAccount,
+  updateStaffRole,
+} from "@/lib/auth/functions";
 import type { AdminRole } from "@/lib/auth/admin-users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +50,7 @@ function StaffPage() {
   const [role, setRole] = useState<AdminRole>("staff");
   const [creating, setCreating] = useState(false);
   const [removingId, setRemovingId] = useState<number | null>(null);
+  const [changingRoleId, setChangingRoleId] = useState<number | null>(null);
 
   const load = () => {
     setError(null);
@@ -93,7 +99,12 @@ function StaffPage() {
   };
 
   const onRemove = async (id: number, email: string) => {
-    if (!window.confirm(`Remove ${email}'s access? They won't be able to log in anymore. This can't be undone.`)) return;
+    if (
+      !window.confirm(
+        `Remove ${email}'s access? They won't be able to log in anymore. This can't be undone.`,
+      )
+    )
+      return;
     setRemovingId(id);
     setError(null);
     try {
@@ -103,6 +114,21 @@ function StaffPage() {
       setError(err instanceof Error ? err.message : "Couldn't remove that account.");
     } finally {
       setRemovingId(null);
+    }
+  };
+
+  const onChangeRole = async (id: number, newRole: AdminRole) => {
+    setChangingRoleId(id);
+    setError(null);
+    try {
+      await updateStaffRole({ data: { id, role: newRole } });
+      setStaff((prev) =>
+        prev ? prev.map((s) => (s.id === id ? { ...s, role: newRole } : s)) : prev,
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't change that account's role.");
+    } finally {
+      setChangingRoleId(null);
     }
   };
 
@@ -195,9 +221,31 @@ function StaffPage() {
               <li key={s.id} className="flex items-center justify-between gap-4 py-3.5">
                 <div>
                   <p className="font-medium text-foreground">{s.email}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {s.is_developer ? "Developer" : ROLE_LABELS[s.role]}
-                  </p>
+                  {s.is_developer ? (
+                    <p className="text-xs text-muted-foreground">Developer</p>
+                  ) : s.id === selfId ? (
+                    <p className="text-xs text-muted-foreground">{ROLE_LABELS[s.role]}</p>
+                  ) : (
+                    <Select
+                      value={s.role}
+                      onValueChange={(v) => onChangeRole(s.id, v as AdminRole)}
+                      disabled={changingRoleId === s.id}
+                    >
+                      <SelectTrigger
+                        className="mt-1 h-7 w-32 text-xs"
+                        aria-label={`Role for ${s.email}`}
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {(["owner", "manager", "kitchen", "staff"] as AdminRole[]).map((r) => (
+                          <SelectItem key={r} value={r}>
+                            {ROLE_LABELS[r]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
                 {s.id !== selfId && !s.is_developer ? (
                   <button

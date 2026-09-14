@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb, getGalleryBucket } from "./cf";
-import { authMiddleware } from "@/lib/auth/functions";
+import { managerUpMiddleware } from "@/lib/auth/functions";
+import { logAdminActivity } from "./activity-log-write";
 
 export type MenuKind = "food" | "beverages";
 
@@ -77,7 +78,7 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
 
 /** Full row list for the admin menu editor — includes unavailable items. */
 export const getMenuAdmin = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .handler(async () => {
     const db = getDb();
     const { results } = await db
@@ -87,7 +88,7 @@ export const getMenuAdmin = createServerFn({ method: "GET" })
   });
 
 export const setMenuItemAvailability = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: { id: number; available: boolean }) => data)
   .handler(async ({ data }) => {
     const db = getDb();
@@ -100,7 +101,7 @@ export const setMenuItemAvailability = createServerFn({ method: "POST" })
 
 /** Sets a real price (in whole currency units, e.g. 4.5 for $4.50). Pass 0 to mark it "On request". */
 export const setMenuItemPrice = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: { id: number; price: number }) => data)
   .handler(async ({ data }) => {
     if (!Number.isFinite(data.price) || data.price < 0) {
@@ -117,7 +118,7 @@ export const setMenuItemPrice = createServerFn({ method: "POST" })
 
 /** Renames a menu item and/or updates its description. */
 export const setMenuItemDetails = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: { id: number; name: string; description: string }) => data)
   .handler(async ({ data }) => {
     const name = data.name.trim();
@@ -136,7 +137,7 @@ export const setMenuItemDetails = createServerFn({ method: "POST" })
 
 /** Adds a brand-new dish or beverage to an existing category, at the end of its list. */
 export const createMenuItem = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator(
     (data: {
       kind: MenuKind;
@@ -182,20 +183,27 @@ export const createMenuItem = createServerFn({ method: "POST" })
 
 /** Permanently removes a menu item (and any uploaded photo/clip it had). */
 export const deleteMenuItem = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: { id: number }) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const db = getDb();
     const existing = await db
-      .prepare("SELECT image_url, video_url FROM menu_items WHERE id = ?")
+      .prepare("SELECT name, image_url, video_url FROM menu_items WHERE id = ?")
       .bind(data.id)
-      .first<{ image_url: string | null; video_url: string | null }>();
+      .first<{ name: string; image_url: string | null; video_url: string | null }>();
     if (existing) {
       const bucket = getGalleryBucket();
       if (existing.image_url) await bucket.delete(existing.image_url).catch(() => {});
       if (existing.video_url) await bucket.delete(existing.video_url).catch(() => {});
     }
     await db.prepare("DELETE FROM menu_items WHERE id = ?").bind(data.id).run();
+    if (context.admin && existing) {
+      await logAdminActivity(
+        { email: context.admin.email, role: context.admin.role },
+        "Deleted menu item",
+        existing.name,
+      );
+    }
     return { ok: true as const };
   });
 
@@ -206,7 +214,7 @@ export const deleteMenuItem = createServerFn({ method: "POST" })
  * separate `menu/` prefix, and served by the same /gallery-image/$ route.
  */
 export const setMenuItemImage = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: unknown) => {
     if (!(data instanceof FormData)) {
       throw new Error("Expected a file upload.");
@@ -256,7 +264,7 @@ export const setMenuItemImage = createServerFn({ method: "POST" })
 
 /** Removes a menu item's uploaded photo — it falls back to the default stock photo. */
 export const clearMenuItemImage = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: { id: number }) => data)
   .handler(async ({ data }) => {
     const db = getDb();
@@ -284,7 +292,7 @@ export const clearMenuItemImage = createServerFn({ method: "POST" })
  * hover, so a heavy file would stall instead of feeling instant.
  */
 export const setMenuItemVideo = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: unknown) => {
     if (!(data instanceof FormData)) {
       throw new Error("Expected a file upload.");
@@ -334,7 +342,7 @@ export const setMenuItemVideo = createServerFn({ method: "POST" })
 
 /** Removes a menu item's hover clip — it falls back to the static photo. */
 export const clearMenuItemVideo = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: { id: number }) => data)
   .handler(async ({ data }) => {
     const db = getDb();

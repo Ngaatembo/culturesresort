@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb, getGalleryBucket, getAssetsBinding } from "./cf";
-import { authMiddleware } from "@/lib/auth/functions";
+import { managerUpMiddleware } from "@/lib/auth/functions";
+import { logAdminActivity } from "./activity-log-write";
 import { gallery as bundledGallery } from "@/lib/gallery";
 import { HOMEPAGE_IMAGE_SLOTS, type HomepageImages } from "./settings";
 
@@ -27,7 +28,7 @@ export const listGalleryPhotos = createServerFn({ method: "GET" }).handler(async
 });
 
 export const uploadGalleryPhoto = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: unknown) => {
     if (!(data instanceof FormData)) {
       throw new Error("Expected a file upload.");
@@ -45,13 +46,17 @@ export const uploadGalleryPhoto = createServerFn({ method: "POST" })
     const alt = String(data.get("alt") ?? "").trim();
     const caption = String(data.get("caption") ?? "").trim();
     if (!alt) {
-      throw new Error(`Add alt text for "${file.name}" before uploading (for accessibility and search).`);
+      throw new Error(
+        `Add alt text for "${file.name}" before uploading (for accessibility and search).`,
+      );
     }
     if (!caption) {
       throw new Error(`Add a short caption for "${file.name}" before uploading.`);
     }
     if (caption.length > 80) {
-      throw new Error(`The caption for "${file.name}" is too long (${caption.length} characters) — keep it to a short phrase, under 80 characters. Longer descriptions belong in alt text, not the caption shown under the photo.`);
+      throw new Error(
+        `The caption for "${file.name}" is too long (${caption.length} characters) — keep it to a short phrase, under 80 characters. Longer descriptions belong in alt text, not the caption shown under the photo.`,
+      );
     }
     return { file, alt, caption, category: String(data.get("category") ?? "Details") };
   })
@@ -79,12 +84,14 @@ export const uploadGalleryPhoto = createServerFn({ method: "POST" })
   });
 
 export const updateGalleryPhoto = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: { id: number; alt: string; caption: string; category: string }) => data)
   .handler(async ({ data }) => {
     const db = getDb();
     await db
-      .prepare("UPDATE gallery_photos SET alt = ?, caption = ?, category = ? WHERE id = ? AND is_deleted = 0")
+      .prepare(
+        "UPDATE gallery_photos SET alt = ?, caption = ?, category = ? WHERE id = ? AND is_deleted = 0",
+      )
       .bind(data.alt, data.caption, data.category, data.id)
       .run();
     return { ok: true as const };
@@ -102,11 +109,13 @@ async function findSlotUsage(db: ReturnType<typeof getDb>, r2Key: string): Promi
   } catch {
     return [];
   }
-  return HOMEPAGE_IMAGE_SLOTS.filter((slot) => parsed[slot.key] === r2Key).map((slot) => slot.label);
+  return HOMEPAGE_IMAGE_SLOTS.filter((slot) => parsed[slot.key] === r2Key).map(
+    (slot) => slot.label,
+  );
 }
 
 export const checkGalleryPhotoUsage = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: { id: number }) => data)
   .handler(async ({ data }) => {
     const db = getDb();
@@ -119,9 +128,9 @@ export const checkGalleryPhotoUsage = createServerFn({ method: "POST" })
   });
 
 export const deleteGalleryPhoto = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: { id: number; force?: boolean }) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const db = getDb();
     const row = await db
       .prepare("SELECT r2_key, bundled_source FROM gallery_photos WHERE id = ? AND is_deleted = 0")
@@ -146,7 +155,9 @@ export const deleteGalleryPhoto = createServerFn({ method: "POST" })
           if (parsed[slot.key] === row.r2_key) parsed[slot.key] = null;
         }
         await db
-          .prepare("UPDATE site_settings SET value = ?, updated_at = datetime('now') WHERE key = 'homepage_images'")
+          .prepare(
+            "UPDATE site_settings SET value = ?, updated_at = datetime('now') WHERE key = 'homepage_images'",
+          )
           .bind(JSON.stringify(parsed))
           .run();
       }
@@ -160,6 +171,13 @@ export const deleteGalleryPhoto = createServerFn({ method: "POST" })
       await bucket.delete(row.r2_key);
       await db.prepare("DELETE FROM gallery_photos WHERE id = ?").bind(data.id).run();
     }
+    if (context.admin) {
+      await logAdminActivity(
+        { email: context.admin.email, role: context.admin.role },
+        "Deleted gallery photo",
+        row.r2_key,
+      );
+    }
     return { ok: true as const };
   });
 
@@ -168,7 +186,7 @@ export const deleteGalleryPhoto = createServerFn({ method: "POST" })
  * old R2 object is deleted unless it's the original bundled asset (kept so
  * a second replace-then-revert story never dangles). */
 export const replaceGalleryPhoto = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: unknown) => {
     if (!(data instanceof FormData)) throw new Error("Expected a file upload.");
     const file = data.get("file");
@@ -214,7 +232,9 @@ export const replaceGalleryPhoto = createServerFn({ method: "POST" })
       }
       if (changed) {
         await db
-          .prepare("UPDATE site_settings SET value = ?, updated_at = datetime('now') WHERE key = 'homepage_images'")
+          .prepare(
+            "UPDATE site_settings SET value = ?, updated_at = datetime('now') WHERE key = 'homepage_images'",
+          )
           .bind(JSON.stringify(parsed))
           .run();
       }
@@ -235,7 +255,7 @@ export const replaceGalleryPhoto = createServerFn({ method: "POST" })
  * identity, which makes later edits and deletions persistent.
  */
 export const importBundledGalleryPhotos = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .handler(async () => {
     const db = getDb();
     const bucket = getGalleryBucket();
@@ -244,7 +264,9 @@ export const importBundledGalleryPhotos = createServerFn({ method: "POST" })
     const { results: existing } = await db
       .prepare("SELECT bundled_source, caption FROM gallery_photos")
       .all<{ bundled_source: string | null; caption: string }>();
-    const existingSources = new Set(existing.map((r) => r.bundled_source).filter(Boolean) as string[]);
+    const existingSources = new Set(
+      existing.map((r) => r.bundled_source).filter(Boolean) as string[],
+    );
     const existingCaptions = new Set(existing.map((r) => r.caption));
 
     const maxOrder = await db
@@ -275,7 +297,9 @@ export const importBundledGalleryPhotos = createServerFn({ method: "POST" })
         if (!contentType.startsWith("image/")) {
           // Most common failure mode: the asset path didn't match anything
           // and the SPA fallback (index.html) was returned instead.
-          failed.push(`${photo.caption} (got "${contentType}" instead of an image for ${photo.src})`);
+          failed.push(
+            `${photo.caption} (got "${contentType}" instead of an image for ${photo.src})`,
+          );
           continue;
         }
         const ext = contentType.split("/")[1]?.replace(/[^a-z0-9]/gi, "") || "jpg";

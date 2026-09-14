@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
-import { authMiddleware } from "@/lib/auth/functions";
+import { staffUpMiddleware } from "@/lib/auth/functions";
 
 export type DashboardStats = {
   todaysOrders: number;
@@ -16,7 +16,7 @@ export type DashboardStats = {
 
 /** Powers the admin Overview cards (today's orders, revenue, pending bookings, etc). */
 export const getDashboardStats = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
+  .middleware([staffUpMiddleware])
   .handler(async (): Promise<DashboardStats> => {
     const db = getDb();
 

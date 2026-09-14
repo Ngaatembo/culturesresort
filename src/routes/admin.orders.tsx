@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import {
   listOrders,
   updateOrderStatus,
   type OrderStatus,
   type OrderWithItems,
 } from "@/lib/data/orders";
+import { customerWhatsAppLink } from "@/lib/whatsapp";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +37,7 @@ import {
   SectionCard,
   StatusBadge,
 } from "@/components/admin/ui";
+import { useAdminRole } from "@/lib/auth/use-admin-role";
 
 export const Route = createFileRoute("/admin/orders")({
   component: OrdersPage,
@@ -47,7 +50,19 @@ const NEXT_ACTION: Partial<Record<OrderStatus, { label: string; next: OrderStatu
   preparing: { label: "Mark completed", next: "completed" },
 };
 
+const STATUS_MESSAGE: Record<OrderStatus, (order: OrderWithItems) => string> = {
+  pending: (o) =>
+    `Hi ${o.customer_name}, this is Cultures Resort. We've received your order #${o.id} and it's in the queue — we'll message again once it's on the grill.`,
+  preparing: (o) =>
+    `Hi ${o.customer_name}, your order #${o.id} at Cultures Resort is being prepared now — won't be long!`,
+  completed: (o) =>
+    `Hi ${o.customer_name}, your order #${o.id} at Cultures Resort is ready! Come on through to collect it.`,
+  cancelled: (o) =>
+    `Hi ${o.customer_name}, unfortunately your order #${o.id} at Cultures Resort has been cancelled. Please get in touch and we'll sort it out.`,
+};
+
 function OrdersPage() {
+  const { canViewAmounts } = useAdminRole();
   const [orders, setOrders] = useState<OrderWithItems[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -148,7 +163,7 @@ function OrdersPage() {
                   <th className="py-2 pr-4">Order</th>
                   <th className="py-2 pr-4">Customer</th>
                   <th className="py-2 pr-4">Items</th>
-                  <th className="py-2 pr-4">Total</th>
+                  {canViewAmounts ? <th className="py-2 pr-4">Total</th> : null}
                   <th className="py-2 pr-4">Placed</th>
                   <th className="py-2 pr-4">Status</th>
                   <th className="py-2" />
@@ -178,7 +193,9 @@ function OrdersPage() {
                     <td className="max-w-xs truncate py-3.5 pr-4 text-muted-foreground">
                       {o.items.map((i) => `${i.qty} × ${i.name}`).join(", ")}
                     </td>
-                    <td className="py-3.5 pr-4 font-medium">{formatMoney(o.total_cents)}</td>
+                    {canViewAmounts ? (
+                      <td className="py-3.5 pr-4 font-medium">{formatMoney(o.total_cents)}</td>
+                    ) : null}
                     <td className="py-3.5 pr-4 text-xs text-muted-foreground">
                       {formatDateTime(o.created_at)}
                     </td>
@@ -233,16 +250,20 @@ function OrdersPage() {
                         <span>
                           {i.qty} × {i.name}
                         </span>
-                        <span className="text-muted-foreground">
-                          {formatMoney(i.price_cents * i.qty)}
-                        </span>
+                        {canViewAmounts ? (
+                          <span className="text-muted-foreground">
+                            {formatMoney(i.price_cents * i.qty)}
+                          </span>
+                        ) : null}
                       </li>
                     ))}
                   </ul>
-                  <div className="flex items-center justify-between border-t border-border px-3 py-2.5 text-sm font-semibold">
-                    <span>Total</span>
-                    <span>{formatMoney(active.total_cents)}</span>
-                  </div>
+                  {canViewAmounts ? (
+                    <div className="flex items-center justify-between border-t border-border px-3 py-2.5 text-sm font-semibold">
+                      <span>Total</span>
+                      <span>{formatMoney(active.total_cents)}</span>
+                    </div>
+                  ) : null}
                 </div>
                 {active.notes ? (
                   <div>
@@ -254,6 +275,19 @@ function OrdersPage() {
                 ) : null}
               </div>
               <DrawerFooter className="flex-row flex-wrap gap-2">
+                <Button asChild variant="outline" size="sm">
+                  <a
+                    href={customerWhatsAppLink(
+                      active.customer_phone,
+                      STATUS_MESSAGE[active.status](active),
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MessageCircle className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+                    Message on WhatsApp
+                  </a>
+                </Button>
                 {ORDER_STATUSES.filter((s) => s !== active.status).map((s) => (
                   <Button
                     key={s}

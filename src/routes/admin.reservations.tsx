@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import {
   listBookings,
-  updateBookingStatus,
+  updateReservationStatus,
   type BookingRow,
   type BookingStatus,
 } from "@/lib/data/bookings";
+import { customerWhatsAppLink } from "@/lib/whatsapp";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,6 +43,19 @@ export const Route = createFileRoute("/admin/reservations")({
 
 const STATUSES: BookingStatus[] = ["pending", "confirmed", "declined", "completed", "cancelled"];
 
+const RESERVATION_STATUS_MESSAGE: Record<BookingStatus, (b: BookingRow) => string> = {
+  pending: (b) =>
+    `Hi ${b.guest_name}, this is Cultures Resort. We've received your table reservation request${b.event_date ? ` for ${b.event_date}` : ""} and will confirm shortly.`,
+  confirmed: (b) =>
+    `Hi ${b.guest_name}, your table reservation at Cultures Resort${b.event_date ? ` for ${b.event_date}` : ""} is confirmed — we'll see you then!`,
+  declined: (b) =>
+    `Hi ${b.guest_name}, unfortunately we're unable to accommodate your reservation request${b.event_date ? ` for ${b.event_date}` : ""}. Please get in touch so we can find another time.`,
+  completed: (b) =>
+    `Hi ${b.guest_name}, thank you for dining with us at Cultures Resort — hope to see you again soon!`,
+  cancelled: (b) =>
+    `Hi ${b.guest_name}, your reservation at Cultures Resort has been cancelled. Let us know if you'd like to rebook.`,
+};
+
 /** The reservation form stores the requested time as "Time: HH:MM" in the
  * shared `requirements` column (event enquiries use that same column for a
  * comma-separated list of requirements instead — this parse only applies
@@ -72,7 +87,7 @@ function ReservationsPage() {
     setBookings((prev) => (prev ? prev.map((b) => (b.id === id ? { ...b, status } : b)) : prev));
     setActive((prev) => (prev && prev.id === id ? { ...prev, status } : prev));
     try {
-      await updateBookingStatus({ data: { id, status } });
+      await updateReservationStatus({ data: { id, status } });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't update that status.");
       load();
@@ -176,7 +191,9 @@ function ReservationsPage() {
                       <p className="text-xs text-muted-foreground">{b.guest_phone}</p>
                     </td>
                     <td className="py-3.5 pr-4">{b.event_date ?? "—"}</td>
-                    <td className="py-3.5 pr-4 font-medium">{parseRequestedTime(b.requirements) ?? "—"}</td>
+                    <td className="py-3.5 pr-4 font-medium">
+                      {parseRequestedTime(b.requirements) ?? "—"}
+                    </td>
                     <td className="py-3.5 pr-4">{b.guests ?? "—"}</td>
                     <td className="py-3.5 pr-4 text-xs text-muted-foreground">
                       {formatDateTime(b.created_at)}
@@ -218,7 +235,9 @@ function ReservationsPage() {
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                       Requested time
                     </p>
-                    <p className="mt-1 font-medium text-foreground">{parseRequestedTime(active.requirements) ?? "—"}</p>
+                    <p className="mt-1 font-medium text-foreground">
+                      {parseRequestedTime(active.requirements) ?? "—"}
+                    </p>
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -253,6 +272,19 @@ function ReservationsPage() {
                 ) : null}
               </div>
               <DrawerFooter className="flex-row flex-wrap gap-2">
+                <Button asChild variant="outline" size="sm">
+                  <a
+                    href={customerWhatsAppLink(
+                      active.guest_phone,
+                      RESERVATION_STATUS_MESSAGE[active.status](active),
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MessageCircle className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+                    Message on WhatsApp
+                  </a>
+                </Button>
                 {STATUSES.filter((s) => s !== active.status).map((s) => (
                   <Button
                     key={s}

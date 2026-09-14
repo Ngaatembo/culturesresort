@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb, getGalleryBucket } from "./cf";
-import { authMiddleware } from "@/lib/auth/functions";
+import { managerUpMiddleware } from "@/lib/auth/functions";
+import { logAdminActivity } from "./activity-log-write";
 
 export type SiteEventStatus = "upcoming" | "active" | "past" | "cancelled";
 
@@ -29,7 +30,7 @@ export const listPublicEvents = createServerFn({ method: "GET" }).handler(async 
 
 /** Admin — every event regardless of status. */
 export const listSiteEventsAdmin = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .handler(async () => {
     const db = getDb();
     const { results } = await db
@@ -48,7 +49,7 @@ async function storeImage(file: File): Promise<string> {
 }
 
 export const createSiteEvent = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: unknown) => {
     if (!(data instanceof FormData)) {
       throw new Error("Expected form data.");
@@ -99,7 +100,7 @@ export const createSiteEvent = createServerFn({ method: "POST" })
   });
 
 export const updateSiteEvent = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: unknown) => {
     if (!(data instanceof FormData)) {
       throw new Error("Expected form data.");
@@ -168,18 +169,25 @@ export const updateSiteEvent = createServerFn({ method: "POST" })
   });
 
 export const deleteSiteEvent = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
+  .middleware([managerUpMiddleware])
   .validator((data: { id: number }) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const db = getDb();
     const row = await db
-      .prepare("SELECT image_key FROM site_events WHERE id = ?")
+      .prepare("SELECT title, image_key FROM site_events WHERE id = ?")
       .bind(data.id)
-      .first<{ image_key: string | null }>();
+      .first<{ title: string; image_key: string | null }>();
     if (row?.image_key) {
       const bucket = getGalleryBucket();
       await bucket.delete(row.image_key);
     }
     await db.prepare("DELETE FROM site_events WHERE id = ?").bind(data.id).run();
+    if (context.admin && row) {
+      await logAdminActivity(
+        { email: context.admin.email, role: context.admin.role },
+        "Deleted site event",
+        row.title,
+      );
+    }
     return { ok: true as const };
   });
