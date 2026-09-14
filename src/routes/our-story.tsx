@@ -144,16 +144,16 @@ function OurStory() {
             </Reveal>
             <Reveal delay={140} className="overflow-hidden rounded-2xl">
               <img
-                src={images.porkSizzler}
-                alt="Sizzling grilled pork served on a hot plate with tomato and onion"
+                src={images.lambChopsPlatter}
+                alt="A platter of grilled lamb chops fanned out with a rosemary sprig at the centre"
                 loading="lazy"
                 className="aspect-square w-full object-cover"
               />
             </Reveal>
             <Reveal delay={190} className="overflow-hidden rounded-2xl">
               <img
-                src={images.sadzaPlate}
-                alt="Sadza and covo served on a white plate at an outdoor wooden table"
+                src={images.sadzaGreensMoody}
+                alt="A close-up plate of sadza and chopped greens, with a traditional clay pot softly out of focus behind it"
                 loading="lazy"
                 className="aspect-square w-full object-cover"
               />
