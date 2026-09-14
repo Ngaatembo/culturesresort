@@ -31,8 +31,8 @@ function AccountPage() {
     e.preventDefault();
     setError(null);
     setSuccess(false);
-    if (newPassword.length < 8) {
-      setError("New password must be at least 8 characters.");
+    if (newPassword.length < 4) {
+      setError("New password must be at least 4 characters.");
       return;
     }
     if (newPassword !== confirm) {
@@ -82,11 +82,11 @@ function AccountPage() {
           </div>
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground">
-              New password (8+ characters)
+              New password (4+ characters)
             </label>
             <PasswordInput
               required
-              minLength={8}
+              minLength={4}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               autoComplete="new-password"
@@ -98,7 +98,7 @@ function AccountPage() {
             </label>
             <PasswordInput
               required
-              minLength={8}
+              minLength={4}
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               autoComplete="new-password"

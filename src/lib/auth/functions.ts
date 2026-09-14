@@ -129,8 +129,8 @@ export const changeOwnPassword = createServerFn({ method: "POST" })
     if (!userId) {
       throw new Error("Unauthorized");
     }
-    if (data.newPassword.length < 8) {
-      throw new Error("New password must be at least 8 characters.");
+    if (data.newPassword.length < 4) {
+      throw new Error("New password must be at least 4 characters.");
     }
     const user = await findAdminById(userId);
     if (!user) {
@@ -153,7 +153,7 @@ export const changeOwnPassword = createServerFn({ method: "POST" })
  * requires being logged in as the owner.
  */
 export const adminSetup = createServerFn({ method: "POST" })
-  .validator(z.object({ email: z.string().email(), password: z.string().min(8) }))
+  .validator(z.object({ email: z.string().email(), password: z.string().min(4) }))
   .handler(async ({ data }) => {
     const existing = await countAdminUsers();
     if (existing > 0) {
@@ -191,7 +191,7 @@ export const createStaffAccount = createServerFn({ method: "POST" })
   .validator(
     z.object({
       email: z.string().email(),
-      password: z.string().min(8),
+      password: z.string().min(4),
       role: z.enum(ROLES as [AdminRole, ...AdminRole[]]),
     }),
   )

@@ -181,11 +181,11 @@ function StaffPage() {
           </div>
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground">
-              Password (8+ characters)
+              Password (4+ characters)
             </label>
             <PasswordInput
               required
-              minLength={8}
+              minLength={4}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"

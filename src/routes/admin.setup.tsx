@@ -28,8 +28,8 @@ function SetupPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
+    if (password.length < 4) {
+      setError("Password must be at least 4 characters.");
       return;
     }
     if (password !== confirm) {
@@ -101,13 +101,13 @@ function SetupPage() {
           </div>
           <div className="space-y-1.5">
             <label htmlFor="password" className="text-sm font-medium text-foreground">
-              Password (8+ characters)
+              Password (4+ characters)
             </label>
             <PasswordInput
               id="password"
               autoComplete="new-password"
               required
-              minLength={8}
+              minLength={4}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -120,7 +120,7 @@ function SetupPage() {
               id="confirm"
               autoComplete="new-password"
               required
-              minLength={8}
+              minLength={4}
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
             />
