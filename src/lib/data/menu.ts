@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getDb, getGalleryBucket } from "./cf";
-import { managerUpMiddleware } from "@/lib/auth/functions";
+import { managerUpMiddleware, staffUpMiddleware } from "@/lib/auth/functions";
 import { logAdminActivity } from "./activity-log-write";
 
 export type MenuKind = "food" | "beverages";
@@ -78,7 +78,7 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
 
 /** Full row list for the admin menu editor — includes unavailable items. */
 export const getMenuAdmin = createServerFn({ method: "GET" })
-  .middleware([managerUpMiddleware])
+  .middleware([staffUpMiddleware])
   .handler(async () => {
     const db = getDb();
     const { results } = await db
@@ -214,7 +214,7 @@ export const deleteMenuItem = createServerFn({ method: "POST" })
  * separate `menu/` prefix, and served by the same /gallery-image/$ route.
  */
 export const setMenuItemImage = createServerFn({ method: "POST" })
-  .middleware([managerUpMiddleware])
+  .middleware([staffUpMiddleware])
   .validator((data: unknown) => {
     if (!(data instanceof FormData)) {
       throw new Error("Expected a file upload.");
@@ -264,7 +264,7 @@ export const setMenuItemImage = createServerFn({ method: "POST" })
 
 /** Removes a menu item's uploaded photo — it falls back to the default stock photo. */
 export const clearMenuItemImage = createServerFn({ method: "POST" })
-  .middleware([managerUpMiddleware])
+  .middleware([staffUpMiddleware])
   .validator((data: { id: number }) => data)
   .handler(async ({ data }) => {
     const db = getDb();
