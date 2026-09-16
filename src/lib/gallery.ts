@@ -13,6 +13,8 @@ import elephantBridge from "@/assets/elephant-bridge.jpg";
 import staffWelcome from "@/assets/staff-welcome.jpg";
 import gardenLion from "@/assets/garden-lion.jpg";
 import picnicTables from "@/assets/picnic-tables.jpg";
+import nightSunsetGrounds from "@/assets/night-sunset-grounds.jpg";
+import nightLeopardStatue from "@/assets/night-leopard-statue.jpg";
 import porkSizzler from "@/assets/pork-sizzler.jpg";
 import playArea from "@/assets/play-area.jpg";
 import goatChopsPlate from "@/assets/goat-chops-plate.jpg";
@@ -86,7 +88,7 @@ export type GalleryEntry = {
   src: string;
   alt: string;
   caption: string;
-  category: "Garden" | "Food" | "Fire" | "Culture" | "People" | "Details";
+  category: "Garden" | "Food" | "Fire" | "Culture" | "People" | "Details" | "Night";
   tall?: boolean;
 };
 
@@ -324,5 +326,18 @@ export const gallery: GalleryEntry[] = [
     alt: "A wide tray of grilled lamb chops garnished with rosemary",
     caption: "Lamb chops, fresh off the coals",
     category: "Fire",
+  },
+  {
+    src: nightSunsetGrounds,
+    alt: "The grounds at dusk, with the play area, the thatched gazebo seating and the lit bar counter under an orange sunset sky",
+    caption: "The grounds at sunset",
+    category: "Night",
+    tall: false,
+  },
+  {
+    src: nightLeopardStatue,
+    alt: "A leopard sculpture at the garden's edge at night, with lit umbrellas and animal statues among the tables beyond",
+    caption: "The garden after dark",
+    category: "Night",
   },
 ];

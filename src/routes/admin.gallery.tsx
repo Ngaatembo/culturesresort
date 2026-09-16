@@ -30,7 +30,7 @@ export const Route = createFileRoute("/admin/gallery")({
   component: GalleryPage,
 });
 
-const CATEGORIES = ["People", "Food", "Fire", "Garden", "Culture", "Details"] as const;
+const CATEGORIES = ["People", "Food", "Fire", "Garden", "Culture", "Night", "Details"] as const;
 type Category = (typeof CATEGORIES)[number];
 
 type PendingUpload = {

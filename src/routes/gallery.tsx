@@ -8,9 +8,9 @@ import { useSlotImage } from "@/lib/homepage-images";
 import { listGalleryPhotos } from "@/lib/data/gallery-photos";
 import { cn } from "@/lib/utils";
 
-const categories = ["All", "People", "Food", "Fire", "Garden", "Culture", "Details"] as const;
+const categories = ["All", "People", "Food", "Fire", "Garden", "Culture", "Night", "Details"] as const;
 /** Fixed, sensible reading order for the grouped "All" view — not just insertion order. */
-const SECTION_ORDER = ["Garden", "Food", "Fire", "Culture", "People", "Details"] as const;
+const SECTION_ORDER = ["Garden", "Food", "Fire", "Culture", "Night", "People", "Details"] as const;
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
