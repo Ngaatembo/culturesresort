@@ -311,7 +311,7 @@ function Menu() {
                 ))}
               </dl>
               <p className="mt-4 text-xs text-muted-foreground">
-                These answers are not confirmed yet — please ask when you call.
+                Planning a larger group? Call ahead to confirm timing.
               </p>
             </div>
           </Reveal>
