@@ -44,7 +44,7 @@ import homemadeCake from "@/assets/dishes/homemade-cake.jpg";
 import wildDriedFruits from "@/assets/dishes/wild-dried-fruits.jpg";
 import zimTeaCoffee from "@/assets/dishes/zim-tea-coffee.jpg";
 import softDrinkGlass from "@/assets/soft-drink-glass.jpg";
-import maheuPhoto from "@/assets/traditional-drink-pouring.webp";
+import maheuPhoto from "@/assets/dishes/maheu.jpg";
 import freshJuice from "@/assets/dishes/fresh-juice.jpg";
 
 export const dishPhotos: Record<string, string> = {
