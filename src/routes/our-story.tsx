@@ -26,7 +26,6 @@ export const Route = createFileRoute("/our-story")({
 });
 
 function OurStory() {
-  const craftImg = useSlotImage("craft", images.craft);
   const foodImg = useSlotImage("food", images.food);
   return (
     <>
@@ -34,8 +33,8 @@ function OurStory() {
         eyebrow="Our story"
         title="Built around a table, not a trend"
         intro="Cultures Resort is a traditional African restaurant in Hillside, Harare — a place for food, craft and company."
-        image={craftImg}
-        imageAlt="A staff member in traditional beadwork admiring a hand-drawn buffalo artwork on the brick pavilion wall"
+        image={images.staffPotOnHead}
+        imageAlt="A staff member in traditional dress balancing a clay pot on her head at the resort's entrance"
       />
 
       <section className="grain bg-background py-16 lg:py-24">
