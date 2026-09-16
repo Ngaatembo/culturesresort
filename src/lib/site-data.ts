@@ -367,21 +367,21 @@ export const visitDetails = [
 /** Real Google reviews for Cultures Resort — used as testimonials on the site. */
 export const testimonials = [
   {
-    name: "Thobile Mkhonta",
+    name: "Thobile M.",
     meta: "Local Guide · Google review",
     rating: 5,
     quote:
       "This place offers a variety of African dishes. We went for the goat leg, village chicken and fish and it was delicious. The staff is friendly and it's in a good location. Would definitely visit again.",
   },
   {
-    name: "Tatenda Musundire",
+    name: "Tatenda M.",
     meta: "Google review",
     rating: 5,
     quote:
       "The environment is so peaceful and their African cuisine menu is so wide and the portions are more than generous. I would revisit over and over again.",
   },
   {
-    name: "acg mbi",
+    name: "acg M.",
     meta: "Local Guide · Google review",
     rating: 5,
     quote:
