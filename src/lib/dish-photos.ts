@@ -45,7 +45,7 @@ import wildDriedFruits from "@/assets/dishes/wild-dried-fruits.jpg";
 import zimTeaCoffee from "@/assets/dishes/zim-tea-coffee.jpg";
 import softDrinkGlass from "@/assets/soft-drink-glass.jpg";
 import maheuPhoto from "@/assets/traditional-drink-pouring.webp";
-import freshJuiceTemp from "@/assets/red-juice-glass-temp.jpg";
+import freshJuice from "@/assets/dishes/fresh-juice.jpg";
 
 export const dishPhotos: Record<string, string> = {
   "Kuku Choma": kukuChoma,
@@ -94,5 +94,5 @@ export const dishPhotos: Record<string, string> = {
   "Best Zimbabwean Tea / Coffee": zimTeaCoffee,
   "Soft Drink": softDrinkGlass,
   Maheu: maheuPhoto,
-  "Fresh Juice": freshJuiceTemp,
+  "Fresh Juice": freshJuice,
 };
