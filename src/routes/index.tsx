@@ -20,6 +20,7 @@ import chefFireRibs from "@/assets/chef-fire-ribs-closeup.jpg";
 import fireCookingLoop from "@/assets/video/fire-cooking-loop.mp4";
 import entranceTour from "@/assets/video/entrance-tour.mp4";
 import gardenLoop from "@/assets/video/garden-loop.mp4";
+import logoWatermark from "@/assets/logo-mark-transparent.png";
 import { cn } from "@/lib/utils";
 
 type PreviewDish = MenuItemOut & { categoryTitle: string; categorySlug: string };
@@ -614,8 +615,14 @@ function Home() {
       </section>
 
       {/* Reviews */}
-      <section className="bg-background pb-16 pt-10 lg:py-24">
-        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+      <section className="relative overflow-hidden bg-background pb-16 pt-10 lg:py-24">
+        <img
+          src={logoWatermark}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[85%] w-auto -translate-x-1/2 -translate-y-1/2 select-none opacity-[0.06] lg:h-[70%]"
+        />
+        <div className="relative mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
             <p className="eyebrow rule-ochre text-primary">What people remember</p>
             <h2 className="mt-6 max-w-2xl font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">

@@ -5,7 +5,7 @@ import { XIcon } from "@/components/x-icon";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { whatsappLink, whatsappMessages } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
-import logoMark from "@/assets/logo-mark.png";
+import logoFull from "@/assets/logo-full.png";
 
 /**
  * Simplified per the brand brief (Section 24): brand + tagline + contact,
@@ -21,17 +21,12 @@ export function SiteFooter() {
     <footer className="bg-ink text-bone">
       <div className="mx-auto max-w-3xl px-5 py-20 text-center lg:px-10 lg:py-28">
         <img
-          src={logoMark}
-          alt=""
-          aria-hidden="true"
-          width={56}
-          height={56}
-          className="mx-auto h-14 w-14 rounded-full"
+          src={logoFull}
+          alt="Cultures Resort — African Traditional Restaurant"
+          width={1254}
+          height={1254}
+          className="mx-auto h-40 w-40 rounded-3xl object-cover shadow-lift lg:h-48 lg:w-48"
         />
-        <p className="mt-5 font-display text-3xl">Cultures Resort</p>
-        <p className="mt-2 text-sm uppercase tracking-[0.16em] text-bone/60">
-          Traditional African Restaurant
-        </p>
 
         <address className="mt-8 space-y-1.5 text-sm not-italic leading-relaxed text-bone/75">
           <a

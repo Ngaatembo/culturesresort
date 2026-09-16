@@ -20,12 +20,20 @@ import { WhatsAppFab } from "@/components/whatsapp-fab";
 import { OrderDrawer } from "@/components/order-drawer";
 import { OrderProvider } from "@/lib/order";
 import { siteSettingsQueryOptions } from "@/lib/site-settings-query";
+import logoMark from "@/assets/logo-mark.png";
 
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <p className="eyebrow text-primary">404</p>
+        <img
+          src={logoMark}
+          alt="Cultures Resort"
+          width={512}
+          height={512}
+          className="mx-auto h-16 w-16 rounded-full object-cover"
+        />
+        <p className="eyebrow mt-6 text-primary">404</p>
         <h1 className="mt-4 font-display text-4xl">This page isn't on the menu</h1>
         <p className="mt-3 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
