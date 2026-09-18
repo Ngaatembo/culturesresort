@@ -51,7 +51,7 @@ type Course = MenuKind;
 
 function Menu() {
   const { business, visitDetails } = useSiteSettings();
-  const foodImg = useSlotImage("food", images.food);
+  const foodImg = useSlotImage("food", images.feastPlatterMixed);
   const [course, setCourse] = useState<Course>("food");
   const [active, setActive] = useState<string>("all");
   const [menuData, setMenuData] = useState<Record<MenuKind, MenuCategoryOut[]> | null>(null);
@@ -86,8 +86,8 @@ function Menu() {
         title="Traditional plates, served family style"
         intro="Add anything you'd like to try and check out online or on WhatsApp. Items, prices and availability are managed by the Cultures team, so a few are still marked On request while the full list is loaded."
         image={foodImg}
-        imageAlt="Grilled chicken and steaks smoking on an open charcoal grill, with fresh vegetables and a potjie pot alongside"
-        imagePosition="bottom"
+        imageAlt="Large mixed grill platter at Cultures Resort: sadza, brown rice, jollof rice, grilled chicken, chips, greens and gravy"
+        imagePosition="center"
       />
 
       <section className="bg-background py-16 lg:py-24">

@@ -56,6 +56,7 @@ function Home() {
   const heroImg = useSlotImage("hero", images.entranceBananaLeaves);
   const cultureImg = useSlotImage("drums", images.drums);
   const foodImg = useSlotImage("food", images.food);
+  const foodMainImg = useSlotImage("food", images.feastPlatterMixed);
   const [signatureDishes, setSignatureDishes] = useState<PreviewDish[] | null>(null);
   const [craftMuted, setCraftMuted] = useState(true);
   const craftVideoRef = useRef<HTMLVideoElement>(null);
@@ -411,12 +412,12 @@ function Home() {
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-1 px-1 pt-1 lg:grid-cols-3 lg:gap-2 lg:px-2 lg:pt-2">
           <div className="col-span-2 aspect-[16/11] overflow-hidden lg:col-span-2 lg:aspect-auto">
             <img
-              src={foodImg}
-              alt="Grilled meat at Cultures Resort: racks of ribs and other cuts cooking on the grill, with a pair of tongs turning them"
-              width={2560}
+              src={foodMainImg}
+              alt="Large mixed grill platter at Cultures Resort: sadza, brown rice, jollof rice, grilled chicken, chips, greens and gravy"
+              width={1920}
               height={2560}
               loading="lazy"
-              className="h-full w-full object-cover object-bottom"
+              className="h-full w-full object-cover object-center"
             />
           </div>
           <div className="hidden h-full grid-rows-2 gap-2 lg:grid">
