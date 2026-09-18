@@ -26,7 +26,7 @@ export const Route = createFileRoute("/our-story")({
 });
 
 function OurStory() {
-  const foodImg = useSlotImage("food", images.food);
+  const foodImg = useSlotImage("food", images.meatOverOpenCoals);
   return (
     <>
       <PageHeader
@@ -128,7 +128,7 @@ function OurStory() {
             <Reveal className="col-span-2 row-span-2 overflow-hidden rounded-2xl">
               <img
                 src={foodImg}
-                alt="Grilled chicken and steaks smoking on an open charcoal grill, with fresh vegetables alongside"
+                alt="Grilled meat at Cultures Resort, cooking on the grate above glowing coals and open flame"
                 loading="lazy"
                 className="h-full min-h-64 w-full object-cover object-bottom sm:min-h-full"
               />
@@ -151,8 +151,8 @@ function OurStory() {
             </Reveal>
             <Reveal delay={190} className="overflow-hidden rounded-2xl">
               <img
-                src={images.sadzaGreensMoody}
-                alt="A close-up plate of sadza and chopped greens, with a traditional clay pot softly out of focus behind it"
+                src={images.sadzaGreensPlatter}
+                alt="Meal served at Cultures Resort: sadza, cooked greens, brown rice and chips on a steel platter"
                 loading="lazy"
                 className="aspect-square w-full object-cover"
               />

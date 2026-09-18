@@ -1,5 +1,5 @@
-import garden from "@/assets/hero-garden.jpg";
-import food from "@/assets/food-platter.jpg";
+import garden from "@/assets/garden-umbrella-dining.jpg";
+import food from "@/assets/grilled-ribs-on-grill.jpg";
 import craft from "@/assets/craft-detail.jpg";
 import drums from "@/assets/culture-drums.jpg";
 import interiorDeck from "@/assets/interior-deck.jpg";
@@ -8,7 +8,8 @@ import jollofPlate from "@/assets/jollof-plate.jpg";
 import craftBaskets from "@/assets/craft-art-baskets.jpg";
 import pavilionWide from "@/assets/pavilion-wide.jpg";
 import curioShop from "@/assets/curio-shop.jpg";
-import waterfall from "@/assets/waterfall.jpg";
+import gardenZebraSignpost from "@/assets/garden-zebra-signpost.jpg";
+import gardenZebraTable from "@/assets/garden-zebra-table.jpg";
 import elephantBridge from "@/assets/elephant-bridge.jpg";
 import staffWelcome from "@/assets/staff-welcome.jpg";
 import gardenLion from "@/assets/garden-lion.jpg";
@@ -18,14 +19,17 @@ import nightLeopardStatue from "@/assets/night-leopard-statue.jpg";
 import porkSizzler from "@/assets/pork-sizzler.jpg";
 import playArea from "@/assets/play-area.jpg";
 import goatChopsPlate from "@/assets/goat-chops-plate.jpg";
-import interiorTrophyWall from "@/assets/interior-trophy-wall.webp";
+import interiorThatchedDining from "@/assets/interior-thatched-dining.jpg";
+import entranceNyamaChoma from "@/assets/entrance-nyama-choma.jpg";
 import traditionalDrinkPouring from "@/assets/traditional-drink-pouring.webp";
 import potjiePotsTable from "@/assets/potjie-pots-table.webp";
 import gardenGuestsDaytime from "@/assets/garden-guests-daytime.webp";
 import fireRibsFlame from "@/assets/fire-ribs-flame.webp";
 import sadzaGreensMoody from "@/assets/sadza-greens-moody.webp";
+import sadzaGreensPlatter from "@/assets/sadza-greens-platter.jpg";
 import cocktailLayered from "@/assets/cocktail-layered.webp";
-import ricePotjiePot from "@/assets/rice-potjie-pot.webp";
+import ricePotjiePot from "@/assets/rice-potjie-pot.jpg";
+import grilledMeatPlatter from "@/assets/grilled-meat-platter.jpg";
 import gardenPicnicSunlit from "@/assets/garden-picnic-sunlit.webp";
 import craftShopPicnicTables from "@/assets/craft-shop-picnic-tables.jpg";
 import lambChopsPlatter from "@/assets/lamb-chops-platter.jpg";
@@ -52,7 +56,8 @@ export const images = {
   craftBaskets,
   pavilionWide,
   curioShop,
-  waterfall,
+  gardenZebraSignpost,
+  gardenZebraTable,
   elephantBridge,
   staffWelcome,
   gardenLion,
@@ -60,14 +65,17 @@ export const images = {
   porkSizzler,
   playArea,
   goatChopsPlate,
-  interiorTrophyWall,
+  interiorThatchedDining,
+  entranceNyamaChoma,
   traditionalDrinkPouring,
   potjiePotsTable,
   gardenGuestsDaytime,
   fireRibsFlame,
   sadzaGreensMoody,
+  sadzaGreensPlatter,
   cocktailLayered,
   ricePotjiePot,
+  grilledMeatPlatter,
   gardenPicnicSunlit,
   craftShopPicnicTables,
   lambChopsPlatter,
@@ -103,9 +111,10 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: garden,
-    alt: "Life-size zebra, giraffe and elephant sculptures on the lawn among picnic tables",
-    caption: "The garden — zebra, giraffe and elephant among the trees",
+    alt: "Wooden picnic tables under tan umbrellas on the lawn, with a kudu sculpture in the foreground and a zebra sculpture among the trees",
+    caption: "Dining under the umbrellas, among the sculptures",
     category: "Garden",
+    tall: true,
   },
   {
     src: sadzaPlate,
@@ -139,10 +148,11 @@ export const gallery: GalleryEntry[] = [
     category: "Garden",
   },
   {
-    src: waterfall,
-    alt: "A rock-built water feature in the garden, with the thatched pavilion behind it",
-    caption: "The rock water feature",
+    src: gardenZebraSignpost,
+    alt: "A zebra sculpture drinking from a stone trough beside a signpost of African destinations, with umbrellas and picnic tables behind",
+    caption: "The zebra and the signpost",
     category: "Garden",
+    tall: true,
   },
   {
     src: gardenLion,
@@ -158,10 +168,9 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: food,
-    alt: "Grilled chicken and steaks smoking on an open charcoal grill, with fresh vegetables and a potjie pot alongside",
-    caption: "Straight off the open-fire grill",
+    alt: "Grilled meat at Cultures Resort: racks of ribs and other cuts cooking on the grill, with a pair of tongs turning them",
+    caption: "Ribs on the open-fire grill",
     category: "Food",
-    tall: true,
   },
   {
     src: porkSizzler,
@@ -195,17 +204,18 @@ export const gallery: GalleryEntry[] = [
     category: "Fire",
   },
   {
-    src: gardenGuestsDaytime,
-    alt: "Guests seated at picnic tables in the garden on a sunny day, with lion and elephant sculptures among the greenery",
-    caption: "A sunny afternoon in the garden",
-    category: "People",
+    src: gardenZebraTable,
+    alt: "A picnic table under an umbrella beneath leafy branches, with a zebra sculpture and the play area in the background",
+    caption: "A table in the shade of the trees",
+    category: "Garden",
     tall: true,
   },
   {
-    src: interiorTrophyWall,
-    alt: "The covered dining pavilion in daylight, with mounted kudu and wildebeest heads on the wood-panelled wall above rows of wooden tables and chairs",
-    caption: "Covered seating, beneath the trophy wall",
+    src: interiorThatchedDining,
+    alt: "The thatched dining hall, with rows of wooden tables and chairs beneath the reed roof and mounted animal heads on the wall",
+    caption: "Under the thatch, beneath the trophy wall",
     category: "Details",
+    tall: true,
   },
   {
     src: traditionalDrinkPouring,
@@ -220,15 +230,9 @@ export const gallery: GalleryEntry[] = [
     category: "Fire",
   },
   {
-    src: fireRibsFlame,
-    alt: "Grilled ribs and chops on a wire rack directly over open flame and glowing coals",
-    caption: "Straight over the coals",
-    category: "Fire",
-  },
-  {
-    src: sadzaGreensMoody,
-    alt: "A close-up plate of sadza and chopped greens, with a traditional clay pot softly out of focus behind it",
-    caption: "Sadza and greens, plated",
+    src: sadzaGreensPlatter,
+    alt: "Meal served at Cultures Resort: sadza, cooked greens, brown rice and chips on a steel platter, with a small bowl of gravy",
+    caption: "Sadza, greens and rice, on the platter",
     category: "Food",
     tall: true,
   },
@@ -240,9 +244,23 @@ export const gallery: GalleryEntry[] = [
   },
   {
     src: ricePotjiePot,
-    alt: "A dome of tomato rice and cooked greens on a white plate, with a small potjie pot of stew and the pavilion behind",
-    caption: "Rice and stew, from the pot",
+    alt: "Meal served at Cultures Resort: a dome of tomato rice and cooked greens on a white plate, with a small potjie pot of stew and the garden behind",
+    caption: "Tomato rice and greens, with a pot of stew",
     category: "Food",
+  },
+  {
+    src: entranceNyamaChoma,
+    alt: "The covered entrance walkway beside the Nyama Choma grill counter, with banana plants, a reed gate and the thatched dining area ahead",
+    caption: "The entrance, past the Nyama Choma grill",
+    category: "Garden",
+    tall: true,
+  },
+  {
+    src: grilledMeatPlatter,
+    alt: "Grilled meat pieces with herbs served on a dark platter on a wooden table",
+    caption: "From the grill, served at the table",
+    category: "Fire",
+    tall: true,
   },
   {
     src: craftShopPicnicTables,

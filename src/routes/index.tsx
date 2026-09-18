@@ -53,7 +53,7 @@ function Home() {
   const [playVideo, setPlayVideo] = useState(false);
   const [heroEnded, setHeroEnded] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
-  const heroImg = useSlotImage("hero", images.waterfall);
+  const heroImg = useSlotImage("hero", images.entranceBananaLeaves);
   const cultureImg = useSlotImage("drums", images.drums);
   const foodImg = useSlotImage("food", images.food);
   const [signatureDishes, setSignatureDishes] = useState<PreviewDish[] | null>(null);
@@ -141,22 +141,22 @@ function Home() {
             <video
               ref={heroVideoRef}
               src={gardenLoop}
-              poster={images.garden}
+              poster={heroImg}
               autoPlay
               muted
               playsInline
               preload="metadata"
               aria-hidden="true"
               onEnded={() => setHeroEnded(true)}
-              className="h-[122%] w-full object-cover"
+              className="h-[122%] w-full object-cover object-[60%_50%] md:object-[50%_68%]"
             />
           ) : (
             <img
               src={heroImg}
-              alt="A rock-built water feature in the garden, with the thatched pavilion behind it"
-              width={1024}
-              height={1536}
-              className="h-[122%] w-full object-cover"
+              alt="The thatched entrance to Cultures Resort, framed by banana plants"
+              width={1920}
+              height={2560}
+              className="h-[122%] w-full object-cover object-[60%_50%] md:object-[50%_68%]"
               fetchPriority="high"
             />
           )}
@@ -376,22 +376,22 @@ function Home() {
             </Reveal>
             <Reveal delay={150} className="overflow-hidden rounded-2xl">
               <img
-                src={images.waterfall}
-                alt="A rock-built water feature in the garden, with the thatched pavilion behind it"
+                src={images.gardenZebraSignpost}
+                alt="A zebra sculpture beside a signpost of African destinations, with umbrellas and picnic tables behind"
                 loading="lazy"
-                width={1024}
-                height={1536}
+                width={810}
+                height={1080}
                 className="aspect-square w-full object-cover"
               />
             </Reveal>
             <Reveal delay={180} className="col-span-2 overflow-hidden rounded-2xl">
               <img
                 src={images.ricePotjiePot}
-                alt="A dome of tomato rice and cooked greens on a white plate, with a small potjie pot of stew and the pavilion behind"
+                alt="A dome of tomato rice and cooked greens on a white plate"
                 loading="lazy"
-                width={1536}
-                height={1024}
-                className="aspect-[16/9] w-full object-cover sm:aspect-[21/9]"
+                width={780}
+                height={1040}
+                className="aspect-[16/9] w-full object-cover object-[50%_85%] sm:aspect-[21/9]"
               />
             </Reveal>
           </div>
@@ -412,9 +412,9 @@ function Home() {
           <div className="col-span-2 aspect-[16/11] overflow-hidden lg:col-span-2 lg:aspect-auto">
             <img
               src={foodImg}
-              alt="Grilled chicken and steaks smoking on an open charcoal grill, with fresh vegetables and a potjie pot alongside"
-              width={590}
-              height={1095}
+              alt="Grilled meat at Cultures Resort: racks of ribs and other cuts cooking on the grill, with a pair of tongs turning them"
+              width={2560}
+              height={2560}
               loading="lazy"
               className="h-full w-full object-cover object-bottom"
             />
