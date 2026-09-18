@@ -56,7 +56,7 @@ function Home() {
   const heroImg = useSlotImage("hero", images.entranceBananaLeaves);
   const cultureImg = useSlotImage("drums", images.drums);
   const foodImg = useSlotImage("food", images.food);
-  const foodMainImg = useSlotImage("food", images.feastPlatterMixed);
+  const foodMainImg = useSlotImage("food", images.sadzaGreensPlatter);
   const [signatureDishes, setSignatureDishes] = useState<PreviewDish[] | null>(null);
   const [craftMuted, setCraftMuted] = useState(true);
   const craftVideoRef = useRef<HTMLVideoElement>(null);
@@ -387,12 +387,12 @@ function Home() {
             </Reveal>
             <Reveal delay={180} className="col-span-2 overflow-hidden rounded-2xl">
               <img
-                src={images.ricePotjiePot}
-                alt="A dome of tomato rice and cooked greens on a white plate"
+                src={images.feastPlatterMixed}
+                alt="Large mixed grill platter at Cultures Resort: sadza, brown rice, jollof rice, grilled chicken, chips, greens and gravy"
                 loading="lazy"
-                width={780}
-                height={1040}
-                className="aspect-[16/9] w-full object-cover object-[50%_85%] sm:aspect-[21/9]"
+                width={1920}
+                height={2560}
+                className="aspect-[16/9] w-full object-cover object-center sm:aspect-[21/9]"
               />
             </Reveal>
           </div>
@@ -413,7 +413,7 @@ function Home() {
           <div className="col-span-2 aspect-[16/11] overflow-hidden lg:col-span-2 lg:aspect-auto">
             <img
               src={foodMainImg}
-              alt="Large mixed grill platter at Cultures Resort: sadza, brown rice, jollof rice, grilled chicken, chips, greens and gravy"
+              alt="Meal served at Cultures Resort: sadza, cooked greens, brown rice and chips on a steel platter, with a small bowl of gravy"
               width={1920}
               height={2560}
               loading="lazy"
