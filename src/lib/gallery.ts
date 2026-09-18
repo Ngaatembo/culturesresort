@@ -19,7 +19,6 @@ import nightLeopardStatue from "@/assets/night-leopard-statue.jpg";
 import porkSizzler from "@/assets/pork-sizzler.jpg";
 import playArea from "@/assets/play-area.jpg";
 import goatChopsPlate from "@/assets/goat-chops-plate.jpg";
-import interiorThatchedDining from "@/assets/interior-thatched-dining.jpg";
 import entranceNyamaChoma from "@/assets/entrance-nyama-choma.jpg";
 import traditionalDrinkPouring from "@/assets/traditional-drink-pouring.webp";
 import potjiePotsTable from "@/assets/potjie-pots-table.webp";
@@ -65,7 +64,6 @@ export const images = {
   porkSizzler,
   playArea,
   goatChopsPlate,
-  interiorThatchedDining,
   entranceNyamaChoma,
   traditionalDrinkPouring,
   potjiePotsTable,
@@ -208,13 +206,6 @@ export const gallery: GalleryEntry[] = [
     alt: "A picnic table under an umbrella beneath leafy branches, with a zebra sculpture and the play area in the background",
     caption: "A table in the shade of the trees",
     category: "Garden",
-    tall: true,
-  },
-  {
-    src: interiorThatchedDining,
-    alt: "The thatched dining hall, with rows of wooden tables and chairs beneath the reed roof and mounted animal heads on the wall",
-    caption: "Under the thatch, beneath the trophy wall",
-    category: "Details",
     tall: true,
   },
   {
