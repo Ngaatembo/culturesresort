@@ -5,12 +5,14 @@ import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { useOrder } from "@/lib/order";
 import { navLinks, whatsappLink, whatsappMessages } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
+import { useSlotImage } from "@/lib/homepage-images";
 import { cn } from "@/lib/utils";
 import logoMark from "@/assets/logo-mark.png";
 import "../ui-refinements.css";
 
 export function SiteHeader() {
   const { business } = useSiteSettings();
+  const logoSrc = useSlotImage("logo_mark", logoMark);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { count, openDrawer } = useOrder();
@@ -49,7 +51,7 @@ export function SiteHeader() {
           aria-label={`${business.name} — home`}
         >
           <img
-            src={logoMark}
+            src={logoSrc}
             alt=""
             aria-hidden="true"
             width={40}

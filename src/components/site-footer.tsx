@@ -5,6 +5,7 @@ import { XIcon } from "@/components/x-icon";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { whatsappLink, whatsappMessages } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
+import { useSlotImage } from "@/lib/homepage-images";
 import logoFull from "@/assets/logo-full.png";
 
 /**
@@ -17,11 +18,12 @@ import logoFull from "@/assets/logo-full.png";
  */
 export function SiteFooter() {
   const { business, socialLinks } = useSiteSettings();
+  const logoSrc = useSlotImage("logo_full", logoFull);
   return (
     <footer className="bg-ink text-bone">
       <div className="mx-auto max-w-3xl px-5 py-20 text-center lg:px-10 lg:py-28">
         <img
-          src={logoFull}
+          src={logoSrc}
           alt="Cultures Resort — African Traditional Restaurant"
           width={1254}
           height={1254}

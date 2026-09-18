@@ -131,6 +131,8 @@ export const HOMEPAGE_IMAGE_SLOTS = [
   { key: "food", label: "Open Fire Cooking" },
   { key: "craft", label: "African Art & Décor" },
   { key: "drums", label: "Culture band" },
+  { key: "logo_mark", label: "Logo — header icon" },
+  { key: "logo_full", label: "Logo — full (footer & intro)" },
 ] as const;
 export type HomepageImageSlotKey = (typeof HOMEPAGE_IMAGE_SLOTS)[number]["key"];
 

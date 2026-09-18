@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSlotImage } from "@/lib/homepage-images";
 import logoFull from "@/assets/logo-full.png";
 
 const SESSION_KEY = "cultures-logo-intro-shown";
@@ -16,6 +17,7 @@ const SESSION_KEY = "cultures-logo-intro-shown";
  */
 export function LogoIntroOverlay() {
   const [visible, setVisible] = useState(false);
+  const logoSrc = useSlotImage("logo_full", logoFull);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -35,7 +37,7 @@ export function LogoIntroOverlay() {
       onAnimationEnd={() => setVisible(false)}
     >
       <img
-        src={logoFull}
+        src={logoSrc}
         alt=""
         width={1254}
         height={1254}
