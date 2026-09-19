@@ -16,8 +16,8 @@ import { LogoIntroOverlay } from "@/components/site/logo-intro-overlay";
 import { VideoTourModal } from "@/components/video-tour-modal";
 import { useSlotImage } from "@/lib/homepage-images";
 import fireGrill from "@/assets/fire-nyama-choma.jpg";
-import chickenOnGrate800 from "@/assets/chicken-on-grate-closeup-800w.webp";
-import chickenOnGrate1600 from "@/assets/chicken-on-grate-closeup-1600w.webp";
+import grillStaffLiftingChicken800 from "@/assets/grill-staff-lifting-chicken-800w.webp";
+import grillStaffLiftingChicken1600 from "@/assets/grill-staff-lifting-chicken-1600w.webp";
 import fireCookingLoop from "@/assets/video/fire-cooking-loop.mp4";
 import entranceTour from "@/assets/video/entrance-tour.mp4";
 import gardenLoop from "@/assets/video/garden-loop.mp4";
@@ -569,15 +569,15 @@ function Home() {
       {/* Chef / story */}
       <section className="relative overflow-hidden bg-ink text-bone">
         <img
-          src={chickenOnGrate1600}
-          srcSet={`${chickenOnGrate800} 800w, ${chickenOnGrate1600} 1600w`}
+          src={grillStaffLiftingChicken1600}
+          srcSet={`${grillStaffLiftingChicken800} 800w, ${grillStaffLiftingChicken1600} 1600w`}
           sizes="100vw"
           alt=""
           aria-hidden="true"
           width={1600}
           height={2133}
           loading="lazy"
-          style={{ objectPosition: "50% 34%" }}
+          style={{ objectPosition: "50% 60%" }}
           className="absolute inset-0 h-full w-full object-cover opacity-25"
         />
         <div className="relative mx-auto max-w-4xl px-5 py-16 text-center lg:px-10 lg:py-24">
