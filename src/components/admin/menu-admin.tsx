@@ -304,6 +304,11 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
       <PageHeader
         title={kind === "food" ? "Food Menu" : "Beverages"}
         description="Name, description, price and availability all save straight to the live public menu."
+        actions={kind === "food" ? (
+          <Button type="button" onClick={syncLatestMenu} disabled={syncing}>
+            {syncing ? "Applying client menu…" : "Apply latest client menu"}
+          </Button>
+        ) : undefined}
       />
 
       {error ? <ErrorState message={error} onRetry={() => setError(null)} /> : null}
