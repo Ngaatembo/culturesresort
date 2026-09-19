@@ -41,6 +41,13 @@ UPDATE menu_items SET price_cents = 200, updated_at = datetime('now') WHERE name
 UPDATE menu_items SET available = 0, updated_at = datetime('now')
 WHERE name IN ('Pork Trotters / Bones', 'Sadza Rezviyo / Remhunga', 'Muriwo Une Dovi', 'Pilau / Jollof Rice', 'Plain Rice (Wali)');
 
+-- Match the spelling used on the supplied menu pages.
+UPDATE menu_items
+SET name = 'Zvinvenze',
+    description = 'Zimbabwean traditional delicacy',
+    updated_at = datetime('now')
+WHERE name = 'Zvinvenze';
+
 -- Rename Road Runner to the printed-menu wording while preserving its existing photo.
 UPDATE menu_items
 SET name = 'Kuku Kienyeji / Road Runner',
