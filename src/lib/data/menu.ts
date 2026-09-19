@@ -27,9 +27,17 @@ export type MenuItemOut = {
   price: string;
   priceCents: number;
   imageUrl: string | null;
+  options: MenuItemOptionOut[];
   videoUrl: string | null;
   featured: boolean;
   available: boolean;
+};
+
+export type MenuItemOptionOut = {
+  id: number;
+  label: string;
+  price: string;
+  priceCents: number;
 };
 
 export type MenuCategoryOut = {
@@ -51,6 +59,23 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
     )
     .all<MenuItemRow>();
 
+  const optionResults = await db
+    .prepare(
+      "SELECT id, menu_item_id, label, price_cents FROM menu_item_options ORDER BY menu_item_id, sort_order, id",
+    )
+    .all<{ id: number; menu_item_id: number; label: string; price_cents: number }>();
+  const optionsByItem = new Map<number, MenuItemOptionOut[]>();
+  for (const option of optionResults.results) {
+    const list = optionsByItem.get(option.menu_item_id) ?? [];
+    list.push({
+      id: option.id,
+      label: option.label,
+      price: formatPrice(option.price_cents),
+      priceCents: option.price_cents,
+    });
+    optionsByItem.set(option.menu_item_id, list);
+  }
+
   const byKind: Record<MenuKind, MenuCategoryOut[]> = { food: [], beverages: [] };
 
   for (const row of results) {
@@ -67,6 +92,7 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
       price: formatPrice(row.price_cents),
       priceCents: row.price_cents,
       imageUrl: row.image_url,
+      options: optionsByItem.get(row.id) ?? [],
       videoUrl: row.video_url,
       featured: !!row.featured,
       available: !!row.available,
