@@ -29,9 +29,11 @@ import {
   SectionCard,
 } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
+import { dishPhotos } from "@/lib/dish-photos";
 
 type Draft = { name?: string; description?: string; price?: string };
-type NewItemDraft = { name: string; description: string; price: string };\ntype OptionDraft = { label: string; price: string };
+type NewItemDraft = { name: string; description: string; price: string };
+type OptionDraft = { label: string; price: string };
 
 /**
  * Shared by /admin/menu and /admin/beverages — same real backend
@@ -354,9 +356,9 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
                             </td>
                             <td className="py-3.5 pr-4">
                               <div className="flex items-center gap-2">
-                                {item.image_url ? (
+                                {item.image_url || dishPhotos[item.name] ? (
                                   <img
-                                    src={`/gallery-image/${item.image_url}`}
+                                    src={item.image_url ? `/gallery-image/${item.image_url}` : dishPhotos[item.name]}
                                     alt={item.name}
                                     className="h-12 w-12 rounded-lg border border-border object-cover"
                                   />
