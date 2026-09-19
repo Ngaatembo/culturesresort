@@ -66,7 +66,7 @@ export const dishPhotos: Record<string, string> = {
   Haifiridzi: haifiridzi,
   "Braaied Beef Short Ribs": braaiedBeefShortRibs,
   "Maasai Meat Platter": maasaiMeatPlatter,
-  "Mbuzi Ulaya (Charcoal Grilled Pork Chops)": mbuziUlaya,
+  "Mbuzi Ulaya / Charcoal Grilled": mbuziUlaya,
   "Piri Piri Gizzards": piriPiriGizzards,
   "Fried Liver (Chiropa)": friedLiverChiropa,
   "Mopani Worms (Madora)": mopaniWormsMadora,
