@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils";
 const categories = ["All", "People", "Food", "Fire", "Garden", "Culture", "Night", "Details"] as const;
 /** Fixed, sensible reading order for the grouped "All" view — not just insertion order. */
 const SECTION_ORDER = ["Garden", "Food", "Fire", "Culture", "Night", "People", "Details"] as const;
+/** Card widths for `srcSet` entries: about a third of the viewport on desktop (the grid has spanning tiles), half on mobile. */
+const GALLERY_CARD_SIZES = "(min-width: 1024px) 34vw, 50vw";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -44,7 +46,7 @@ function GalleryCard({
         aria-label={`Open image: ${img.caption}`}
       >
         <span className={cn("relative block w-full flex-1 overflow-hidden lg:aspect-auto", spanClass ? "aspect-[4/3]" : img.tall ? "aspect-[3/4]" : "aspect-[4/3]")}>
-          <img src={img.src} alt={img.alt} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <img src={img.src} srcSet={img.srcSet} sizes={img.srcSet ? GALLERY_CARD_SIZES : undefined} alt={img.alt} loading="lazy" style={img.position ? { objectPosition: img.position } : undefined} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
           <span className="eyebrow absolute left-3 top-3 rounded-full bg-ink/70 px-3 py-1.5 text-[10px] text-bone backdrop-blur-sm">
             {img.category}
           </span>

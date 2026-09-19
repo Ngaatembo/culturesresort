@@ -43,6 +43,13 @@ import interiorThatchedHall from "@/assets/interior-thatched-hall.jpg";
 import feastPlatterMixed from "@/assets/feast-platter-mixed.jpg";
 import sausagesOnGrill from "@/assets/sausages-on-grill.jpg";
 import lambChopsWideTray from "@/assets/lamb-chops-wide-tray.jpg";
+import grillStaffTurningMeat800 from "@/assets/grill-staff-turning-meat-800w.webp";
+import grillStaffTurningMeat1600 from "@/assets/grill-staff-turning-meat-1600w.webp";
+import chickenOnGrate800 from "@/assets/chicken-on-grate-closeup-800w.webp";
+import chickenOnGrate1600 from "@/assets/chicken-on-grate-closeup-1600w.webp";
+import grillTwoStaffMeatBoard from "@/assets/grill-two-staff-meat-board.webp";
+import nyamaChomaGrillCounterWide from "@/assets/nyama-choma-grill-counter-wide.webp";
+import grillBaysTendingFire from "@/assets/grill-bays-tending-fire.webp";
 
 export const images = {
   garden,
@@ -92,6 +99,10 @@ export const images = {
 
 export type GalleryEntry = {
   src: string;
+  /** Optional responsive candidates for the grid card. `src` stays the full-size file (used by the lightbox and as the fallback). */
+  srcSet?: string;
+  /** Optional CSS object-position for the grid-card crop, e.g. "50% 30%". */
+  position?: string;
   alt: string;
   caption: string;
   category: "Garden" | "Food" | "Fire" | "Culture" | "People" | "Details" | "Night";
@@ -335,6 +346,48 @@ export const gallery: GalleryEntry[] = [
     alt: "A wide tray of grilled lamb chops garnished with rosemary",
     caption: "Lamb chops, fresh off the coals",
     category: "Fire",
+  },
+  {
+    src: nyamaChomaGrillCounterWide,
+    alt: "The Nyama Choma grill counter under its metal roof, with the large hooded grill behind it, a staff member at the fire and a woman in African-print clothing beside the red counter",
+    caption: "The Nyama Choma grill counter and fire area",
+    category: "Fire",
+    tall: true,
+    position: "50% 88%",
+  },
+  {
+    src: chickenOnGrate1600,
+    srcSet: `${chickenOnGrate800} 800w, ${chickenOnGrate1600} 1600w`,
+    alt: "Golden-brown grilled chicken and other cuts on the grate above glowing coals",
+    caption: "Chicken on the grate, above the embers",
+    category: "Fire",
+    tall: true,
+    position: "50% 32%",
+  },
+  {
+    src: grillBaysTendingFire,
+    alt: "A staff member tending the fire in the large hooded grill, with logs and coals in the grill bays and the red Nyama Choma counter in the foreground",
+    caption: "Tending the fire in the grill bays",
+    category: "Fire",
+    tall: true,
+    position: "50% 55%",
+  },
+  {
+    src: grillStaffTurningMeat1600,
+    srcSet: `${grillStaffTurningMeat800} 800w, ${grillStaffTurningMeat1600} 1600w`,
+    alt: "A staff member in a hairnet turning grilled chicken and other meat with tongs on the large charcoal grill, with glowing coals below",
+    caption: "Turning the meat over glowing coals",
+    category: "People",
+    tall: true,
+    position: "50% 30%",
+  },
+  {
+    src: grillTwoStaffMeatBoard,
+    alt: "Two staff members at the grill counter, one holding tongs beside a board of grilled meat, with the hooded grill and logs behind them",
+    caption: "At the grill, with the meat on the board",
+    category: "People",
+    tall: true,
+    position: "50% 35%",
   },
   {
     src: nightSunsetGrounds,
