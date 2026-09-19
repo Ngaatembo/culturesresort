@@ -195,7 +195,7 @@ export const syncClientMenu = createServerFn({ method: "POST" })
       ["UPDATE menu_items SET price_cents=400,updated_at=datetime('now') WHERE name='Homemade Cake Slice'"],
       ["UPDATE menu_items SET price_cents=300,updated_at=datetime('now') WHERE name='Wild Dried Fruits'"],
       ["UPDATE menu_items SET price_cents=200,updated_at=datetime('now') WHERE name='Best Zimbabwean Tea / Coffee'"],
-      ["UPDATE menu_items SET available=0,updated_at=datetime('now') WHERE name IN ('Pork Trotters / Bones','Sadza Rezviyo / Remhunga','Muriwo Une Dovi','Pilau / Jollof Rice','Plain Rice (Wali)')"],
+      ["UPDATE menu_items SET available=0,updated_at=datetime('now') WHERE name IN ('Pork Trotters / Bones','Sadza Rezviyo / Remhunga','Muriwo Une Dovi','Pilau / Jollof Rice','Plain Rice (Wali)','Trip','Beef (Highfield)')"],
       ["INSERT INTO menu_items (kind,category_slug,category_title,name,description,price_cents,featured,available,sort_order) SELECT 'food','grills','Off the Charcoal','Samaki Makange','Whole bream stewed',0,0,1,13 WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name='Samaki Makange')"],
       ["INSERT INTO menu_items (kind,category_slug,category_title,name,description,price_cents,featured,available,sort_order) SELECT 'food','sides','Accompaniments','Mufushwa Une Dovi','Dried vegetables stewed with peanut butter sauce',300,0,1,10 WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name='Mufushwa Une Dovi')"],
       ["INSERT INTO menu_items (kind,category_slug,category_title,name,description,price_cents,featured,available,sort_order) SELECT 'food','sides','Accompaniments','Plain Aromatic Rice','Plain aromatic rice',100,0,1,11 WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name='Plain Aromatic Rice')"],
