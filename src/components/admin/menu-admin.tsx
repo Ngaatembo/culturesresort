@@ -10,6 +10,11 @@ import {
   setMenuItemImage,
   setMenuItemPrice,
   setMenuItemVideo,
+  createMenuItemOption,
+  updateMenuItemOption,
+  deleteMenuItemOption,
+  getMenuOptionsAdmin,
+  syncClientMenu,
   type MenuItemRow,
   type MenuKind,
 } from "@/lib/data/menu";
@@ -26,7 +31,7 @@ import {
 import { cn } from "@/lib/utils";
 
 type Draft = { name?: string; description?: string; price?: string };
-type NewItemDraft = { name: string; description: string; price: string };
+type NewItemDraft = { name: string; description: string; price: string };\ntype OptionDraft = { label: string; price: string };
 
 /**
  * Shared by /admin/menu and /admin/beverages — same real backend
@@ -45,7 +50,7 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
   const [imageError, setImageError] = useState<string | null>(null);
   const [videoBusyId, setVideoBusyId] = useState<number | null>(null);
   const [videoError, setVideoError] = useState<string | null>(null);
-  const [newDrafts, setNewDrafts] = useState<Record<string, NewItemDraft>>({});
+  const [newDrafts, setNewDrafts] = useState<Record<string, NewItemDraft>>({});\n  const [options, setOptions] = useState<Record<number, { id:number; menu_item_id:number; label:string; price_cents:number; sort_order:number }[]>>({});\n  const [optionDrafts, setOptionDrafts] = useState<Record<number, OptionDraft>>({});\n  const [syncing, setSyncing] = useState(false);
   const [addingSlug, setAddingSlug] = useState<string | null>(null);
   const fileInputs = useRef<Record<number, HTMLInputElement | null>>({});
   const videoInputs = useRef<Record<number, HTMLInputElement | null>>({});
@@ -59,6 +64,33 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
       );
   };
   useEffect(load, [kind]);
+
+  const syncLatestMenu = async () => {
+    if (!window.confirm("Apply the latest client-supplied menu prices, names and portions? Existing photos will not be changed.")) return;
+    setSyncing(true); setError(null);
+    try { await syncClientMenu(); load(); } catch (err) { setError(err instanceof Error ? err.message : "Couldn't update the client menu."); } finally { setSyncing(false); }
+  };
+
+  const saveOption = async (option: {id:number; menu_item_id:number; label:string; price_cents:number; sort_order:number}) => {
+    const draft = optionDrafts[option.id] ?? {label:option.label, price:(option.price_cents/100).toFixed(2)};
+    const price=Number(draft.price);
+    if (!draft.label.trim() || !Number.isFinite(price) || price<0) { setError("Enter a valid portion label and price."); return; }
+    try { await updateMenuItemOption({data:{id:option.id,label:draft.label,price}}); setOptions(p=>({...p,[option.menu_item_id]:(p[option.menu_item_id]??[]).map(o=>o.id===option.id?{...o,label:draft.label.trim(),price_cents:Math.round(price*100)}:o)})); }
+    catch(err){setError(err instanceof Error?err.message:"Couldn't save the portion.");}
+  };
+
+  const addOption = async (item: MenuItemRow) => {
+    const draft=optionDrafts[-item.id] ?? {label:"",price:""}; const price=Number(draft.price);
+    if(!draft.label.trim()||!Number.isFinite(price)||price<0){setError("Enter a portion label and price.");return;}
+    try { const created=await createMenuItemOption({data:{menu_item_id:item.id,label:draft.label,price}}); setOptions(p=>({...p,[item.id]:[...(p[item.id]??[]),{id:created.id,menu_item_id:item.id,label:created.label,price_cents:created.priceCents,sort_order:(p[item.id]??[]).length+1}]})); setOptionDrafts(p=>({...p,[-item.id]:{label:"",price:""}})); }
+    catch(err){setError(err instanceof Error?err.message:"Couldn't add the portion.");}
+  };
+
+  const removeOption = async (option:{id:number;menu_item_id:number}) => {
+    if(!window.confirm("Remove this portion price?")) return;
+    try { await deleteMenuItemOption({data:{id:option.id}}); setOptions(p=>({...p,[option.menu_item_id]:(p[option.menu_item_id]??[]).filter(o=>o.id!==option.id)})); }
+    catch(err){setError(err instanceof Error?err.message:"Couldn't remove the portion.");}
+  };
 
   const categories = items
     ? Array.from(new Map(items.map((i) => [i.category_slug, i.category_title])).entries())
@@ -295,7 +327,7 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
                       <th className="py-2 pr-4">Photo</th>
                       <th className="py-2 pr-4">Clip</th>
                       <th className="py-2 pr-4">Description</th>
-                      <th className="py-2 pr-4">Price ($)</th>
+                      <th className="py-2 pr-4">Price ($)</th><th className="py-2 pr-4">Portions</th>
                       <th className="py-2 pr-4">Status</th>
                       <th className="py-2" />
                     </tr>
