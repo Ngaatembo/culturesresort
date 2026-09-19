@@ -175,6 +175,11 @@ export const syncClientMenu = createServerFn({ method: "POST" })
     const db = getDb();
     await ensureMenuOptionsTable(db);
     const statements = [
+      ["UPDATE menu_items SET category_title='Starters',updated_at=datetime('now') WHERE category_slug='starters' AND kind='food'"],
+      ["UPDATE menu_items SET category_title='Main Meals',updated_at=datetime('now') WHERE category_slug='main-meals' AND kind='food'"],
+      ["UPDATE menu_items SET category_title='Grills',updated_at=datetime('now') WHERE category_slug='grills' AND kind='food'"],
+      ["UPDATE menu_items SET category_title='Sides',updated_at=datetime('now') WHERE category_slug='sides' AND kind='food'"],
+      ["UPDATE menu_items SET category_title='Desserts',updated_at=datetime('now') WHERE category_slug='desserts' AND kind='food'"],
       ["UPDATE menu_items SET price_cents=400,updated_at=datetime('now') WHERE name IN ('Piri Piri Gizzards','Fried Liver (Chiropa)','Mopani Worms (Madora)','Fried Kapenta (Omena)')"],
       ["UPDATE menu_items SET price_cents=1300,updated_at=datetime('now') WHERE name='Kuku Karanga'"],
       ["UPDATE menu_items SET price_cents=1200,updated_at=datetime('now') WHERE name='Beef Chop ala Masai'"],
@@ -184,6 +189,10 @@ export const syncClientMenu = createServerFn({ method: "POST" })
       ["UPDATE menu_items SET price_cents=1200,description='Grilled, stewed or with dovi',updated_at=datetime('now') WHERE name='Tsuro (Rabbit)'"],
       ["UPDATE menu_items SET price_cents=1500,description='Charcoal grilled duck',updated_at=datetime('now') WHERE name='Bata Choma'"],
       ["UPDATE menu_items SET price_cents=1300,description='Tender beef stew fried with vegetables',updated_at=datetime('now') WHERE name='Haifiridzi'"],
+      ["UPDATE menu_items SET category_slug='grills',category_title='Grills',updated_at=datetime('now') WHERE name='Mbuzi Ulaya / Charcoal Grilled'"],
+      ["UPDATE menu_items SET category_slug='grills',category_title='Grills',updated_at=datetime('now') WHERE name IN ('Mbavu za Mbuzi','Mguu wa Mbuzi','Borewores','Bata Choma','Huge Pork Ribs','Braaied Beef Short Ribs','Maasai Meat Platter')"],
+      ["UPDATE menu_items SET category_slug='main-meals',category_title='Main Meals',updated_at=datetime('now') WHERE name IN ('Hanga','Tsuro (Rabbit)','Zvinvenze','Mbuzi Kapoto','Samaki (Hove/Tsomba/Bream)','Samaki Makange','Kuku Kienyeji / Road Runner','Haifiridzi')"],
+
       ["UPDATE menu_items SET price_cents=1200,description='Real warrior',updated_at=datetime('now') WHERE name='Braaied Beef Short Ribs'"],
       ["UPDATE menu_items SET price_cents=2800,description='Charcoal grilled',updated_at=datetime('now') WHERE name='Huge Pork Ribs'"],
       ["UPDATE menu_items SET name='Zvinvenze',description='Kapoto',updated_at=datetime('now') WHERE name='Zvinyenze'"],
