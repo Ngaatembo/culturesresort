@@ -59,11 +59,17 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
     )
     .all<MenuItemRow>();
 
-  const optionResults = await db
-    .prepare(
-      "SELECT id, menu_item_id, label, price_cents FROM menu_item_options ORDER BY menu_item_id, sort_order, id",
-    )
-    .all<{ id: number; menu_item_id: number; label: string; price_cents: number }>();
+  let optionResults: { results: { id: number; menu_item_id: number; label: string; price_cents: number }[] } = { results: [] };
+  try {
+    optionResults = await db
+      .prepare(
+        "SELECT id, menu_item_id, label, price_cents FROM menu_item_options ORDER BY menu_item_id, sort_order, id",
+      )
+      .all<{ id: number; menu_item_id: number; label: string; price_cents: number }>();
+  } catch {
+    // The options table is introduced by migration 0003. Keep the existing
+    // single-price menu working during a rolling deployment until it lands.
+  }
   const optionsByItem = new Map<number, MenuItemOptionOut[]>();
   for (const option of optionResults.results) {
     const list = optionsByItem.get(option.menu_item_id) ?? [];
