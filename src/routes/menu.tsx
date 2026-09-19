@@ -84,7 +84,7 @@ function Menu() {
       <PageHeader
         eyebrow="Food & beverages"
         title="Traditional plates, served family style"
-        intro="Add anything you'd like to try and check out online or on WhatsApp. Items, prices and availability are managed by the Cultures team, so a few are still marked On request while the full list is loaded."
+        intro="Explore Cultures Resort's traditional plates, charcoal grills, Zimbabwean favourites and desserts. Choose a portion where options are available, then add it to your order."
         image={foodImg}
         imageAlt="Large mixed grill platter at Cultures Resort: sadza, brown rice, jollof rice, grilled chicken, chips, greens and gravy"
         imagePosition="center"
@@ -110,7 +110,7 @@ function Menu() {
               </button>
             ))}
             <span className="eyebrow ml-auto text-muted-foreground">
-              Managed by the Cultures team
+              Portions & prices shown from the current menu
             </span>
           </div>
 
@@ -207,11 +207,16 @@ function Menu() {
 
                     <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {category.items.map((item) => {
-                        const id = String(item.id);
                         const imageKey = CATEGORY_IMAGE[category.slug] ?? "food";
                         const photo = item.imageUrl
                           ? `/gallery-image/${item.imageUrl}`
                           : (dishPhotos[item.name] ?? images[imageKey]);
+                        const lowestOption = item.options.length
+                          ? Math.min(...item.options.map((option) => option.priceCents))
+                          : null;
+                        const displayPrice = lowestOption !== null
+                          ? `From ${(lowestOption / 100).toFixed(2)}`
+                          : item.price;
                         return (
                           <li
                             key={item.id}
@@ -231,7 +236,7 @@ function Menu() {
                                   {item.name}
                                 </h3>
                                 <span className="shrink-0 rounded-full bg-secondary px-3 py-1 text-sm text-foreground">
-                                  {item.price}
+                                  {displayPrice}
                                 </span>
                               </div>
                               <p className="eyebrow mt-1 text-primary">
@@ -241,21 +246,51 @@ function Menu() {
                               <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
                                 {item.description}
                               </p>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  add({
-                                    id,
-                                    name: item.name,
-                                    category: category.title,
-                                    price: item.price,
-                                  })
-                                }
-                                className="eyebrow mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
-                              >
-                                <Plus className="h-4 w-4" aria-hidden="true" />
-                                {has(id) ? "Added — add another" : "Add to order"}
-                              </button>
+                              {item.options.length ? (
+                                <div className="mt-4 space-y-2">
+                                  <p className="eyebrow text-muted-foreground">Choose portion</p>
+                                  <div className="grid gap-2 sm:grid-cols-2">
+                                    {item.options.map((option) => {
+                                      const optionId = `${item.id}:${option.id}`;
+                                      const optionName = `${item.name} (${option.label})`;
+                                      return (
+                                        <button
+                                          key={option.id}
+                                          type="button"
+                                          onClick={() =>
+                                            add({
+                                              id: optionId,
+                                              name: optionName,
+                                              category: category.title,
+                                              price: option.price,
+                                            })
+                                          }
+                                          className="flex items-center justify-between gap-2 rounded-xl border border-border px-3 py-2 text-left transition-colors hover:bg-secondary"
+                                        >
+                                          <span className="text-sm font-medium">{option.label}</span>
+                                          <span className="text-sm text-muted-foreground">{option.price}</span>
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    add({
+                                      id: String(item.id),
+                                      name: item.name,
+                                      category: category.title,
+                                      price: item.price,
+                                    })
+                                  }
+                                  className="eyebrow mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
+                                >
+                                  <Plus className="h-4 w-4" aria-hidden="true" />
+                                  {has(String(item.id)) ? "Added — add another" : "Add to order"}
+                                </button>
+                              )}
                             </div>
                           </li>
                         );
@@ -271,8 +306,8 @@ function Menu() {
             <div>
               <p className="eyebrow rule-ochre text-primary">Please note</p>
               <p className="mt-6 max-w-xl leading-relaxed text-muted-foreground">
-                Items marked "On request" haven't been priced yet — call the restaurant to confirm
-                what's freshest today.
+                Portion prices are shown where the current menu provides different sizes. If an item is
+                marked "On request", please contact Cultures Resort to confirm today's price and availability.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href={business.phoneHref} className="eyebrow border border-border px-7 py-4">
