@@ -311,6 +311,22 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
         ) : undefined}
       />
 
+      {kind === "food" ? (
+        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-semibold text-foreground">Client menu update</p>
+              <p className="text-sm text-muted-foreground">
+                Apply the confirmed client prices, names and portion options to the live menu. Existing photos are not changed.
+              </p>
+            </div>
+            <Button type="button" onClick={syncLatestMenu} disabled={syncing} className="shrink-0">
+              {syncing ? "Applying client menu…" : "Apply latest client menu"}
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
       {error ? <ErrorState message={error} onRetry={() => setError(null)} /> : null}
       {imageError ? <ErrorState message={imageError} onRetry={() => setImageError(null)} /> : null}
       {videoError ? <ErrorState message={videoError} onRetry={() => setVideoError(null)} /> : null}
