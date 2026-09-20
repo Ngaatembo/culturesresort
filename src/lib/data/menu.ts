@@ -188,7 +188,7 @@ export const syncClientMenu = createServerFn({ method: "POST" })
       ["UPDATE menu_items SET category_slug='grills',category_title='Grills',price_cents=1200,updated_at=datetime('now') WHERE name='Beef Chop ala Masai'"],
       ["UPDATE menu_items SET name='Mbuzi Ulaya / Charcoal Grilled',price_cents=1200,description='Charcoal grilled',updated_at=datetime('now') WHERE name='Mbuzi Ulaya (Charcoal Grilled Pork Chops)'"],
       ["UPDATE menu_items SET category_slug='grills',category_title='Grills',price_cents=1600,description='Full goat leg grilled on charcoal',updated_at=datetime('now') WHERE name='Mguu wa Mbuzi'"],
-      ["UPDATE menu_items SET available=0,updated_at=datetime('now') WHERE name IN ('Mguu wambuzi (grilled goat leg)','Mguu wambudzi (grilled goat leg)','Mguu wambudzi (grilled goat leg)')"],
+      ["UPDATE menu_items SET available=0,updated_at=datetime('now') WHERE name LIKE 'Mguu wamb%'"],
       ["UPDATE menu_items SET price_cents=1200,description='Spicy & delicious',updated_at=datetime('now') WHERE name='Borewores'"],
       ["UPDATE menu_items SET price_cents=1200,description='Grilled, stewed or with dovi',updated_at=datetime('now') WHERE name='Tsuro (Rabbit)'"],
       ["UPDATE menu_items SET price_cents=1500,description='Charcoal grilled duck',updated_at=datetime('now') WHERE name='Bata Choma'"],
