@@ -4,7 +4,6 @@ import craft from "@/assets/craft-detail.jpg";
 import drums from "@/assets/culture-drums.jpg";
 import interiorDeck from "@/assets/interior-deck.jpg";
 import sadzaPlate from "@/assets/sadza-plate.jpg";
-import jollofPlate from "@/assets/jollof-plate.jpg";
 import craftBaskets from "@/assets/craft-art-baskets.jpg";
 import pavilionWide from "@/assets/pavilion-wide.jpg";
 import curioShop from "@/assets/curio-shop.jpg";
@@ -61,7 +60,6 @@ export const images = {
   drums,
   interiorDeck,
   sadzaPlate,
-  jollofPlate,
   craftBaskets,
   pavilionWide,
   curioShop,
@@ -195,12 +193,6 @@ export const gallery: GalleryEntry[] = [
     alt: "Sizzling grilled pork served on a hot plate with tomato and onion",
     caption: "Sizzling grilled pork, straight to the table",
     category: "Fire",
-  },
-  {
-    src: jollofPlate,
-    alt: "Jollof rice with greens on a white plate",
-    caption: "Jollof rice, served with greens",
-    category: "Food",
   },
   {
     src: craftBaskets,
