@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { setResponseHeader } from "@tanstack/react-start/server";
 import { getDb, getGalleryBucket } from "./cf";
 import { managerUpMiddleware, staffUpMiddleware } from "@/lib/auth/functions";
 import { logAdminActivity } from "./activity-log-write";
@@ -54,6 +55,7 @@ function formatPrice(cents: number) {
 
 /** All available menu items, grouped by kind (food/beverages) then category. */
 export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
+  setResponseHeader("Cache-Control", "no-store");
   const db = getDb();
   const { results } = await db
     .prepare(
@@ -124,6 +126,7 @@ async function ensureMenuOptionsTable(db: ReturnType<typeof getDb>) {
 export const getMenuOptionsAdmin = createServerFn({ method: "GET" })
   .middleware([staffUpMiddleware])
   .handler(async () => {
+    setResponseHeader("Cache-Control", "private, no-store");
     const db = getDb();
     await ensureMenuOptionsTable(db);
     const { results } = await db.prepare(
@@ -251,6 +254,7 @@ export const syncClientMenu = createServerFn({ method: "POST" })
 export const getMenuAdmin = createServerFn({ method: "GET" })
   .middleware([staffUpMiddleware])
   .handler(async () => {
+    setResponseHeader("Cache-Control", "private, no-store");
     const db = getDb();
     await ensureMenuOptionsTable(db);
     const { results } = await db
