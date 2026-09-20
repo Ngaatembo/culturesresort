@@ -379,7 +379,7 @@ export const gallery: GalleryEntry[] = [
   {
     src: nightLeopardStatue,
     alt: "A leopard sculpture at the garden's edge at night, with lit umbrellas and animal statues among the tables beyond",
-    caption: "The garden after dark",
+    caption: "The leopard keeping watch over the garden at night",
     category: "Night",
   },
   {
