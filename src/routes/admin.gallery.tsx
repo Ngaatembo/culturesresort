@@ -193,6 +193,7 @@ function GalleryPage() {
       setPhotos((prev) => (prev ? prev.filter((p) => p.id !== id) : prev));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't delete that photo.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -206,6 +207,7 @@ function GalleryPage() {
       load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't delete that photo.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 

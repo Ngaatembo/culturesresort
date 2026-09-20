@@ -9,6 +9,8 @@ import { listGalleryPhotos } from "@/lib/data/gallery-photos";
 import { cn } from "@/lib/utils";
 
 const categories = ["All", "People", "Food", "Fire", "Garden", "Culture", "Night", "Details"] as const;
+/** Photos held in the admin database that the owner asked to hide from the public gallery. Stopgap for when the admin delete control isn't working; the rows themselves are left untouched. */
+const HIDDEN_CAPTIONS = new Set(["The grounds at sunset", "The garden after dark"]);
 /** Fixed, sensible reading order for the grouped "All" view — not just insertion order. */
 const SECTION_ORDER = ["Garden", "Food", "Fire", "Culture", "Night", "People", "Details"] as const;
 /** Card widths for `srcSet` entries: about a third of the viewport on desktop (the grid has spanning tiles), half on mobile. */
@@ -85,7 +87,7 @@ function Gallery() {
 
   const gallery = useMemo(() => {
     const uploadedCaptions = new Set(uploaded.map((g) => g.caption));
-    return [...uploaded, ...bundledGallery.filter((g) => !bundledSources.has(g.caption) && !uploadedCaptions.has(g.caption))];
+    return [...uploaded.filter((g) => !HIDDEN_CAPTIONS.has(g.caption)), ...bundledGallery.filter((g) => !bundledSources.has(g.caption) && !uploadedCaptions.has(g.caption))];
   }, [uploaded, bundledSources]);
 
   // Grouped by category, in a fixed reading order, regardless of upload order —
