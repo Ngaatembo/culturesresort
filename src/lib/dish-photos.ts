@@ -60,7 +60,6 @@ export const dishPhotos: Record<string, string> = {
   "Beef Chop ala Masai": beefChopAlaMasai,
   "Mbavu za Mbuzi": mbavuZaMbuzi,
   "Tsuro (Rabbit)": tsuroRabbit,
-  "Bata Choma": bataChoma,
   Zvinvenze: zvinyenze,
   "Mbuzi Kapoto": mbuziKapoto,
   "Huge Pork Ribs": hugePorkRibs,
