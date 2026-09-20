@@ -239,8 +239,11 @@ export const syncClientMenu = createServerFn({ method: "POST" })
       ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Plain',200,1 FROM menu_items WHERE name='Jollof Rice'"],
       ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'With Chicken',900,2 FROM menu_items WHERE name='Jollof Rice'"],
       ["UPDATE menu_items SET price_cents=0,updated_at=datetime('now') WHERE id IN (SELECT menu_item_id FROM menu_item_options)"],
-    ].map(([sql]) => db.prepare(sql));
-    await db.batch(statements);
+    ];
+
+    for (const sql of statements) {
+      await db.prepare(sql).run();
+    }
     return { ok: true as const };
   });
 
