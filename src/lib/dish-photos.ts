@@ -3,6 +3,8 @@
 // older names they replace). Food with no entry here is shown as a text-only
 // card in routes/menu.tsx; only beverages fall back to a category placeholder.
 import kukuChoma from "@/assets/dishes/kuku-choma.jpg";
+import mufushwaUneDovi from "@/assets/dishes/mufushwa-une-dovi.jpg";
+import biryaniRice from "@/assets/dishes/biryani-rice.jpg";
 import kukuKaranga from "@/assets/dishes/kuku-karanga.jpg";
 import beefChopAlaMasai from "@/assets/dishes/beef-chop-ala-masai.jpg";
 import mbavuZaMbuzi from "@/assets/dishes/mbavu-za-mbuzi.jpg";
@@ -50,6 +52,8 @@ import freshJuice from "@/assets/dishes/fresh-juice.jpg";
 
 export const dishPhotos: Record<string, string> = {
   "Kuku Choma": kukuChoma,
+  "Mufushwa Une Dovi": mufushwaUneDovi,
+  "Biryani Rice": biryaniRice,
   "Goat Ribs (Mbavu za Mbuzi)": mbavuZaMbuzi,
   "Mguu wambuzi (grilled goat leg)": mguuWaMbuzi,
   "Road Runner Chicken (Kuku Kienyeji)": roadRunnerChicken,
