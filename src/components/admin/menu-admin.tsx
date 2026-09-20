@@ -56,14 +56,20 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
   const [options, setOptions] = useState<Record<number, { id:number; menu_item_id:number; label:string; price_cents:number; sort_order:number }[]>>({});
   const [optionDrafts, setOptionDrafts] = useState<Record<number, OptionDraft>>({});
   const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState<string | null>(null);
   const [addingSlug, setAddingSlug] = useState<string | null>(null);
   const fileInputs = useRef<Record<number, HTMLInputElement | null>>({});
   const videoInputs = useRef<Record<number, HTMLInputElement | null>>({});
 
   const load = () => {
     setError(null);
-    getMenuAdmin()
-      .then((all) => setItems(all.filter((i) => i.kind === kind)))
+    Promise.all([getMenuAdmin(), getMenuOptionsAdmin()])
+      .then(([all, optionRows]) => {
+        setItems(all.filter((i) => i.kind === kind));
+        const grouped: Record<number, typeof optionRows> = {};
+        for (const row of optionRows) (grouped[row.menu_item_id] ??= []).push(row);
+        setOptions(grouped);
+      })
       .catch((err) =>
         setError(err instanceof Error ? err.message : `Couldn't load the ${noun} list.`),
       );
@@ -72,8 +78,17 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
 
   const syncLatestMenu = async () => {
     if (!window.confirm("Apply the latest client-supplied menu prices, names and portions? Existing photos will not be changed.")) return;
-    setSyncing(true); setError(null);
-    try { await syncClientMenu(); load(); } catch (err) { setError(err instanceof Error ? err.message : "Couldn't update the client menu."); } finally { setSyncing(false); }
+    setSyncing(true); setError(null); setSyncMessage(null);
+    try {
+      const result = await syncClientMenu();
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      load();
+      setSyncMessage(result?.ok ? "Client menu applied successfully. Refresh the public menu to see the updated prices and portions." : "Client menu update completed.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't update the client menu.");
+    } finally {
+      setSyncing(false);
+    }
   };
 
   const saveOption = async (option: {id:number; menu_item_id:number; label:string; price_cents:number; sort_order:number}) => {
@@ -330,6 +345,7 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
         </div>
       ) : null}
 
+      {syncMessage ? <div className="rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">{syncMessage}</div> : null}
       {error ? <ErrorState message={error} onRetry={() => setError(null)} /> : null}
       {imageError ? <ErrorState message={imageError} onRetry={() => setImageError(null)} /> : null}
       {videoError ? <ErrorState message={videoError} onRetry={() => setVideoError(null)} /> : null}
