@@ -57,8 +57,6 @@ export const dishPhotos: Record<string, string> = {
   Zvinyenze: zvinyenze,
   "Bata Choma": bataChoma,
   "Kuku Karanga": kukuKaranga,
-
-  "Kuku Karanga": kukuKaranga,
   "Beef Chop ala Masai": beefChopAlaMasai,
   "Mbavu za Mbuzi": mbavuZaMbuzi,
   "Tsuro (Rabbit)": tsuroRabbit,
