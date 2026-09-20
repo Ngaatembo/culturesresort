@@ -356,6 +356,16 @@ function Home() {
                 className="aspect-square w-full object-cover"
               />
             </Reveal>
+            <Reveal delay={90} className="overflow-hidden rounded-2xl">
+              <img
+                src={images.chickenOnGrate800}
+                alt="Golden-brown grilled chicken and other cuts on the grate above glowing coals"
+                loading="lazy"
+                width={800}
+                height={1067}
+                className="aspect-square w-full object-cover object-[50%_32%]"
+              />
+            </Reveal>
             <Reveal delay={120} className="overflow-hidden rounded-2xl">
               <img
                 src={cultureImg}
@@ -366,14 +376,14 @@ function Home() {
                 className="aspect-square w-full object-cover"
               />
             </Reveal>
-            <Reveal delay={150} className="col-span-2 overflow-hidden rounded-2xl">
+            <Reveal delay={150} className="overflow-hidden rounded-2xl">
               <img
                 src={images.gardenZebraSignpost}
                 alt="A zebra sculpture beside a signpost of African destinations, with umbrellas and picnic tables behind"
                 loading="lazy"
                 width={810}
                 height={1080}
-                className="aspect-[2/1] w-full object-cover"
+                className="aspect-square w-full object-cover"
               />
             </Reveal>
             <Reveal delay={180} className="col-span-2 overflow-hidden rounded-2xl">

@@ -105,6 +105,7 @@ export const images = {
   elephantZebraSignpost,
   nyamaChomaGrillStation,
   sausagesMeatOnFlame,
+  chickenOnGrate800,
 };
 
 export type GalleryEntry = {
