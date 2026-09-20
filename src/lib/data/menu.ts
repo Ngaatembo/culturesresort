@@ -178,6 +178,11 @@ export const syncClientMenu = createServerFn({ method: "POST" })
     const db = getDb();
     await ensureMenuOptionsTable(db);
     const statements = [
+      // Put legacy removals first so the public menu is corrected even if a later
+      // migration statement encounters a deployment-time schema/data issue.
+      ["UPDATE menu_items SET available=0,updated_at=datetime('now') WHERE name IN ('Pilau','Trip','Beef (Highfield)','Pork Trotters / Bones','Sadza Rezviyo / Remhunga','Muriwo Une Dovi','Pilau / Jollof Rice','Plain Rice (Wali)')"],
+      ["UPDATE menu_items SET available=0,updated_at=datetime('now') WHERE name LIKE 'Mguu wamb%'"],
+      ["UPDATE menu_items SET price_cents=100,updated_at=datetime('now') WHERE name='Chapati'"],
       ["UPDATE menu_items SET category_title='Starters',updated_at=datetime('now') WHERE category_slug='starters' AND kind='food'"],
       ["UPDATE menu_items SET category_title='Main Meals',updated_at=datetime('now') WHERE category_slug='main-meals' AND kind='food'"],
       ["UPDATE menu_items SET category_title='Grills',updated_at=datetime('now') WHERE category_slug='grills' AND kind='food'"],
