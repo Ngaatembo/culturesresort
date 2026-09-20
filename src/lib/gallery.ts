@@ -14,7 +14,6 @@ import elephantBridge from "@/assets/elephant-bridge.jpg";
 import staffWelcome from "@/assets/staff-welcome.jpg";
 import gardenLion from "@/assets/garden-lion.jpg";
 import picnicTables from "@/assets/picnic-tables.jpg";
-import nightSunsetGrounds from "@/assets/night-sunset-grounds.jpg";
 import nightLeopardStatue from "@/assets/night-leopard-statue.jpg";
 import porkSizzler from "@/assets/pork-sizzler.jpg";
 import playArea from "@/assets/play-area.jpg";
@@ -47,7 +46,6 @@ import grillStaffTurningMeat800 from "@/assets/grill-staff-turning-meat-800w.web
 import grillStaffTurningMeat1600 from "@/assets/grill-staff-turning-meat-1600w.webp";
 import chickenOnGrate800 from "@/assets/chicken-on-grate-closeup-800w.webp";
 import chickenOnGrate1600 from "@/assets/chicken-on-grate-closeup-1600w.webp";
-import grillTwoStaffMeatBoard from "@/assets/grill-two-staff-meat-board.webp";
 import nyamaChomaGrillCounterWide from "@/assets/nyama-choma-grill-counter-wide.webp";
 import grillBaysTendingFire from "@/assets/grill-bays-tending-fire.webp";
 import seatingLionKudu from "@/assets/seating-lion-kudu.jpg";
@@ -219,12 +217,6 @@ export const gallery: GalleryEntry[] = [
     category: "Garden",
   },
   {
-    src: goatChopsPlate,
-    alt: "A seared steak and chop platter garnished with rosemary, tomato and onion, served in the garden",
-    caption: "Seared steaks, straight to the table",
-    category: "Fire",
-  },
-  {
     src: gardenZebraTable,
     alt: "A picnic table under an umbrella beneath leafy branches, with a zebra sculpture and the play area in the background",
     caption: "A table in the shade of the trees",
@@ -392,21 +384,6 @@ export const gallery: GalleryEntry[] = [
     category: "People",
     tall: true,
     position: "50% 30%",
-  },
-  {
-    src: grillTwoStaffMeatBoard,
-    alt: "Two staff members at the grill counter, one holding tongs beside a board of grilled meat, with the hooded grill and logs behind them",
-    caption: "At the grill, with the meat on the board",
-    category: "People",
-    tall: true,
-    position: "50% 35%",
-  },
-  {
-    src: nightSunsetGrounds,
-    alt: "The grounds at dusk, with the play area, the thatched gazebo seating and the lit bar counter under an orange sunset sky",
-    caption: "The grounds at sunset",
-    category: "Night",
-    tall: false,
   },
   {
     src: nightLeopardStatue,
