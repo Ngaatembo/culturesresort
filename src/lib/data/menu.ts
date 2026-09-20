@@ -59,7 +59,7 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
   const db = getDb();
   const { results } = await db
     .prepare(
-      "SELECT * FROM menu_items
+      `SELECT * FROM menu_items
        WHERE available = 1
          AND name NOT IN (
            'Pilau',
@@ -72,7 +72,7 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
            'Plain Rice (Wali)'
          )
          AND name NOT LIKE 'Mguu wamb%'
-       ORDER BY kind, category_slug, sort_order, id",
+       ORDER BY kind, category_slug, sort_order, id`,
     )
     .all<MenuItemRow>();
 
@@ -108,14 +108,17 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
       category = { slug: row.category_slug, title: row.category_title, items: [] };
       bucket.push(category);
     }
+    const itemOptions = optionsByItem.get(row.id) ?? [];
+    // A dish with portions is priced "From <cheapest portion>" wherever a single price is shown.
+    const fromCents = itemOptions.length ? Math.min(...itemOptions.map((o) => o.priceCents)) : null;
     category.items.push({
       id: row.id,
       name: row.name,
       description: row.description,
-      price: formatPrice(row.price_cents),
-      priceCents: row.price_cents,
+      price: fromCents !== null ? `From ${formatPrice(fromCents)}` : formatPrice(row.price_cents),
+      priceCents: fromCents ?? row.price_cents,
       imageUrl: row.image_url,
-      options: optionsByItem.get(row.id) ?? [],
+      options: itemOptions,
       videoUrl: row.video_url,
       featured: !!row.featured,
       available: !!row.available,
@@ -185,88 +188,605 @@ export const deleteMenuItemOption = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
+// ──────────────────────────────────────────────────────────────────────────
+// Client menu sync — "Apply latest client menu"
+//
+// CLIENT_MENU is the client's confirmed food menu. syncClientMenu() (below)
+// brings the live D1 tables (menu_items + menu_item_options) in line with it:
+// existing rows are renamed/updated in place (never duplicated), portions are
+// rewritten per dish, dishes that are not on the client menu are hidden, and
+// uploaded photos are kept — except an upload shared with the Road Runner dish
+// (or another dish flagged resetImage), which is dropped so the correct mapped
+// photo in dish-photos.ts is used. The public menu and the admin both read the
+// same D1 rows. Running it twice gives the same result as running it once.
+//
+// To change a name, price, portion or category, edit CLIENT_MENU and press the
+// button again. Prices are whole dollars: a dish has either `price` or `options`.
+// ──────────────────────────────────────────────────────────────────────────
+// <client-menu-sync>
+
+type CatalogCategory = "starters" | "main-meals" | "grills" | "sides" | "desserts";
+
+const CLIENT_MENU_CATEGORIES: Record<CatalogCategory, string> = {
+  starters: "Starters",
+  "main-meals": "Main Meals",
+  grills: "Grills",
+  sides: "Sides",
+  desserts: "Desserts",
+};
+
+type CatalogOption = { label: string; price: number };
+
+type CatalogItem = {
+  /** The name shown on the menu. */
+  name: string;
+  /** Older names for this same dish. An existing row with one of these is renamed in place (keeping its photo) instead of creating a duplicate. */
+  aliases?: string[];
+  category: CatalogCategory;
+  /** Client-supplied description. Left untouched in the database when omitted. */
+  description?: string;
+  /** Blank out a stored description that is known to be wrong. */
+  clearDescription?: boolean;
+  /** Single price. */
+  price?: number;
+  /** Portion options, in the order the client lists them. */
+  options?: CatalogOption[];
+  /** If this dish's uploaded photo is shared with another dish, drop it so the mapped (code-level) photo is used instead. */
+  resetImage?: boolean;
+};
+
+const CLIENT_MENU: CatalogItem[] = [
+  // ── Starters ────────────────────────────────────────────────
+  { name: "Piri Piri Gizzards", category: "starters", price: 4, clearDescription: true },
+  {
+    name: "Fried Liver / Chiropa",
+    aliases: ["Fried Liver (Chiropa)"],
+    category: "starters",
+    price: 4,
+  },
+  {
+    name: "Mopani Worms / Madora",
+    aliases: ["Mopani Worms (Madora)"],
+    category: "starters",
+    price: 4,
+  },
+  {
+    name: "Fried Kapenta / Omena",
+    aliases: ["Fried Kapenta (Omena)"],
+    category: "starters",
+    price: 4,
+  },
+
+  // ── Main meals ──────────────────────────────────────────────
+  {
+    name: "Samaki / Hove / Tsomba / Bream",
+    aliases: ["Samaki (Hove/Tsomba/Bream)", "Samaki"],
+    category: "main-meals",
+    options: [
+      { label: "Big", price: 20 },
+      { label: "Medium", price: 15 },
+      { label: "Small", price: 13 },
+    ],
+  },
+  {
+    name: "Samaki Makange",
+    category: "main-meals",
+    description: "Whole bream stewed",
+    options: [
+      { label: "Big", price: 21 },
+      { label: "Medium", price: 16 },
+      { label: "Small", price: 14 },
+    ],
+    resetImage: true,
+  },
+  {
+    name: "Hanga",
+    category: "main-meals",
+    options: [
+      { label: "1/2 Poto", price: 7 },
+      { label: "Full Poto", price: 12 },
+    ],
+  },
+  {
+    name: "Tsuro / Rabbit",
+    aliases: ["Tsuro (Rabbit)"],
+    category: "main-meals",
+    description: "Grilled / stewed or with dovi",
+    price: 12,
+  },
+  {
+    name: "Bata Choma",
+    category: "main-meals",
+    description: "Charcoal grilled duck",
+    price: 15,
+  },
+  {
+    name: "Zvinvenze",
+    aliases: ["Zvinyenze"],
+    category: "main-meals",
+    description: "Zimbabwean Traditional Delicacy",
+    options: [
+      { label: "Portion", price: 5 },
+      { label: "Kapoto", price: 9 },
+    ],
+    resetImage: true,
+  },
+  {
+    name: "Mbuzi Kapoto",
+    aliases: ["Mbizi Kapoto"],
+    category: "main-meals",
+    options: [
+      { label: "Portion", price: 4 },
+      { label: "1/2 Poto", price: 6 },
+      { label: "Full Poto", price: 9 },
+    ],
+  },
+  {
+    name: "Kuku Kienyeji / Road Runner",
+    aliases: ["Road Runner Chicken (Kuku Kienyeji)", "Road Runner"],
+    category: "main-meals",
+    options: [
+      { label: "1/2 Poto", price: 7 },
+      { label: "Full Poto", price: 12 },
+    ],
+  },
+  {
+    name: "Kuku Karanga",
+    category: "main-meals",
+    description: "Chicken pieces prepared East African way",
+    price: 13,
+  },
+  {
+    name: "Haifiridzi",
+    category: "main-meals",
+    description: "Tender beef stew fried with vegetables",
+    price: 13,
+  },
+
+  // ── Grills ──────────────────────────────────────────────────
+  {
+    name: "Kuku Choma",
+    category: "grills",
+    description: "Charcoal grilled chicken",
+    options: [
+      { label: "1/2", price: 8 },
+      { label: "Full", price: 12 },
+    ],
+  },
+  { name: "Beef Chop ala Masai", category: "grills", price: 12 },
+  {
+    name: "Mbavu za Mbuzi",
+    aliases: ["Goat Ribs (Mbavu za Mbuzi)"],
+    category: "grills",
+    description: "Goat ribs",
+    options: [
+      { label: "1/2", price: 8 },
+      { label: "Full", price: 13 },
+    ],
+  },
+  {
+    name: "Mbuzi Ulaya / Charcoal Grilled",
+    aliases: ["Mbuzi Ulaya (Charcoal Grilled Pork Chops)", "Mbuzi Ulaya"],
+    category: "grills",
+    description: "Charcoal grilled",
+    price: 12,
+  },
+  {
+    name: "Braaied Beef Short Ribs",
+    category: "grills",
+    description: "Real Warrior",
+    price: 12,
+  },
+  {
+    name: "Huge Pork Ribs",
+    category: "grills",
+    description: "Charcoal grilled",
+    price: 28,
+  },
+  {
+    name: "Mguu wa Mbuzi",
+    aliases: ["Mguu wambuzi (grilled goat leg)"],
+    category: "grills",
+    description: "Full goat leg grilled on charcoal",
+    price: 16,
+  },
+  { name: "Borewores", aliases: ["Boerewors"], category: "grills", price: 12 },
+  {
+    name: "Maasai Meat Platter",
+    category: "grills",
+    options: [
+      { label: "2 Pax", price: 20 },
+      { label: "4 Pax", price: 39 },
+    ],
+  },
+
+  // ── Sides ───────────────────────────────────────────────────
+  {
+    name: "Mpunga Une Dovi",
+    aliases: ["Mupunga Une Dovi"],
+    category: "sides",
+    description: "Rice prepared with peanut butter sauce",
+    price: 2,
+  },
+  {
+    name: "Sadza / Ugali",
+    aliases: ["Sadza / Ugali (Isitshwala)"],
+    category: "sides",
+    price: 1,
+  },
+  {
+    name: "Plain Aromatic Rice",
+    aliases: ["Plain Rice (Wali)"],
+    category: "sides",
+    price: 1,
+  },
+  {
+    name: "Biryani Rice",
+    category: "sides",
+    options: [
+      { label: "Plain", price: 2 },
+      { label: "With Goat Meat", price: 9 },
+    ],
+  },
+  {
+    name: "Jollof Rice",
+    aliases: ["Pilau / Jollof Rice"],
+    category: "sides",
+    options: [
+      { label: "Plain", price: 2 },
+      { label: "With Chicken", price: 9 },
+    ],
+  },
+  { name: "Chips / Fries", aliases: ["Chips"], category: "sides", price: 3 },
+  {
+    name: "Mufushwa Une Dovi",
+    category: "sides",
+    description: "Dried vegetables stewed with peanut butter sauce",
+    price: 3,
+  },
+  {
+    name: "Chapati",
+    category: "sides",
+    description: "Oriental round flat bread",
+    price: 1,
+  },
+  {
+    name: "Fried Potato Wedges",
+    aliases: ["Fried Potatoes"],
+    category: "sides",
+    price: 3,
+  },
+
+  // ── Desserts ────────────────────────────────────────────────
+  {
+    name: "Home Made Cake",
+    aliases: ["Homemade Cake Slice", "Homemade Cake"],
+    category: "desserts",
+    price: 4,
+  },
+  { name: "Wild Dried Fruits", category: "desserts", price: 3 },
+  {
+    name: "Best Zimbabwean Coffee / Tea",
+    aliases: ["Best Zimbabwean Tea / Coffee"],
+    category: "desserts",
+    price: 2,
+  },
+];
+
+/**
+ * Old dishes that are no longer on the client's menu. The sync hides every
+ * food row that isn't matched to CLIENT_MENU, so this list is documentation of
+ * what is expected to be switched off (e.g. by name in an old database).
+ */
+const LEGACY_FOOD_NAMES = [
+  "Pilau",
+  "Pilau / Jollof Rice",
+  "Plain Rice (Wali)",
+  "Muriwo Une Dovi",
+  "Sadza Rezviyo / Remhunga",
+  "Pork Trotters / Bones",
+  "Trip",
+  "Beef (Highfield)",
+  "Mguu wambuzi (grilled goat leg)",
+];
+
+type SyncRow = {
+  id: number;
+  name: string;
+  available: number;
+  image_url: string | null;
+};
+
+type SyncOptionRow = { menu_item_id: number; label: string; price_cents: number };
+
+type SyncFullRow = SyncRow & {
+  category_slug: string;
+  category_title: string;
+  price_cents: number;
+};
+
+type SyncStatement = { sql: string; params: (string | number | null)[] };
+
+type SyncPlan = {
+  statements: SyncStatement[];
+  created: string[];
+  renamed: string[];
+  disabled: string[];
+  imagesCleared: string[];
+};
+
+const ROAD_RUNNER = "Kuku Kienyeji / Road Runner";
+const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
+const cents = (dollars: number) => Math.round(dollars * 100);
+
+/** The base price stored on the row: the single price, or the cheapest portion (so nothing ever reads as "On request"). */
+function catalogBaseCents(item: CatalogItem): number {
+  if (item.options?.length) return Math.min(...item.options.map((o) => cents(o.price)));
+  return cents(item.price ?? 0);
+}
+
+function planClientMenuSync(rows: SyncRow[]): SyncPlan {
+  const statements: SyncStatement[] = [];
+  const created: string[] = [];
+  const renamed: string[] = [];
+  const disabled: string[] = [];
+  const imagesCleared: string[] = [];
+
+  const sorted = [...rows].sort((a, b) => a.id - b.id);
+  const byName = new Map<string, SyncRow[]>();
+  for (const row of sorted) {
+    const key = norm(row.name);
+    byName.set(key, [...(byName.get(key) ?? []), row]);
+  }
+
+  const claimed = new Set<number>();
+  const canonicalByItem = new Map<string, SyncRow>();
+  const photoByItem = new Map<string, string | null>(); // the photo each live dish ends up with
+
+  CLIENT_MENU.forEach((item, index) => {
+    const title = CLIENT_MENU_CATEGORIES[item.category];
+    const sortOrder = (index + 1) * 10;
+    const base = catalogBaseCents(item);
+
+    const pick = (names: string[]) =>
+      names
+        .flatMap((n) => byName.get(norm(n)) ?? [])
+        .filter((r) => !claimed.has(r.id))
+        // prefer a live row, then one that already has a photo, then the oldest
+        .sort(
+          (a, b) =>
+            b.available - a.available ||
+            (a.image_url ? 0 : 1) - (b.image_url ? 0 : 1) ||
+            a.id - b.id,
+        );
+
+    const exact = pick([item.name]);
+    const viaAlias = pick(item.aliases ?? []);
+    const candidates = [...exact, ...viaAlias.filter((r) => !exact.includes(r))];
+    const canonical = candidates[0];
+
+    // Any further matches are old duplicates of the same dish: hide them.
+    for (const dup of candidates.slice(1)) {
+      claimed.add(dup.id);
+      if (dup.available) disabled.push(`${dup.name} (duplicate of ${item.name})`);
+      statements.push({
+        sql: "UPDATE menu_items SET available = 0, updated_at = datetime('now') WHERE id = ?",
+        params: [dup.id],
+      });
+    }
+
+    let itemRef: { sql: string; params: (string | number | null)[] }; // how options find the item
+
+    if (canonical) {
+      claimed.add(canonical.id);
+      canonicalByItem.set(item.name, canonical);
+      if (canonical.name !== item.name) {
+        renamed.push(`${canonical.name} → ${item.name}`);
+      }
+      const sets = [
+        "name = ?",
+        "category_slug = ?",
+        "category_title = ?",
+        "price_cents = ?",
+        "available = 1",
+        "sort_order = ?",
+        "updated_at = datetime('now')",
+      ];
+      const params: (string | number | null)[] = [item.name, item.category, title, base, sortOrder];
+      if (item.description !== undefined) {
+        sets.push("description = ?");
+        params.push(item.description);
+      } else if (item.clearDescription) {
+        sets.push("description = ''");
+      }
+      let photo = canonical.image_url;
+      if (!photo) {
+        // An old duplicate held this dish's uploaded photo: keep it on the live row.
+        const donor = candidates.slice(1).find((r) => r.image_url);
+        if (donor?.image_url) {
+          sets.push("image_url = ?");
+          params.push(donor.image_url);
+          photo = donor.image_url;
+        }
+      }
+      photoByItem.set(item.name, photo);
+      statements.push({
+        sql: `UPDATE menu_items SET ${sets.join(", ")} WHERE id = ?`,
+        params: [...params, canonical.id],
+      });
+      statements.push({
+        sql: "DELETE FROM menu_item_options WHERE menu_item_id = ?",
+        params: [canonical.id],
+      });
+      itemRef = { sql: "?", params: [canonical.id] };
+    } else {
+      created.push(item.name);
+      statements.push({
+        sql:
+          "INSERT INTO menu_items (kind, category_slug, category_title, name, description, price_cents, featured, available, sort_order) " +
+          "VALUES ('food', ?, ?, ?, ?, ?, 0, 1, ?)",
+        params: [item.category, title, item.name, item.description ?? "", base, sortOrder],
+      });
+      // The new row is found again by its (unique, just-inserted) name.
+      itemRef = {
+        sql: "(SELECT id FROM menu_items WHERE kind = 'food' AND name = ? ORDER BY id DESC LIMIT 1)",
+        params: [item.name],
+      };
+    }
+
+    (item.options ?? []).forEach((option, i) => {
+      statements.push({
+        sql: `INSERT INTO menu_item_options (menu_item_id, label, price_cents, sort_order) VALUES (${itemRef.sql}, ?, ?, ?)`,
+        params: [...itemRef.params, option.label, cents(option.price), i + 1],
+      });
+    });
+  });
+
+  // Shared uploads. A photo that Road Runner also holds is the "duplicate Road
+  // Runner image": it stays on Road Runner and is cleared from every other dish
+  // (they fall back to their own mapped photo). Dishes flagged `resetImage` also
+  // lose an upload that any other dish shares. Unique uploads are never touched.
+  const holders = new Map<string, Set<string>>();
+  const hold = (photo: string, who: string) => holders.set(photo, (holders.get(photo) ?? new Set()).add(who));
+  photoByItem.forEach((photo, name) => {
+    if (photo) hold(photo, name);
+  });
+  for (const row of sorted) {
+    if (!claimed.has(row.id) && row.available && row.image_url) hold(row.image_url, `legacy:${row.id}`);
+  }
+  const roadRunnerPhoto = photoByItem.get(ROAD_RUNNER);
+  for (const [name, row] of canonicalByItem) {
+    const photo = photoByItem.get(name);
+    if (!photo || name === ROAD_RUNNER) continue;
+    const sharesRoadRunner = !!roadRunnerPhoto && photo === roadRunnerPhoto;
+    const flaggedAndShared =
+      !!CLIENT_MENU.find((i) => i.name === name)?.resetImage && (holders.get(photo)?.size ?? 0) > 1;
+    if (sharesRoadRunner || flaggedAndShared) {
+      imagesCleared.push(name);
+      statements.push({
+        sql: "UPDATE menu_items SET image_url = NULL, updated_at = datetime('now') WHERE id = ?",
+        params: [row.id],
+      });
+    }
+  }
+
+  // Everything else still switched on is legacy: not on the client's menu.
+  for (const row of sorted) {
+    if (claimed.has(row.id)) continue;
+    if (row.available) {
+      disabled.push(row.name);
+      statements.push({
+        sql: "UPDATE menu_items SET available = 0, updated_at = datetime('now') WHERE id = ?",
+        params: [row.id],
+      });
+    }
+  }
+
+  return { statements, created, renamed, disabled, imagesCleared };
+}
+
+/** Reads the result back and lists anything that doesn't match the client menu. Empty = verified. */
+function verifyClientMenu(rows: SyncFullRow[], options: SyncOptionRow[]): string[] {
+  const problems: string[] = [];
+  const active = rows.filter((r) => r.available);
+  const activeByName = new Map<string, SyncFullRow[]>();
+  for (const row of active) {
+    const key = norm(row.name);
+    activeByName.set(key, [...(activeByName.get(key) ?? []), row]);
+  }
+
+  for (const [key, list] of activeByName) {
+    if (list.length > 1) problems.push(`Duplicate active dish: ${list[0]?.name ?? key}`);
+  }
+
+  const catalogNames = new Set(CLIENT_MENU.map((i) => norm(i.name)));
+  for (const row of active) {
+    if (!catalogNames.has(norm(row.name))) problems.push(`Not on the client menu but active: ${row.name}`);
+  }
+  for (const legacy of LEGACY_FOOD_NAMES) {
+    if (activeByName.has(norm(legacy))) problems.push(`Legacy dish still active: ${legacy}`);
+  }
+
+  const byPhoto = new Map<string, string[]>();
+  for (const row of active) {
+    if (row.image_url) byPhoto.set(row.image_url, [...(byPhoto.get(row.image_url) ?? []), row.name]);
+  }
+  for (const names of byPhoto.values()) {
+    if (names.length > 1) problems.push(`Same uploaded photo on several dishes: ${names.join(", ")}`);
+  }
+
+  for (const item of CLIENT_MENU) {
+    const row = activeByName.get(norm(item.name))?.[0];
+    if (!row) {
+      problems.push(`Missing or hidden: ${item.name}`);
+      continue;
+    }
+    if (row.name !== item.name) problems.push(`Name differs: "${row.name}" should be "${item.name}"`);
+    if (row.category_slug !== item.category) {
+      problems.push(`${item.name}: category is ${row.category_slug}, should be ${item.category}`);
+    }
+    if (row.category_title !== CLIENT_MENU_CATEGORIES[item.category]) {
+      problems.push(`${item.name}: category title is "${row.category_title}"`);
+    }
+    if (row.price_cents !== catalogBaseCents(item)) {
+      problems.push(`${item.name}: price is ${row.price_cents}, should be ${catalogBaseCents(item)}`);
+    }
+    const stored = options
+      .filter((o) => o.menu_item_id === row.id)
+      .map((o) => `${o.label}=${o.price_cents}`);
+    const expected = (item.options ?? []).map((o) => `${o.label}=${cents(o.price)}`);
+    if (stored.join("|") !== expected.join("|")) {
+      problems.push(`${item.name}: portions are [${stored.join(", ")}], should be [${expected.join(", ")}]`);
+    }
+  }
+
+  return problems;
+}
+// </client-menu-sync>
+
 export const syncClientMenu = createServerFn({ method: "POST" })
   .middleware([managerUpMiddleware])
   .handler(async () => {
     const db = getDb();
     await ensureMenuOptionsTable(db);
-    const statements = [
-      // Put legacy removals first so the public menu is corrected even if a later
-      // migration statement encounters a deployment-time schema/data issue.
-      ["UPDATE menu_items SET available=0,updated_at=datetime('now') WHERE name IN ('Pilau','Trip','Beef (Highfield)','Pork Trotters / Bones','Sadza Rezviyo / Remhunga','Muriwo Une Dovi','Pilau / Jollof Rice','Plain Rice (Wali)')"],
-      ["UPDATE menu_items SET available=0,updated_at=datetime('now') WHERE name LIKE 'Mguu wamb%'"],
-      ["UPDATE menu_items SET price_cents=100,updated_at=datetime('now') WHERE name='Chapati'"],
-      ["UPDATE menu_items SET category_title='Starters',updated_at=datetime('now') WHERE category_slug='starters' AND kind='food'"],
-      ["UPDATE menu_items SET category_title='Main Meals',updated_at=datetime('now') WHERE category_slug='main-meals' AND kind='food'"],
-      ["UPDATE menu_items SET category_title='Grills',updated_at=datetime('now') WHERE category_slug='grills' AND kind='food'"],
-      ["UPDATE menu_items SET category_title='Sides',updated_at=datetime('now') WHERE category_slug='sides' AND kind='food'"],
-      ["UPDATE menu_items SET category_title='Desserts',updated_at=datetime('now') WHERE category_slug='desserts' AND kind='food'"],
-      ["UPDATE menu_items SET price_cents=400,updated_at=datetime('now') WHERE name IN ('Piri Piri Gizzards','Fried Liver (Chiropa)','Mopani Worms (Madora)','Fried Kapenta (Omena)')"],
-      ["UPDATE menu_items SET category_slug='main-meals',category_title='Main Meals',price_cents=1300,updated_at=datetime('now') WHERE name='Kuku Karanga'"],
-      ["UPDATE menu_items SET category_slug='grills',category_title='Grills',price_cents=1200,updated_at=datetime('now') WHERE name='Beef Chop ala Masai'"],
-      ["UPDATE menu_items SET name='Mbuzi Ulaya / Charcoal Grilled',price_cents=1200,description='Charcoal grilled',updated_at=datetime('now') WHERE name='Mbuzi Ulaya (Charcoal Grilled Pork Chops)'"],
-      ["UPDATE menu_items SET category_slug='grills',category_title='Grills',price_cents=1600,description='Full goat leg grilled on charcoal',updated_at=datetime('now') WHERE name='Mguu wa Mbuzi'"],
-      ["UPDATE menu_items SET available=0,updated_at=datetime('now') WHERE name LIKE 'Mguu wamb%'"],
-      ["UPDATE menu_items SET price_cents=1200,description='Spicy & delicious',updated_at=datetime('now') WHERE name='Borewores'"],
-      ["UPDATE menu_items SET price_cents=1200,description='Grilled, stewed or with dovi',updated_at=datetime('now') WHERE name='Tsuro (Rabbit)'"],
-      ["UPDATE menu_items SET price_cents=1500,description='Charcoal grilled duck',updated_at=datetime('now') WHERE name='Bata Choma'"],
-      ["UPDATE menu_items SET price_cents=1300,description='Tender beef stew fried with vegetables',updated_at=datetime('now') WHERE name='Haifiridzi'"],
-      ["UPDATE menu_items SET category_slug='grills',category_title='Grills',updated_at=datetime('now') WHERE name='Mbuzi Ulaya / Charcoal Grilled'"],
-      ["UPDATE menu_items SET category_slug='grills',category_title='Grills',updated_at=datetime('now') WHERE name IN ('Mbavu za Mbuzi','Mguu wa Mbuzi','Borewores','Bata Choma','Huge Pork Ribs','Braaied Beef Short Ribs','Maasai Meat Platter')"],
-      ["UPDATE menu_items SET category_slug='main-meals',category_title='Main Meals',updated_at=datetime('now') WHERE name IN ('Hanga','Tsuro (Rabbit)','Zvinvenze','Mbuzi Kapoto','Samaki (Hove/Tsomba/Bream)','Samaki Makange','Kuku Kienyeji / Road Runner','Haifiridzi')"],
 
-      ["UPDATE menu_items SET price_cents=1200,description='Real warrior',updated_at=datetime('now') WHERE name='Braaied Beef Short Ribs'"],
-      ["UPDATE menu_items SET category_slug='grills',category_title='Grills',price_cents=2800,description='Charcoal grilled',updated_at=datetime('now') WHERE name='Huge Pork Ribs'"],
-      ["UPDATE menu_items SET name='Zvinvenze',description='Kapoto',image_url=NULL,category_slug='main-meals',category_title='Main Meals',updated_at=datetime('now') WHERE name='Zvinyenze'"],
-      ["UPDATE menu_items SET name='Kuku Kienyeji / Road Runner',description='Charcoal grilled indigenous chicken',price_cents=0,category_slug='main-meals',category_title='Main Meals',updated_at=datetime('now') WHERE name='Road Runner Chicken (Kuku Kienyeji)'"],
-      ["UPDATE menu_items SET name='Mbavu za Mbuzi',description='Goat ribs',price_cents=0,category_slug='grills',category_title='Grills',updated_at=datetime('now') WHERE name='Goat Ribs (Mbavu za Mbuzi)'"],
-      ["UPDATE menu_items SET price_cents=200,description='Rice prepared with peanut butter sauce',updated_at=datetime('now') WHERE name='Mpunga Une Dovi'"],
-      ["UPDATE menu_items SET name='Fried Potato Wedges',price_cents=300,updated_at=datetime('now') WHERE name='Fried Potatoes'"],
-      ["UPDATE menu_items SET price_cents=300,updated_at=datetime('now') WHERE name='Chips'"],
-      ["UPDATE menu_items SET price_cents=100,updated_at=datetime('now') WHERE name='Chapati'"],
-      ["UPDATE menu_items SET price_cents=400,updated_at=datetime('now') WHERE name='Homemade Cake Slice'"],
-      ["UPDATE menu_items SET price_cents=300,updated_at=datetime('now') WHERE name='Wild Dried Fruits'"],
-      ["UPDATE menu_items SET price_cents=200,updated_at=datetime('now') WHERE name='Best Zimbabwean Tea / Coffee'"],
-      ["UPDATE menu_items SET available=0,updated_at=datetime('now') WHERE name IN ('Pork Trotters / Bones','Sadza Rezviyo / Remhunga','Muriwo Une Dovi','Pilau','Pilau / Jollof Rice','Plain Rice (Wali)','Trip','Beef (Highfield)')"],
-      ["INSERT INTO menu_items (kind,category_slug,category_title,name,description,price_cents,featured,available,sort_order) SELECT 'food','grills','Off the Charcoal','Samaki Makange','Whole bream stewed',0,0,1,13 WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name='Samaki Makange')"],
-      ["UPDATE menu_items SET image_url=NULL,updated_at=datetime('now') WHERE name='Samaki Makange'"],
-      ["INSERT INTO menu_items (kind,category_slug,category_title,name,description,price_cents,featured,available,sort_order) SELECT 'food','sides','Accompaniments','Mufushwa Une Dovi','Dried vegetables stewed with peanut butter sauce',300,0,1,10 WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name='Mufushwa Une Dovi')"],
-      ["INSERT INTO menu_items (kind,category_slug,category_title,name,description,price_cents,featured,available,sort_order) SELECT 'food','sides','Accompaniments','Plain Aromatic Rice','Plain aromatic rice',100,0,1,11 WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name='Plain Aromatic Rice')"],
-      ["INSERT INTO menu_items (kind,category_slug,category_title,name,description,price_cents,featured,available,sort_order) SELECT 'food','sides','Accompaniments','Biryani Rice','',0,0,1,12 WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name='Biryani Rice')"],
-      ["INSERT INTO menu_items (kind,category_slug,category_title,name,description,price_cents,featured,available,sort_order) SELECT 'food','sides','Accompaniments','Jollof Rice','',0,0,1,13 WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name='Jollof Rice')"],
-      ["DELETE FROM menu_item_options"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'1/2',800,1 FROM menu_items WHERE name='Kuku Choma'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Full',1200,2 FROM menu_items WHERE name='Kuku Choma'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'1/2',800,1 FROM menu_items WHERE name='Mbavu za Mbuzi'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Full',1300,2 FROM menu_items WHERE name='Mbavu za Mbuzi'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'1/2 Poto',700,1 FROM menu_items WHERE name='Hanga'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Full Poto',1200,2 FROM menu_items WHERE name='Hanga'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Big',2000,1 FROM menu_items WHERE name='Samaki (Hove/Tsomba/Bream)'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Med',1500,2 FROM menu_items WHERE name='Samaki (Hove/Tsomba/Bream)'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Small',1300,3 FROM menu_items WHERE name='Samaki (Hove/Tsomba/Bream)'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Big',2100,1 FROM menu_items WHERE name='Samaki Makange'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Med',1600,2 FROM menu_items WHERE name='Samaki Makange'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Small',1400,3 FROM menu_items WHERE name='Samaki Makange'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Portion',500,1 FROM menu_items WHERE name='Zvinvenze'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Kapoto',900,2 FROM menu_items WHERE name='Zvinvenze'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Portion',400,1 FROM menu_items WHERE name='Mbuzi Kapoto'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'1/2 Poto',600,2 FROM menu_items WHERE name='Mbuzi Kapoto'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Full Poto',900,3 FROM menu_items WHERE name='Mbuzi Kapoto'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'1/2 Poto',700,1 FROM menu_items WHERE name='Kuku Kienyeji / Road Runner'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Full Poto',1200,2 FROM menu_items WHERE name='Kuku Kienyeji / Road Runner'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'2 pax',2000,1 FROM menu_items WHERE name='Maasai Meat Platter'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'4 pax',3900,2 FROM menu_items WHERE name='Maasai Meat Platter'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Plain',200,1 FROM menu_items WHERE name='Biryani Rice'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'With Goat Meat',900,2 FROM menu_items WHERE name='Biryani Rice'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'Plain',200,1 FROM menu_items WHERE name='Jollof Rice'"],
-      ["INSERT INTO menu_item_options(menu_item_id,label,price_cents,sort_order) SELECT id,'With Chicken',900,2 FROM menu_items WHERE name='Jollof Rice'"],
-      ["UPDATE menu_items SET price_cents=0,updated_at=datetime('now') WHERE id IN (SELECT menu_item_id FROM menu_item_options)"],
-    ];
+    const { results: existing } = await db
+      .prepare("SELECT id, name, available, image_url FROM menu_items WHERE kind = 'food'")
+      .all<SyncRow>();
+    const plan = planClientMenuSync(existing);
 
-    for (const sql of statements.flat()) {
-      await db.prepare(sql).run();
+    // Small batches: each D1 batch is one call (and one transaction). The sync is
+    // idempotent, so if one ever fails it is safe to just press the button again.
+    const CHUNK = 40;
+    for (let i = 0; i < plan.statements.length; i += CHUNK) {
+      await db.batch(
+        plan.statements.slice(i, i + CHUNK).map((s) => db.prepare(s.sql).bind(...s.params)),
+      );
     }
-    return { ok: true as const };
+
+    // Read the live tables back and check them against the client menu.
+    const { results: rows } = await db
+      .prepare(
+        "SELECT id, name, available, image_url, category_slug, category_title, price_cents FROM menu_items WHERE kind = 'food'",
+      )
+      .all<SyncFullRow>();
+    const { results: optionRows } = await db
+      .prepare(
+        "SELECT menu_item_id, label, price_cents FROM menu_item_options ORDER BY menu_item_id, sort_order, id",
+      )
+      .all<SyncOptionRow>();
+    const problems = verifyClientMenu(rows, optionRows);
+
+    return {
+      ok: true as const,
+      dishes: CLIENT_MENU.length,
+      created: plan.created,
+      renamed: plan.renamed,
+      disabled: plan.disabled,
+      imagesCleared: plan.imagesCleared,
+      verified: problems.length === 0,
+      problems,
+    };
   });
 
 /** Full row list for the admin menu editor — includes unavailable items. */

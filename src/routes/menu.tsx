@@ -154,7 +154,7 @@ function Menu() {
           ) : (
             <>
               <div
-                className="mt-8 flex flex-wrap gap-2"
+                className="-mx-5 mt-8 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
                 role="tablist"
                 aria-label="Menu categories"
               >
@@ -164,7 +164,7 @@ function Menu() {
                   aria-selected={active === "all"}
                   onClick={() => setActive("all")}
                   className={cn(
-                    "eyebrow rounded-full border px-5 py-3 transition-colors",
+                    "eyebrow shrink-0 whitespace-nowrap rounded-full border px-5 py-3 transition-colors",
                     active === "all"
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border hover:bg-secondary",
@@ -180,7 +180,7 @@ function Menu() {
                     aria-selected={active === c.slug}
                     onClick={() => setActive(c.slug)}
                     className={cn(
-                      "eyebrow rounded-full border px-5 py-3 transition-colors",
+                      "eyebrow shrink-0 whitespace-nowrap rounded-full border px-5 py-3 transition-colors",
                       active === c.slug
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-border hover:bg-secondary",
@@ -208,36 +208,37 @@ function Menu() {
                     <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {category.items.map((item) => {
                         const imageKey = CATEGORY_IMAGE[category.slug] ?? "food";
-                        const photo = item.imageUrl
+                        const mappedPhoto = item.imageUrl
                           ? `/gallery-image/${item.imageUrl}`
-                          : (dishPhotos[item.name] ?? images[imageKey]);
-                        const lowestOption = item.options.length
-                          ? Math.min(...item.options.map((option) => option.priceCents))
-                          : null;
-                        const displayPrice = lowestOption !== null
-                          ? `From ${(lowestOption / 100).toFixed(2)}`
-                          : item.price;
+                          : dishPhotos[item.name];
+                        // Food without a real photo gets a text-only card; only
+                        // beverages keep the category placeholder image.
+                        const photo = mappedPhoto ?? (course === "food" ? null : images[imageKey]);
                         return (
                           <li
                             key={item.id}
-                            className="card-tactile flex overflow-hidden rounded-2xl border border-border bg-card"
+                            className={`card-tactile flex overflow-hidden rounded-2xl border border-border bg-card ${photo ? "" : "border-l-4 border-l-ochre"}`}
                           >
-                            <div className="w-[38%] shrink-0 sm:w-2/5">
-                              <DishMedia
-                                imageSrc={photo}
-                                videoSrc={item.videoUrl ? `/gallery-image/${item.videoUrl}` : null}
-                                alt={item.name}
-                                className="h-full min-h-36"
-                              />
-                            </div>
+                            {photo ? (
+                              <div className="w-[38%] shrink-0 sm:w-2/5">
+                                <DishMedia
+                                  imageSrc={photo}
+                                  videoSrc={item.videoUrl ? `/gallery-image/${item.videoUrl}` : null}
+                                  alt={item.name}
+                                  className="h-full min-h-36"
+                                />
+                              </div>
+                            ) : null}
                             <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
                               <div className="flex items-start justify-between gap-2">
                                 <h3 className="min-w-0 font-display text-lg leading-tight">
                                   {item.name}
                                 </h3>
-                                <span className="shrink-0 rounded-full bg-secondary px-3 py-1 text-sm text-foreground">
-                                  {displayPrice}
-                                </span>
+                                {item.options.length ? null : (
+                                  <span className="shrink-0 rounded-full bg-secondary px-3 py-1 text-sm text-foreground">
+                                    {item.price}
+                                  </span>
+                                )}
                               </div>
                               <p className="eyebrow mt-1 text-primary">
                                 {category.title}
@@ -265,10 +266,11 @@ function Menu() {
                                               price: option.price,
                                             })
                                           }
-                                          className="flex items-center justify-between gap-2 rounded-xl border border-border px-3 py-2 text-left transition-colors hover:bg-secondary"
+                                          aria-label={`Add ${optionName} to your order, ${option.price}`}
+                                          className="flex min-h-11 items-center justify-between gap-2 rounded-xl border border-border px-3 py-2 text-left transition-colors hover:bg-secondary"
                                         >
                                           <span className="text-sm font-medium">{option.label}</span>
-                                          <span className="text-sm text-muted-foreground">{option.price}</span>
+                                          <span className="text-sm font-medium text-foreground">{option.price}</span>
                                         </button>
                                       );
                                     })}

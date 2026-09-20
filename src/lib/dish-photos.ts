@@ -1,6 +1,7 @@
 // Real dish/drink photos, cropped from the client's own printed menu.
-// Keyed by the exact menu_items.name value in D1 — falls back to a
-// category placeholder (see routes/menu.tsx) for anything not listed here.
+// Keyed by the exact menu_items.name value in D1 (current client names and the
+// older names they replace). Food with no entry here is shown as a text-only
+// card in routes/menu.tsx; only beverages fall back to a category placeholder.
 import kukuChoma from "@/assets/dishes/kuku-choma.jpg";
 import kukuKaranga from "@/assets/dishes/kuku-karanga.jpg";
 import beefChopAlaMasai from "@/assets/dishes/beef-chop-ala-masai.jpg";
@@ -34,9 +35,7 @@ import tequilaGinSunrise from "@/assets/dishes/tequila-gin-sunrise.jpg";
 import blueLagoon from "@/assets/dishes/blue-lagoon.jpg";
 import chips from "@/assets/dishes/chips.jpg";
 import muriwoUneDovi from "@/assets/dishes/muriwo-une-dovi.jpg";
-import mufushwaUneDovi from "@/assets/dishes/mufushwa-une-dovi.jpg";
 import jollofRice from "@/assets/dishes/jollof-rice.jpg";
-import biryaniRice from "@/assets/dishes/biryani-rice.jpg";
 import chapati from "@/assets/dishes/chapati.jpg";
 import friedPotatoWedges from "@/assets/dishes/fried-potato-wedges.jpg";
 import mpungaUneDovi from "@/assets/dishes/mpunga-une-dovi.jpg";
@@ -60,6 +59,7 @@ export const dishPhotos: Record<string, string> = {
   "Beef Chop ala Masai": beefChopAlaMasai,
   "Mbavu za Mbuzi": mbavuZaMbuzi,
   "Tsuro (Rabbit)": tsuroRabbit,
+  "Tsuro / Rabbit": tsuroRabbit,
   Zvinvenze: zvinyenze,
   "Mbuzi Kapoto": mbuziKapoto,
   "Huge Pork Ribs": hugePorkRibs,
@@ -67,6 +67,7 @@ export const dishPhotos: Record<string, string> = {
   "Mguu wa Mbuzi": mguuWaMbuzi,
   Borewores: borewores,
   "Samaki (Hove/Tsomba/Bream)": samakiBream,
+  "Samaki / Hove / Tsomba / Bream": samakiBream,
   "Samaki Makange": samakiMakange,
   Hanga: hanga,
   Haifiridzi: haifiridzi,
@@ -75,8 +76,11 @@ export const dishPhotos: Record<string, string> = {
   "Mbuzi Ulaya / Charcoal Grilled": mbuziUlaya,
   "Piri Piri Gizzards": piriPiriGizzards,
   "Fried Liver (Chiropa)": friedLiverChiropa,
+  "Fried Liver / Chiropa": friedLiverChiropa,
   "Mopani Worms (Madora)": mopaniWormsMadora,
+  "Mopani Worms / Madora": mopaniWormsMadora,
   "Fried Kapenta (Omena)": friedKapentaOmena,
+  "Fried Kapenta / Omena": friedKapentaOmena,
   Caribbean: caribbean,
   "Dark Margharitta": darkMargharitta,
   "Sunrise Mocktail": sunriseMocktail,
@@ -86,9 +90,8 @@ export const dishPhotos: Record<string, string> = {
   "Tequila/Gin Sunrise": tequilaGinSunrise,
   "Blue Lagoon": blueLagoon,
   Chips: chips,
+  "Chips / Fries": chips,
   "Muriwo Une Dovi": muriwoUneDovi,
-  "Mufushwa Une Dovi": mufushwaUneDovi,
-  "Biryani Rice": biryaniRice,
   "Pilau / Jollof Rice": jollofRice,
   "Jollof Rice": jollofRice,
   Pilau: jollofRice,
@@ -97,11 +100,14 @@ export const dishPhotos: Record<string, string> = {
   "Fried Potato Wedges": friedPotatoWedges,
   "Mpunga Une Dovi": mpungaUneDovi,
   "Sadza / Ugali (Isitshwala)": sadzaUgali,
+  "Sadza / Ugali": sadzaUgali,
   "Plain Rice (Wali)": plainRice,
   "Plain Aromatic Rice": plainRice,
   "Homemade Cake Slice": homemadeCake,
+  "Home Made Cake": homemadeCake,
   "Wild Dried Fruits": wildDriedFruits,
   "Best Zimbabwean Tea / Coffee": zimTeaCoffee,
+  "Best Zimbabwean Coffee / Tea": zimTeaCoffee,
   "Soft Drink": softDrinkGlass,
   Maheu: maheuPhoto,
   "Fresh Juice": freshJuice,

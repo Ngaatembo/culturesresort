@@ -77,13 +77,19 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
   useEffect(load, [kind]);
 
   const syncLatestMenu = async () => {
-    if (!window.confirm("Apply the latest client-supplied menu prices, names and portions? Existing photos will not be changed.")) return;
+    if (!window.confirm("Apply the latest client menu? Names, prices, portions and categories are set to the client's menu, dishes no longer on it are hidden, and dishes marked sold out are switched back on. Photos are kept, except an upload shared with the Road Runner dish.")) return;
     setSyncing(true); setError(null); setSyncMessage(null);
     try {
       const result = await syncClientMenu();
       await new Promise((resolve) => setTimeout(resolve, 250));
       load();
-      setSyncMessage(result?.ok ? "Client menu applied successfully. Refresh the public menu to see the updated prices and portions." : "Client menu update completed.");
+      setSyncMessage(
+        !result?.ok
+          ? "Client menu update completed."
+          : result.verified
+            ? `Client menu applied and checked: ${result.dishes} dishes, ${result.created.length} added, ${result.renamed.length} renamed, ${result.disabled.length} hidden.`
+            : `Client menu applied, but ${result.problems.length} thing(s) need a look: ${result.problems.slice(0, 3).join("; ")}${result.problems.length > 3 ? "…" : ""}`,
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't update the client menu.");
     } finally {
@@ -335,7 +341,7 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
             <div>
               <p className="font-semibold text-foreground">Client menu update</p>
               <p className="text-sm text-muted-foreground">
-                Apply the confirmed client prices, names and portion options to the live menu. Existing photos are not changed.
+                Apply the confirmed client prices, names and portion options to the live menu. Photos are kept.
               </p>
             </div>
             <Button type="button" onClick={syncLatestMenu} disabled={syncing} className="shrink-0">
