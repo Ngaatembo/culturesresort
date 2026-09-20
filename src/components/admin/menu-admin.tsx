@@ -526,16 +526,27 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
                               />
                             </td>
                             <td className="py-3.5 pr-4">
-                              <span
-                                className={cn(
-                                  "rounded-full px-2.5 py-1 text-xs font-semibold",
-                                  item.available
-                                    ? "bg-success/15 text-success"
-                                    : "bg-destructive/10 text-destructive",
-                                )}
-                              >
-                                {item.available ? "Available" : "Sold out"}
-                              </span>
+                              <div className="min-w-[14rem] space-y-2">
+                                {(options[item.id] ?? []).map((option) => {
+                                  const draftOption = optionDrafts[option.id] ?? {
+                                    label: option.label,
+                                    price: (option.price_cents / 100).toFixed(2),
+                                  };
+                                  return (
+                                    <div key={option.id} className="flex items-center gap-2">
+                                      <Input value={draftOption.label} onChange={(e) => setOptionDrafts((d) => ({ ...d, [option.id]: { ...draftOption, label: e.target.value } }))} className="w-28" />
+                                      <Input type="number" min={0} step="0.01" value={draftOption.price} onChange={(e) => setOptionDrafts((d) => ({ ...d, [option.id]: { ...draftOption, price: e.target.value } }))} className="w-24" />
+                                      <Button size="sm" variant="outline" onClick={() => saveOption(option)}>Save</Button>
+                                      <Button size="sm" variant="outline" onClick={() => removeOption(option)}>×</Button>
+                                    </div>
+                                  );
+                                })}
+                                <div className="flex items-center gap-2">
+                                  <Input placeholder="Portion" value={optionDrafts[-item.id]?.label ?? ""} onChange={(e) => setOptionDrafts((d) => ({ ...d, [-item.id]: { ...(d[-item.id] ?? { label: "", price: "" }), label: e.target.value } }))} className="w-28" />
+                                  <Input type="number" min={0} step="0.01" placeholder="Price" value={optionDrafts[-item.id]?.price ?? ""} onChange={(e) => setOptionDrafts((d) => ({ ...d, [-item.id]: { ...(d[-item.id] ?? { label: "", price: "" }), price: e.target.value } }))} className="w-24" />
+                                  <Button size="sm" variant="outline" onClick={() => addOption(item)}>Add</Button>
+                                </div>
+                              </div>
                             </td>
                             <td className="py-3.5">
                               <div className="flex flex-wrap gap-2">
