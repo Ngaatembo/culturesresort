@@ -59,7 +59,20 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
   const db = getDb();
   const { results } = await db
     .prepare(
-      "SELECT * FROM menu_items WHERE available = 1 ORDER BY kind, category_slug, sort_order, id",
+      "SELECT * FROM menu_items
+       WHERE available = 1
+         AND name NOT IN (
+           'Pilau',
+           'Trip',
+           'Beef (Highfield)',
+           'Pork Trotters / Bones',
+           'Sadza Rezviyo / Remhunga',
+           'Muriwo Une Dovi',
+           'Pilau / Jollof Rice',
+           'Plain Rice (Wali)'
+         )
+         AND name NOT LIKE 'Mguu wamb%'
+       ORDER BY kind, category_slug, sort_order, id",
     )
     .all<MenuItemRow>();
 
