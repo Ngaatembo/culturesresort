@@ -36,11 +36,11 @@ export const Route = createFileRoute("/menu")({
   component: Menu,
 });
 
-/** Category slug -> placeholder photo, until the restaurant supplies real photography. */
+/** Category slug -> real photo of that category. */
 const CATEGORY_IMAGE: Record<string, keyof typeof images> = {
   starters: "craft",
   "main-meals": "food",
-  grills: "garden",
+  grills: "nyamaChomaGrillStation",
   sides: "food",
   "traditional-drinks": "traditionalDrinkPouring",
   cocktails: "drums",

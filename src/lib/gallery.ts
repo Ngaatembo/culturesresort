@@ -50,6 +50,12 @@ import chickenOnGrate1600 from "@/assets/chicken-on-grate-closeup-1600w.webp";
 import grillTwoStaffMeatBoard from "@/assets/grill-two-staff-meat-board.webp";
 import nyamaChomaGrillCounterWide from "@/assets/nyama-choma-grill-counter-wide.webp";
 import grillBaysTendingFire from "@/assets/grill-bays-tending-fire.webp";
+import seatingLionKudu from "@/assets/seating-lion-kudu.jpg";
+import gazeboArtForSale from "@/assets/gazebo-art-for-sale.jpg";
+import kuduFamilyCloseup from "@/assets/kudu-family-closeup.jpg";
+import elephantZebraSignpost from "@/assets/elephant-zebra-signpost.jpg";
+import nyamaChomaGrillStation from "@/assets/nyama-choma-grill-station.jpg";
+import sausagesMeatOnFlame from "@/assets/sausages-meat-on-flame.jpg";
 
 export const images = {
   garden,
@@ -95,6 +101,12 @@ export const images = {
   feastPlatterMixed,
   sausagesOnGrill,
   lambChopsWideTray,
+  seatingLionKudu,
+  gazeboArtForSale,
+  kuduFamilyCloseup,
+  elephantZebraSignpost,
+  nyamaChomaGrillStation,
+  sausagesMeatOnFlame,
 };
 
 export type GalleryEntry = {
@@ -401,5 +413,42 @@ export const gallery: GalleryEntry[] = [
     alt: "A leopard sculpture at the garden's edge at night, with lit umbrellas and animal statues among the tables beyond",
     caption: "The garden after dark",
     category: "Night",
+  },
+  {
+    src: seatingLionKudu,
+    alt: "A picnic table under an umbrella beside the lion and kudu sculptures, with the thatched pavilion behind",
+    caption: "Seating among the lion and kudu",
+    category: "Garden",
+  },
+  {
+    src: gazeboArtForSale,
+    alt: "Hand-painted canvases leaning against the railing of a garden gazebo, with picnic tables and umbrellas beyond",
+    caption: "African art, under the gazebo",
+    category: "Culture",
+  },
+  {
+    src: kuduFamilyCloseup,
+    alt: "A kudu sculpture with its calf in the foreground, with a baboon, zebra and lion sculpture among the garden tables behind",
+    caption: "The kudu and calf, in the garden",
+    category: "Garden",
+    tall: true,
+  },
+  {
+    src: elephantZebraSignpost,
+    alt: "An elephant sculpture in the foreground, with a zebra grazing near the signpost of African destinations behind",
+    caption: "The elephant, and the signpost beyond",
+    category: "Garden",
+  },
+  {
+    src: nyamaChomaGrillStation,
+    alt: "The three-bay Nyama Choma grill station, unlit, with firewood stacked in each bay",
+    caption: "The Nyama Choma grill, ready for the fire",
+    category: "Details",
+  },
+  {
+    src: sausagesMeatOnFlame,
+    alt: "Sausages and cuts of meat cooking on the grate directly over open flame",
+    caption: "Boerewors, straight over the flame",
+    category: "Fire",
   },
 ];
