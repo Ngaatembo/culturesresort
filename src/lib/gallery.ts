@@ -53,7 +53,6 @@ import gazeboArtForSale from "@/assets/gazebo-art-for-sale.jpg";
 import kuduFamilyCloseup from "@/assets/kudu-family-closeup.jpg";
 import elephantZebraSignpost from "@/assets/elephant-zebra-signpost.jpg";
 import nyamaChomaGrillStation from "@/assets/nyama-choma-grill-station.jpg";
-import sausagesMeatOnFlame from "@/assets/sausages-meat-on-flame.jpg";
 
 export const images = {
   garden,
@@ -104,7 +103,6 @@ export const images = {
   kuduFamilyCloseup,
   elephantZebraSignpost,
   nyamaChomaGrillStation,
-  sausagesMeatOnFlame,
   chickenOnGrate800,
 };
 
@@ -422,11 +420,5 @@ export const gallery: GalleryEntry[] = [
     alt: "The three-bay Nyama Choma grill station, unlit, with firewood stacked in each bay",
     caption: "The Nyama Choma grill, ready for the fire",
     category: "Details",
-  },
-  {
-    src: sausagesMeatOnFlame,
-    alt: "Sausages and cuts of meat cooking on the grate directly over open flame",
-    caption: "Boerewors, straight over the flame",
-    category: "Fire",
   },
 ];
