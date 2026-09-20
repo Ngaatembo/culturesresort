@@ -14,7 +14,6 @@ import staffWelcome from "@/assets/staff-welcome.jpg";
 import gardenLion from "@/assets/garden-lion.jpg";
 import picnicTables from "@/assets/picnic-tables.jpg";
 import nightLeopardStatue from "@/assets/night-leopard-statue.jpg";
-import porkSizzler from "@/assets/pork-sizzler.jpg";
 import playArea from "@/assets/play-area.jpg";
 import goatChopsPlate from "@/assets/goat-chops-plate.jpg";
 import entranceNyamaChoma from "@/assets/entrance-nyama-choma.jpg";
@@ -29,12 +28,10 @@ import ricePotjiePot from "@/assets/rice-potjie-pot.jpg";
 import grilledMeatPlatter from "@/assets/grilled-meat-platter.jpg";
 import gardenPicnicSunlit from "@/assets/garden-picnic-sunlit.webp";
 import craftShopPicnicTables from "@/assets/craft-shop-picnic-tables.jpg";
-import lambChopsPlatter from "@/assets/lamb-chops-platter.jpg";
 import steakOnGrillTomato from "@/assets/steak-on-grill-tomato.jpg";
 import sadzaCouscousTwoPlates from "@/assets/sadza-couscous-two-plates.jpg";
 import kuduStatueGarden from "@/assets/kudu-statue-garden.jpg";
 import wholeGrilledChicken from "@/assets/whole-grilled-chicken.jpg";
-import meatOverOpenCoals from "@/assets/meat-over-open-coals.jpg";
 import entranceBananaLeaves from "@/assets/entrance-banana-leaves.jpg";
 import staffPotOnHead from "@/assets/staff-pot-on-head.jpg";
 import interiorThatchedHall from "@/assets/interior-thatched-hall.jpg";
@@ -69,7 +66,6 @@ export const images = {
   staffWelcome,
   gardenLion,
   picnicTables,
-  porkSizzler,
   playArea,
   goatChopsPlate,
   entranceNyamaChoma,
@@ -84,12 +80,10 @@ export const images = {
   grilledMeatPlatter,
   gardenPicnicSunlit,
   craftShopPicnicTables,
-  lambChopsPlatter,
   steakOnGrillTomato,
   sadzaCouscousTwoPlates,
   kuduStatueGarden,
   wholeGrilledChicken,
-  meatOverOpenCoals,
   entranceBananaLeaves,
   staffPotOnHead,
   interiorThatchedHall,
@@ -189,12 +183,6 @@ export const gallery: GalleryEntry[] = [
     category: "Food",
   },
   {
-    src: porkSizzler,
-    alt: "Sizzling grilled pork served on a hot plate with tomato and onion",
-    caption: "Sizzling grilled pork, straight to the table",
-    category: "Fire",
-  },
-  {
     src: craftBaskets,
     alt: "Hand-painted canvases of African women and woven baskets on display",
     caption: "Local art and woven baskets on display",
@@ -266,12 +254,6 @@ export const gallery: GalleryEntry[] = [
     category: "Garden",
   },
   {
-    src: lambChopsPlatter,
-    alt: "A platter of grilled lamb chops fanned out with a rosemary sprig at the centre",
-    caption: "Grilled lamb chops, plated",
-    category: "Fire",
-  },
-  {
     src: steakOnGrillTomato,
     alt: "Grilled steaks on a cast-iron griddle over the fire, garnished with a tomato slice and rosemary",
     caption: "Steaks, straight off the grill",
@@ -297,12 +279,6 @@ export const gallery: GalleryEntry[] = [
     caption: "Whole chicken, straight off the fire",
     category: "Fire",
     tall: true,
-  },
-  {
-    src: meatOverOpenCoals,
-    alt: "Grilled meat cooking on the grate over live charcoal and open flame",
-    caption: "Over the open coals",
-    category: "Fire",
   },
   {
     src: entranceBananaLeaves,
