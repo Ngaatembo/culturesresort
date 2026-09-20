@@ -241,7 +241,7 @@ export const syncClientMenu = createServerFn({ method: "POST" })
       ["UPDATE menu_items SET price_cents=0,updated_at=datetime('now') WHERE id IN (SELECT menu_item_id FROM menu_item_options)"],
     ];
 
-    for (const [sql] of statements) {
+    for (const sql of statements.flat()) {
       await db.prepare(sql).run();
     }
     return { ok: true as const };
