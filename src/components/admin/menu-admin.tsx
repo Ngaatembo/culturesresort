@@ -52,7 +52,10 @@ export function MenuAdminPage({ kind, noun }: { kind: MenuKind; noun: string }) 
   const [imageError, setImageError] = useState<string | null>(null);
   const [videoBusyId, setVideoBusyId] = useState<number | null>(null);
   const [videoError, setVideoError] = useState<string | null>(null);
-  const [newDrafts, setNewDrafts] = useState<Record<string, NewItemDraft>>({});\n  const [options, setOptions] = useState<Record<number, { id:number; menu_item_id:number; label:string; price_cents:number; sort_order:number }[]>>({});\n  const [optionDrafts, setOptionDrafts] = useState<Record<number, OptionDraft>>({});\n  const [syncing, setSyncing] = useState(false);
+  const [newDrafts, setNewDrafts] = useState<Record<string, NewItemDraft>>({});
+  const [options, setOptions] = useState<Record<number, { id:number; menu_item_id:number; label:string; price_cents:number; sort_order:number }[]>>({});
+  const [optionDrafts, setOptionDrafts] = useState<Record<number, OptionDraft>>({});
+  const [syncing, setSyncing] = useState(false);
   const [addingSlug, setAddingSlug] = useState<string | null>(null);
   const fileInputs = useRef<Record<number, HTMLInputElement | null>>({});
   const videoInputs = useRef<Record<number, HTMLInputElement | null>>({});
