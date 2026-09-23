@@ -49,6 +49,9 @@ import gazeboArtForSale from "@/assets/gazebo-art-for-sale.jpg";
 import kuduFamilyCloseup from "@/assets/kudu-family-closeup.jpg";
 import elephantZebraSignpost from "@/assets/elephant-zebra-signpost.jpg";
 import nyamaChomaGrillStation from "@/assets/nyama-choma-grill-station.jpg";
+import porkSizzler from "@/assets/pork-sizzler.jpg";
+import meatOverOpenCoals from "@/assets/meat-over-open-coals.jpg";
+import lambChopsPlatter from "@/assets/lamb-chops-platter.jpg";
 
 export const images = {
   garden,
@@ -96,6 +99,9 @@ export const images = {
   elephantZebraSignpost,
   nyamaChomaGrillStation,
   chickenOnGrate800,
+  porkSizzler,
+  meatOverOpenCoals,
+  lambChopsPlatter,
 };
 
 export type GalleryEntry = {
