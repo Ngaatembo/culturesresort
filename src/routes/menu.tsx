@@ -289,7 +289,7 @@ function Menu() {
                                                 className={cn(
                                                   "flex min-h-11 items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left transition-colors",
                                                   selected
-                                                    ? "border-primary bg-primary/10"
+                                                    ? "border-secondary bg-secondary/30"
                                                     : "border-border hover:bg-secondary",
                                                 )}
                                               >
