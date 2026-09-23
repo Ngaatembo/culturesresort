@@ -57,6 +57,9 @@ function Menu() {
   const [menuData, setMenuData] = useState<Record<MenuKind, MenuCategoryOut[]> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { add, has } = useOrder();
+  // Which portion is selected for each multi-portion item, keyed by menu item id.
+  // Defaults to the first portion so "Add to order" always has something to add.
+  const [selectedOption, setSelectedOption] = useState<Record<number, number>>({});
   const [playVideo, setPlayVideo] = useState(false);
 
   useEffect(() => {
@@ -223,7 +226,9 @@ function Menu() {
                               <div className="w-[38%] shrink-0 sm:w-2/5">
                                 <DishMedia
                                   imageSrc={photo}
-                                  videoSrc={item.videoUrl ? `/gallery-image/${item.videoUrl}` : null}
+                                  videoSrc={
+                                    item.videoUrl ? `/gallery-image/${item.videoUrl}` : null
+                                  }
                                   alt={item.name}
                                   className="h-full min-h-36"
                                 />
@@ -248,34 +253,70 @@ function Menu() {
                                 {item.description}
                               </p>
                               {item.options.length ? (
-                                <div className="mt-4 space-y-2">
-                                  <p className="eyebrow text-muted-foreground">Choose portion</p>
-                                  <div className="grid gap-2 sm:grid-cols-2">
-                                    {item.options.map((option) => {
-                                      const optionId = `${item.id}:${option.id}`;
-                                      const optionName = `${item.name} (${option.label})`;
-                                      return (
-                                        <button
-                                          key={option.id}
-                                          type="button"
-                                          onClick={() =>
-                                            add({
-                                              id: optionId,
-                                              name: optionName,
-                                              category: category.title,
-                                              price: option.price,
-                                            })
-                                          }
-                                          aria-label={`Add ${optionName} to your order, ${option.price}`}
-                                          className="flex min-h-11 items-center justify-between gap-2 rounded-xl border border-border px-3 py-2 text-left transition-colors hover:bg-secondary"
-                                        >
-                                          <span className="text-sm font-medium">{option.label}</span>
-                                          <span className="text-sm font-medium text-foreground">{option.price}</span>
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
+                                (() => {
+                                  const chosenId = selectedOption[item.id] ?? item.options[0]!.id;
+                                  const chosenOption =
+                                    item.options.find((o) => o.id === chosenId) ?? item.options[0]!;
+                                  const optionId = `${item.id}:${chosenOption.id}`;
+                                  const optionName = `${item.name} (${chosenOption.label})`;
+                                  return (
+                                    <div className="mt-4 space-y-3">
+                                      <div className="space-y-2">
+                                        <p className="eyebrow text-muted-foreground">
+                                          Choose portion
+                                        </p>
+                                        <div className="grid gap-2 sm:grid-cols-2">
+                                          {item.options.map((option) => {
+                                            const selected = option.id === chosenOption.id;
+                                            return (
+                                              <button
+                                                key={option.id}
+                                                type="button"
+                                                aria-pressed={selected}
+                                                onClick={() =>
+                                                  setSelectedOption((prev) => ({
+                                                    ...prev,
+                                                    [item.id]: option.id,
+                                                  }))
+                                                }
+                                                aria-label={`Select portion ${option.label}, ${option.price}`}
+                                                className={cn(
+                                                  "flex min-h-11 items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left transition-colors",
+                                                  selected
+                                                    ? "border-primary bg-primary/10"
+                                                    : "border-border hover:bg-secondary",
+                                                )}
+                                              >
+                                                <span className="text-sm font-medium">
+                                                  {option.label}
+                                                </span>
+                                                <span className="text-sm font-medium text-foreground">
+                                                  {option.price}
+                                                </span>
+                                              </button>
+                                            );
+                                          })}
+                                        </div>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          add({
+                                            id: optionId,
+                                            name: optionName,
+                                            category: category.title,
+                                            price: chosenOption.price,
+                                          })
+                                        }
+                                        aria-label={`Add ${optionName} to your order, ${chosenOption.price}`}
+                                        className="eyebrow flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
+                                      >
+                                        <Plus className="h-4 w-4" aria-hidden="true" />
+                                        {has(optionId) ? "Added — add another" : "Add to order"}
+                                      </button>
+                                    </div>
+                                  );
+                                })()
                               ) : (
                                 <button
                                   type="button"
@@ -308,18 +349,22 @@ function Menu() {
             <div>
               <p className="eyebrow rule-ochre text-primary">Please note</p>
               <p className="mt-6 max-w-xl leading-relaxed text-muted-foreground">
-                Portion prices are shown where the current menu provides different sizes. If an item is
-                marked "On request", please contact Cultures Resort to confirm today's price and availability.
+                Portion prices are shown where the current menu provides different sizes. If an item
+                is marked "On request", please contact Cultures Resort to confirm today's price and
+                availability.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href={business.phoneHref} className="eyebrow border border-border px-7 py-4">
                   Call {business.phoneDisplay}
                 </a>
-{business.phoneDisplay2 ? (
-  <a href={business.phoneHref2 ?? undefined} className="eyebrow border border-border px-7 py-4">
-    Call {business.phoneDisplay2}
-  </a>
-) : null}
+                {business.phoneDisplay2 ? (
+                  <a
+                    href={business.phoneHref2 ?? undefined}
+                    className="eyebrow border border-border px-7 py-4"
+                  >
+                    Call {business.phoneDisplay2}
+                  </a>
+                ) : null}
                 <a
                   href={business.whatsappHref}
                   target="_blank"
