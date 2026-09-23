@@ -217,6 +217,12 @@ function Menu() {
                         // Food without a real photo gets a text-only card; only
                         // beverages keep the category placeholder image.
                         const photo = mappedPhoto ?? (course === "food" ? null : images[imageKey]);
+                        // A "choice" only exists with 2+ portions. A single stored portion
+                        // (e.g. "Portion" at $14) is not a real choice and should use the
+                        // normal single-price card treatment.
+                        const hasChoice = item.options.length > 1;
+                        const singleOption = item.options.length === 1 ? item.options[0] : null;
+                        const displayPrice = singleOption ? singleOption.price : item.price;
                         return (
                           <li
                             key={item.id}
@@ -239,9 +245,9 @@ function Menu() {
                                 <h3 className="min-w-0 font-display text-lg leading-tight">
                                   {item.name}
                                 </h3>
-                                {item.options.length ? null : (
+                                {hasChoice ? null : (
                                   <span className="shrink-0 rounded-full bg-secondary px-3 py-1 text-sm text-foreground">
-                                    {item.price}
+                                    {displayPrice}
                                   </span>
                                 )}
                               </div>
@@ -252,7 +258,7 @@ function Menu() {
                               <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
                                 {item.description}
                               </p>
-                              {item.options.length ? (
+                              {hasChoice ? (
                                 (() => {
                                   const chosenId = selectedOption[item.id] ?? item.options[0]!.id;
                                   const chosenOption =
@@ -325,7 +331,7 @@ function Menu() {
                                       id: String(item.id),
                                       name: item.name,
                                       category: category.title,
-                                      price: item.price,
+                                      price: displayPrice,
                                     })
                                   }
                                   className="eyebrow mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
