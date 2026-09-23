@@ -83,7 +83,7 @@ function buildNav(counts: Partial<Record<string, number>>): NavGroup[] {
       label: "Content",
       items: [
         { to: "/admin/menu", label: "Food Menu", icon: UtensilsCrossed },
-        { to: "/admin/beverages", label: "Beverages", icon: Wine },
+        { to: "/admin/beverages", label: "Bar & Beverages", icon: Wine },
         { to: "/admin/gallery", label: "Gallery", icon: ImageIcon },
         { to: "/admin/events", label: "Events & Functions", icon: CalendarDays },
       ],
@@ -232,7 +232,7 @@ function titleFromPath(pathname: string) {
     "/admin/reservations": "Reservations",
     "/admin/enquiries": "Enquiries",
     "/admin/menu": "Food Menu",
-    "/admin/beverages": "Beverages",
+    "/admin/beverages": "Bar & Beverages",
     "/admin/gallery": "Gallery",
     "/admin/events": "Events & Functions",
     "/admin/hours": "Opening Hours",
