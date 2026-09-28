@@ -77,10 +77,10 @@ function Privacy() {
           <section>
             <h2 className="font-display text-2xl text-foreground">Who can see it</h2>
             <p className="mt-3">
-              Our staff who handle bookings, enquiries and orders. When you submit a form, we also
-              send an email notification to the restaurant through an email service (Resend), and
-              the website's data is stored with our hosting provider (Cloudflare). These providers
-              handle your details only to deliver the website and the notification for us.
+              Our staff who handle bookings, enquiries and orders, through the restaurant's admin
+              area of this website. The website's data is stored with our hosting provider
+              (Cloudflare), which handles it only to run the website for us. We do not share your
+              details with anyone else.
             </p>
           </section>
 
