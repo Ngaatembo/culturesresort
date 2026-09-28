@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   listOrders,
   updateOrderStatus,
@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { EmptyState, ErrorState, LoadingRows, PageHeader } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
+import { AlertControl, useAlertSound, useNewArrivals } from "@/lib/admin-alerts";
 
 export const Route = createFileRoute("/admin/kitchen")({
   component: KitchenPage,
@@ -27,11 +28,26 @@ const COLUMNS: {
 function KitchenPage() {
   const [orders, setOrders] = useState<OrderWithItems[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const sound = useAlertSound();
+  const arrivals = useNewArrivals();
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const playRef = useRef(sound.play);
+  playRef.current = sound.play;
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const load = () => {
     setError(null);
     listOrders()
-      .then(setOrders)
+      .then((list) => {
+        setOrders(list);
+        const fresh = arrivals({ order: list.reduce((max, o) => Math.max(max, o.id), 0) });
+        if (fresh.length > 0) {
+          playRef.current();
+          setAlertMessage("New order");
+          clearTimeout(hideTimer.current);
+          hideTimer.current = setTimeout(() => setAlertMessage(null), 10000);
+        }
+      })
       .catch((err) =>
         setError(err instanceof Error ? err.message : "Couldn't load the kitchen queue."),
       );
@@ -41,6 +57,8 @@ function KitchenPage() {
     load();
     const id = setInterval(load, 20000);
     return () => clearInterval(id);
+    // `load` only uses stable callbacks/refs, so it is safe to start the poll once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setStatus = async (id: number, status: OrderStatus) => {
@@ -137,6 +155,12 @@ function KitchenPage() {
           description="New orders will appear here the moment they're placed."
         />
       ) : null}
+      <AlertControl
+        muted={sound.muted}
+        ready={sound.ready}
+        onToggle={sound.toggleMuted}
+        message={alertMessage}
+      />
     </div>
   );
 }
