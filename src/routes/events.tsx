@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { Reveal } from "@/components/reveal";
-import { images } from "@/lib/gallery";
 import cateringBuffetLine from "@/assets/catering-buffet-line.jpg";
-import { useSlotImage } from "@/lib/homepage-images";
 import { createBooking } from "@/lib/data/bookings";
 import { listPublicEvents, type SiteEventRow } from "@/lib/data/site-events";
 import { useSiteSettings } from "@/lib/site-settings-query";
@@ -52,7 +50,6 @@ const steps = [
 
 function Events() {
   const { business, eventRequirements, eventTypes, visitDetails } = useSiteSettings();
-  const cultureImg = useSlotImage("drums", images.drums);
   const [siteEvents, setSiteEvents] = useState<SiteEventRow[]>([]);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,12 +69,12 @@ function Events() {
         eyebrow="Events & functions"
         title="Gatherings under the trees — or wherever you're hosting"
         intro="Birthdays, family gatherings, weddings, roora and business functions — host at Cultures Resort (groups up to 200 guests) or have the team cater at your own venue. Tell us what you have in mind and the team will come back to you directly."
-        image={cultureImg}
-        imageAlt="A staff member in traditional-pattern uniform beside African paintings and art on display"
+        image={cateringBuffetLine}
+        imageAlt="A Cultures Resort team member setting up a long line of chafing dishes on a buffet table under a tent, with stacks of plates ready"
       />
 
       <section className="bg-clay py-16 text-bone lg:py-24">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 lg:grid-cols-2 lg:gap-16 lg:px-10">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal className="max-w-2xl">
             <p className="eyebrow text-ochre">Catering, wherever you need it</p>
             <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3rem)] leading-tight">
@@ -89,14 +86,6 @@ function Events() {
               you'd rather host at your own venue, the team can bring the food and the fire to you.
               Wherever you're asked, that's where they'll go.
             </p>
-          </Reveal>
-          <Reveal delay={120}>
-            <img
-              src={cateringBuffetLine}
-              alt="A Cultures Resort team member setting up a long line of chafing dishes on a buffet table under a tent, with stacks of plates ready"
-              loading="lazy"
-              className="mx-auto aspect-[3/4] w-full max-w-md rounded-2xl object-cover shadow-sm"
-            />
           </Reveal>
         </div>
       </section>
