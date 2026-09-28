@@ -124,6 +124,10 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-bone/10 px-5 py-6 text-center text-xs text-bone/45 lg:px-10">
         © {new Date().getFullYear()} Cultures Resort, Harare.
+        <span aria-hidden="true"> · </span>
+        <Link to="/privacy" className="underline underline-offset-2 hover:text-ochre">
+          Privacy Policy
+        </Link>
       </div>
     </footer>
   );

@@ -185,7 +185,7 @@ function StaffPage() {
             </label>
             <PasswordInput
               required
-              minLength={4}
+              minLength={10}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"

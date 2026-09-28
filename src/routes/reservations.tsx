@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { FormPrivacyNotice } from "@/components/form-privacy-notice";
 import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
@@ -274,6 +275,7 @@ function Reservations() {
                 </label>
               </div>
 
+              <FormPrivacyNotice />
               <button
                 type="submit"
                 disabled={submitting}
