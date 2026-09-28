@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 const categories = ["All", "People", "Food", "Fire", "Garden", "Culture", "Night", "Details"] as const;
 /** Photos held in the admin database that the owner asked to hide from the public gallery. Stopgap for when the admin delete control isn't working; the rows themselves are left untouched. */
-const HIDDEN_CAPTIONS = new Set(["The grounds at sunset", "The garden after dark"]);
+const HIDDEN_CAPTIONS = new Set(["The grounds at sunset", "The garden after dark", "Seared steaks, straight to the table", "Straight over the coals"]);
 /** Fixed, sensible reading order for the grouped "All" view — not just insertion order. */
 const SECTION_ORDER = ["Garden", "Food", "Fire", "Culture", "Night", "People", "Details"] as const;
 /** Card widths for `srcSet` entries: about a third of the viewport on desktop (the grid has spanning tiles), half on mobile. */
