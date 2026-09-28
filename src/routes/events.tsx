@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
+import cateringBuffetLine from "@/assets/catering-buffet-line.jpg";
 import { useSlotImage } from "@/lib/homepage-images";
 import { createBooking } from "@/lib/data/bookings";
 import { listPublicEvents, type SiteEventRow } from "@/lib/data/site-events";
@@ -76,7 +77,7 @@ function Events() {
       />
 
       <section className="bg-clay py-16 text-bone lg:py-24">
-        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 lg:grid-cols-2 lg:gap-16 lg:px-10">
           <Reveal className="max-w-2xl">
             <p className="eyebrow text-ochre">Catering, wherever you need it</p>
             <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3rem)] leading-tight">
@@ -88,6 +89,14 @@ function Events() {
               you'd rather host at your own venue, the team can bring the food and the fire to you.
               Wherever you're asked, that's where they'll go.
             </p>
+          </Reveal>
+          <Reveal delay={120}>
+            <img
+              src={cateringBuffetLine}
+              alt="A Cultures Resort team member setting up a long line of chafing dishes on a buffet table under a tent, with stacks of plates ready"
+              loading="lazy"
+              className="mx-auto aspect-[3/4] w-full max-w-md rounded-2xl object-cover shadow-sm"
+            />
           </Reveal>
         </div>
       </section>
