@@ -1,10 +1,11 @@
 import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AdminShell, KitchenShell } from "@/components/admin/shell";
 import { getDashboardStats, type DashboardStats } from "@/lib/data/dashboard";
 import { getAdminSession } from "@/lib/auth/functions";
 import { canAccessRoute, defaultRouteForRole } from "@/lib/auth/permissions";
 import type { AdminRole } from "@/lib/auth/admin-users";
+import { AlertControl, useAlertSound, useNewArrivals } from "@/lib/admin-alerts";
 
 const PUBLIC_ADMIN_PATHS = new Set(["/admin/login", "/admin/setup"]);
 
@@ -68,6 +69,11 @@ function AdminLayout() {
   const isPublicPage = PUBLIC_ADMIN_PATHS.has(pathname);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [role, setRole] = useState<AdminRole | null>(null);
+  const sound = useAlertSound();
+  const arrivals = useNewArrivals();
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const playRef = useRef(sound.play);
+  playRef.current = sound.play;
 
   useEffect(() => {
     getAdminSession().then((s) => setRole(s?.role ?? null));
@@ -76,17 +82,41 @@ function AdminLayout() {
   useEffect(() => {
     if (isPublicPage || role === "kitchen") return;
     let cancelled = false;
-    getDashboardStats()
-      .then((s) => {
-        if (!cancelled) setStats(s);
-      })
-      .catch(() => {
-        /* sidebar badges just stay hidden if this fails — non-critical */
-      });
+    let hideTimer: ReturnType<typeof setTimeout> | undefined;
+    const labels: Record<string, string> = {
+      order: "New order",
+      booking: "New reservation request",
+      enquiry: "New enquiry",
+    };
+    const load = () => {
+      getDashboardStats()
+        .then((s) => {
+          if (cancelled) return;
+          setStats(s);
+          const fresh = arrivals({
+            order: s.latestOrderId,
+            booking: s.latestBookingId,
+            enquiry: s.latestEnquiryId,
+          });
+          if (fresh.length > 0) {
+            playRef.current();
+            setAlertMessage(fresh.map((k) => labels[k]).join(" · "));
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(() => setAlertMessage(null), 10000);
+          }
+        })
+        .catch(() => {
+          /* sidebar badges just stay as they were if this fails — non-critical */
+        });
+    };
+    load();
+    const id = setInterval(load, 25000);
     return () => {
       cancelled = true;
+      clearInterval(id);
+      clearTimeout(hideTimer);
     };
-  }, [isPublicPage, role]);
+  }, [isPublicPage, role, arrivals]);
 
   if (isPublicPage) {
     return <Outlet />;
@@ -111,6 +141,12 @@ function AdminLayout() {
       }}
     >
       <Outlet />
+      <AlertControl
+        muted={sound.muted}
+        ready={sound.ready}
+        onToggle={sound.toggleMuted}
+        message={alertMessage}
+      />
     </AdminShell>
   );
 }
