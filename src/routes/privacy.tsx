@@ -78,9 +78,9 @@ function Privacy() {
             <h2 className="font-display text-2xl text-foreground">Who can see it</h2>
             <p className="mt-3">
               Our staff who handle bookings, enquiries and orders, through the restaurant's admin
-              area of this website. The website's data is stored with our hosting provider
-              (Cloudflare), which handles it only to run the website for us. We do not share your
-              details with anyone else.
+              area of this website. The website is run with the help of a professional web hosting
+              provider, which stores the website's data and handles it only to keep the website
+              running. We do not share your details with anyone else.
             </p>
           </section>
 
