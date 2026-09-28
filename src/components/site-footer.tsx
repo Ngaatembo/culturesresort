@@ -128,6 +128,10 @@ export function SiteFooter() {
         <Link to="/privacy" className="underline underline-offset-2 hover:text-ochre">
           Privacy Policy
         </Link>
+        <span aria-hidden="true"> · </span>
+        <Link to="/terms" className="underline underline-offset-2 hover:text-ochre">
+          Terms
+        </Link>
       </div>
     </footer>
   );
