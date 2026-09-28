@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { FormPrivacyNotice } from "@/components/form-privacy-notice";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
@@ -334,6 +335,7 @@ function Events() {
                       {error}
                     </p>
                   ) : null}
+                  <FormPrivacyNotice />
                   <button
                     type="submit"
                     disabled={submitting}

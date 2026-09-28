@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { FormPrivacyNotice } from "@/components/form-privacy-notice";
 import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
@@ -327,6 +328,7 @@ function Contact() {
                       {error}
                     </p>
                   ) : null}
+                  <FormPrivacyNotice />
                   <button
                     type="submit"
                     disabled={submitting}

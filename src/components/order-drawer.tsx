@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { FormPrivacyNotice } from "@/components/form-privacy-notice";
 import { useEffect, useState } from "react";
 import { Minus, Plus, X } from "lucide-react";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
@@ -225,6 +226,7 @@ export function OrderDrawer() {
                 />
               </div>
               {error ? <p className="text-xs text-destructive">{error}</p> : null}
+              <FormPrivacyNotice />
               <button
                 type="button"
                 onClick={handlePlaceOrder}

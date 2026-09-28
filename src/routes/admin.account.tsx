@@ -31,8 +31,8 @@ function AccountPage() {
     e.preventDefault();
     setError(null);
     setSuccess(false);
-    if (newPassword.length < 4) {
-      setError("New password must be at least 4 characters.");
+    if (newPassword.length < 10) {
+      setError("New password must be at least 10 characters.");
       return;
     }
     if (newPassword !== confirm) {
@@ -86,7 +86,7 @@ function AccountPage() {
             </label>
             <PasswordInput
               required
-              minLength={4}
+              minLength={10}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               autoComplete="new-password"
@@ -98,7 +98,7 @@ function AccountPage() {
             </label>
             <PasswordInput
               required
-              minLength={4}
+              minLength={10}
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               autoComplete="new-password"

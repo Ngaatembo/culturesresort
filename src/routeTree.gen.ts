@@ -17,6 +17,7 @@ import { Route as ExperienceRouteImport } from './routes/experience'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as OurStoryRouteImport } from './routes/our-story'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ReservationsRouteImport } from './routes/reservations'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAccountRouteImport } from './routes/admin.account'
@@ -76,6 +77,11 @@ const MenuRoute = MenuRouteImport.update({
 const OurStoryRoute = OurStoryRouteImport.update({
   id: '/our-story',
   path: '/our-story',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReservationsRoute = ReservationsRouteImport.update({
@@ -188,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/menu': typeof MenuRoute
   '/our-story': typeof OurStoryRoute
+  '/privacy': typeof PrivacyRoute
   '/reservations': typeof ReservationsRoute
   '/admin/account': typeof AdminAccountRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -217,6 +224,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/menu': typeof MenuRoute
   '/our-story': typeof OurStoryRoute
+  '/privacy': typeof PrivacyRoute
   '/reservations': typeof ReservationsRoute
   '/admin/account': typeof AdminAccountRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -248,6 +256,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/menu': typeof MenuRoute
   '/our-story': typeof OurStoryRoute
+  '/privacy': typeof PrivacyRoute
   '/reservations': typeof ReservationsRoute
   '/admin/account': typeof AdminAccountRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/menu'
     | '/our-story'
+    | '/privacy'
     | '/reservations'
     | '/admin/account'
     | '/admin/activity'
@@ -309,6 +319,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/menu'
     | '/our-story'
+    | '/privacy'
     | '/reservations'
     | '/admin/account'
     | '/admin/activity'
@@ -339,6 +350,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/menu'
     | '/our-story'
+    | '/privacy'
     | '/reservations'
     | '/admin/account'
     | '/admin/activity'
@@ -370,6 +382,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   MenuRoute: typeof MenuRoute
   OurStoryRoute: typeof OurStoryRoute
+  PrivacyRoute: typeof PrivacyRoute
   ReservationsRoute: typeof ReservationsRoute
   GalleryImageSplatRoute: typeof GalleryImageSplatRoute
 }
@@ -430,6 +443,13 @@ declare module '@tanstack/react-router' {
       path: '/our-story'
       fullPath: '/our-story'
       preLoaderRoute: typeof OurStoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reservations': {
@@ -628,6 +648,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   MenuRoute: MenuRoute,
   OurStoryRoute: OurStoryRoute,
+  PrivacyRoute: PrivacyRoute,
   ReservationsRoute: ReservationsRoute,
   GalleryImageSplatRoute: GalleryImageSplatRoute,
 }
