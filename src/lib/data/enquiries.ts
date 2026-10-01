@@ -18,6 +18,14 @@ export const createEnquiry = createServerFn({ method: "POST" })
     if (!data.name?.trim() || !data.message?.trim()) {
       throw new Error("Name and message are required.");
     }
+    if (
+      data.name.length > 100 ||
+      (data.phone?.length ?? 0) > 30 ||
+      (data.email?.length ?? 0) > 255 ||
+      data.message.length > 1500
+    ) {
+      throw new Error("Some details are too long. Please shorten them and try again.");
+    }
     const db = getDb();
     const result = await db
       .prepare("INSERT INTO enquiries (name, phone, email, message) VALUES (?, ?, ?, ?)")

@@ -19,8 +19,8 @@ import { useSiteSettings } from "@/lib/site-settings-query";
  * (see routes/index.tsx) rather than its own section, so reviews reads
  * as one block instead of two back-to-back sections about the same topic.
  */
-const GOOGLE_RATING = { score: "4.1", count: "476 reviews" };
-const TRIPADVISOR_RATING = { score: "4.7", count: "9 reviews" };
+// Rating numbers and review counts are deliberately not hard-coded: they go
+// stale, and the live figures are one click away on each platform.
 
 export function TrustReviews() {
   const { business, socialLinks } = useSiteSettings();
@@ -47,7 +47,7 @@ export function TrustReviews() {
           <div className="flex items-start justify-between">
             <span className="eyebrow flex items-center gap-1.5 text-ochre">
               <Star className="h-4 w-4 fill-ochre" aria-hidden="true" />
-              {GOOGLE_RATING.score}
+              Google
             </span>
             <ExternalLink
               className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary"
@@ -56,7 +56,7 @@ export function TrustReviews() {
           </div>
           <div>
             <p className="font-display text-lg leading-tight">Read our Google reviews</p>
-            <p className="mt-2 text-sm text-muted-foreground">{GOOGLE_RATING.count} on Google.</p>
+            <p className="mt-2 text-sm text-muted-foreground">See what guests say on Google.</p>
           </div>
         </a>
 
@@ -69,7 +69,7 @@ export function TrustReviews() {
           <div className="flex items-start justify-between">
             <span className="eyebrow flex items-center gap-1.5 text-ochre">
               <Star className="h-4 w-4 fill-ochre" aria-hidden="true" />
-              {TRIPADVISOR_RATING.score}
+              TripAdvisor
             </span>
             <ExternalLink
               className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary"
@@ -79,7 +79,7 @@ export function TrustReviews() {
           <div>
             <p className="font-display text-lg leading-tight">Read our TripAdvisor reviews</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              {TRIPADVISOR_RATING.count} on TripAdvisor.
+              See what guests say on TripAdvisor.
             </p>
           </div>
         </a>

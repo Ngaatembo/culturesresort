@@ -12,7 +12,9 @@ export const Route = createFileRoute("/gallery-image/$")({
     handlers: {
       GET: async ({ params }) => {
         const key = params._splat;
-        if (!key) {
+        // Only the public media prefixes are served; no path tricks.
+        const PUBLIC_PREFIXES = ["gallery/", "menu/", "menu-video/", "events/"];
+        if (!key || key.includes("..") || !PUBLIC_PREFIXES.some((p) => key.startsWith(p))) {
           return new Response("Not found", { status: 404 });
         }
         const bucket = getGalleryBucket();

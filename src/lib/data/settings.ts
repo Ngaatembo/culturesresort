@@ -90,11 +90,30 @@ export const getSiteSettings = createServerFn({ method: "GET" }).handler(
       eventTypes: parse(KEYS.eventTypes, []),
       eventRequirements: parse(KEYS.eventRequirements, []),
       closureBanner: parse(KEYS.closureBanner, { enabled: false, message: "" }),
-      notifications: parse(KEYS.notifications, { enabled: false, email: "" }),
+      // Never returned from this public function — the owner's notification email
+      // is read through the owner-only getNotificationPrefs() below.
+      notifications: { enabled: false, email: "" },
       homepageImages: parse(KEYS.homepageImages, {} as HomepageImages),
     };
   },
 );
+
+/** Owner-only — the notification email/toggle, kept out of the public settings payload. */
+export const getNotificationPrefs = createServerFn({ method: "GET" })
+  .middleware([ownerOnlyMiddleware])
+  .handler(async (): Promise<NotificationPrefs> => {
+    const db = getDb();
+    const row = await db
+      .prepare("SELECT value FROM site_settings WHERE key = 'notifications'")
+      .first<{ value: string }>();
+    try {
+      return row?.value
+        ? (JSON.parse(row.value) as NotificationPrefs)
+        : { enabled: false, email: "" };
+    } catch {
+      return { enabled: false, email: "" };
+    }
+  });
 
 const SETTING_KEYS = new Set<string>(Object.values(KEYS));
 

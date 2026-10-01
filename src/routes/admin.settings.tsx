@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getAdminSession } from "@/lib/auth/functions";
 import {
+  getNotificationPrefs,
   getSiteSettings,
   updateSiteSetting,
   type ClosureBanner,
@@ -93,7 +94,7 @@ function NotificationsCard() {
   const [error, setError] = useState<string | null>(null);
 
   const load = () => {
-    getSiteSettings().then((s) => setPrefs(s.notifications));
+    getNotificationPrefs().then(setPrefs);
     getResendKeyStatus().then(setKeyStatus);
   };
   useEffect(load, []);
@@ -143,7 +144,8 @@ function NotificationsCard() {
   return (
     <SectionCard title="Email notifications" className="border-accent/40">
       <p className="text-sm text-muted-foreground">
-        Sends an email (via Resend) every time a new order, booking or enquiry comes in from the website.
+        Sends an email (via Resend) every time a new order, booking or enquiry comes in from the
+        website.
       </p>
 
       <div className="mt-4 space-y-4">

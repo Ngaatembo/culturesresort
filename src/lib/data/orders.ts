@@ -31,6 +31,26 @@ export const placeOrder = createServerFn({ method: "POST" })
       throw new Error("Your order is empty.");
     }
 
+    if (
+      customerName.length > 100 ||
+      customerPhone.length > 30 ||
+      (notes?.length ?? 0) > 500 ||
+      lines.length > 40 ||
+      lines.some(
+        (l) =>
+          typeof l.name !== "string" ||
+          l.name.length > 200 ||
+          !Number.isInteger(l.qty) ||
+          l.qty < 1 ||
+          l.qty > 50 ||
+          !Number.isInteger(l.priceCents) ||
+          l.priceCents < 0 ||
+          l.priceCents > 1_000_000,
+      )
+    ) {
+      throw new Error("Your order has details that are too long or out of range.");
+    }
+
     const db = getDb();
     const totalCents = lines.reduce((sum, l) => sum + l.priceCents * l.qty, 0);
 

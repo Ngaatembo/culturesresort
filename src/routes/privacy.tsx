@@ -27,10 +27,11 @@ function Privacy() {
           <h1 className="mt-4 font-display text-[clamp(2rem,5vw,3.25rem)] leading-tight">
             How we look after your details
           </h1>
-          <p className="mt-4 text-sm text-muted-foreground">Last updated: 28 September 2026</p>
+          <p className="mt-4 text-sm text-muted-foreground">Last updated: 1 October 2026</p>
           <p className="mt-6 text-base leading-relaxed text-muted-foreground">
             This page explains, in plain language, what Cultures Resort does with the details you
-            share through this website. We only ask for what we need to look after your request.
+            share through this website. We only ask for what we need to look after your request, and
+            nothing more.
           </p>
         </Reveal>
 
@@ -47,13 +48,17 @@ function Privacy() {
             <h2 className="font-display text-2xl text-foreground">What we collect</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5">
               <li>
-                <strong className="text-foreground">Reservation and event requests:</strong> your
-                name, phone number, email address (optional), date, number of guests and any message
-                you add.
+                <strong className="text-foreground">Table reservations:</strong> your name, phone or
+                WhatsApp number, date, time, number of guests and an optional note.
               </li>
               <li>
-                <strong className="text-foreground">Enquiries:</strong> your name, phone number and
-                email address (both optional) and your message.
+                <strong className="text-foreground">Event and catering enquiries:</strong> your
+                name, phone or WhatsApp number, type of event, approximate number of guests,
+                preferred date and an optional message.
+              </li>
+              <li>
+                <strong className="text-foreground">General enquiries:</strong> your name, phone or
+                WhatsApp number and your message.
               </li>
               <li>
                 <strong className="text-foreground">Orders:</strong> your name, phone number, the
@@ -61,7 +66,8 @@ function Privacy() {
               </li>
             </ul>
             <p className="mt-3">
-              We do not ask for payment card details, ID numbers or anything else on this website.
+              We do not ask for payment card details, ID numbers, home addresses or anything else on
+              this website. Please don't put sensitive information in the message boxes.
             </p>
           </section>
 
@@ -97,7 +103,8 @@ function Privacy() {
             <p className="mt-3">
               This website does not use advertising or analytics trackers. The only cookie we use is
               a sign-in cookie for our own staff to log in to the admin area, which visitors never
-              receive.
+              receive. The site's fonts and the map on our contact page are loaded from Google, so
+              your browser contacts Google when those load.
             </p>
           </section>
 
@@ -130,9 +137,10 @@ function Privacy() {
               <span className="block">{business.addressLine}</span>
             </address>
             <p className="mt-4">
-              We handle personal information with reference to Zimbabwe's Cyber and Data Protection
-              Act. If you are not happy with how your details have been handled, you can also raise
-              it with the Postal and Telecommunications Regulatory Authority of Zimbabwe (POTRAZ).
+              If you have a question or concern about your details, please contact us first and we
+              will respond. Personal information is handled with reference to Zimbabwe's Cyber and
+              Data Protection Act, and you may also raise a concern with the Postal and
+              Telecommunications Regulatory Authority of Zimbabwe (POTRAZ).
             </p>
           </section>
 

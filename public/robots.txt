@@ -10,5 +10,9 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+# Staff area is not for search engines
 User-agent: *
 Allow: /
+Disallow: /admin
+
+Sitemap: https://culturesresort.co.zw/sitemap.xml

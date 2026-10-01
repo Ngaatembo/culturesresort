@@ -22,6 +22,21 @@ export const createBooking = createServerFn({ method: "POST" })
     if (!data.eventType?.trim() || !data.guestName?.trim() || !data.guestPhone?.trim()) {
       throw new Error("Event type, name and phone are required.");
     }
+    if (
+      data.guestName.length > 100 ||
+      data.guestPhone.length > 30 ||
+      data.eventType.length > 100 ||
+      (data.guestEmail?.length ?? 0) > 255 ||
+      (data.requirements?.length ?? 0) > 500 ||
+      (data.message?.length ?? 0) > 1000 ||
+      (data.eventDate?.length ?? 0) > 20 ||
+      (data.guests !== undefined &&
+        (!Number.isFinite(data.guests) || data.guests < 1 || data.guests > 1000))
+    ) {
+      throw new Error(
+        "Some details are too long or out of range. Please shorten them and try again.",
+      );
+    }
     const db = getDb();
     const result = await db
       .prepare(

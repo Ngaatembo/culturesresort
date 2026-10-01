@@ -50,7 +50,7 @@ const steps = [
 ];
 
 function Events() {
-  const { business, eventRequirements, eventTypes, visitDetails } = useSiteSettings();
+  const { business, eventTypes, visitDetails } = useSiteSettings();
   const [siteEvents, setSiteEvents] = useState<SiteEventRow[]>([]);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -187,11 +187,14 @@ function Events() {
               <a href={business.phoneHref} className="eyebrow border border-border px-7 py-4">
                 Call {business.phoneDisplay}
               </a>
-{business.phoneDisplay2 ? (
-  <a href={business.phoneHref2 ?? undefined} className="eyebrow border border-border px-7 py-4">
-    Call {business.phoneDisplay2}
-  </a>
-) : null}
+              {business.phoneDisplay2 ? (
+                <a
+                  href={business.phoneHref2 ?? undefined}
+                  className="eyebrow border border-border px-7 py-4"
+                >
+                  Call {business.phoneDisplay2}
+                </a>
+              ) : null}
               <a
                 href={business.whatsappHref}
                 target="_blank"
@@ -207,6 +210,20 @@ function Events() {
           <Reveal delay={120} className="lg:col-span-6 lg:col-start-7">
             <div className="border border-border bg-card p-8 lg:p-10">
               <h2 className="font-display text-3xl">Event enquiry</h2>
+              <a
+                href={`${business.whatsappHref}?text=${encodeURIComponent(
+                  "Hello Cultures Resort, I'd like to enquire about an event. Type of event: \nDate: \nApprox. guests: ",
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                className="eyebrow mt-6 flex items-center justify-center gap-2 rounded-full border border-border px-7 py-4 hover:bg-secondary"
+              >
+                <WhatsAppIcon className="h-4 w-4 text-leaf" aria-hidden="true" />
+                Send your event enquiry on WhatsApp
+              </a>
+              <p className="mt-4 text-xs text-muted-foreground">
+                Or leave your details below and the team will contact you.
+              </p>
               {sent ? (
                 <div className="mt-8 border-l-2 border-ochre bg-secondary p-6">
                   <p className="eyebrow text-primary">Enquiry received</p>
@@ -218,8 +235,12 @@ function Events() {
                     </a>
                     {business.phoneDisplay2 ? (
                       <>
-                        {" "}or{" "}
-                        <a href={business.phoneHref2 ?? undefined} className="text-primary underline">
+                        {" "}
+                        or{" "}
+                        <a
+                          href={business.phoneHref2 ?? undefined}
+                          className="text-primary underline"
+                        >
                           {business.phoneDisplay2}
                         </a>
                       </>
@@ -261,10 +282,8 @@ function Events() {
                           eventType: String(data.get("type") ?? eventTypes[0]),
                           guestName: name,
                           guestPhone: phone,
-                          guestEmail: String(data.get("email") ?? "").trim() || undefined,
                           eventDate: String(data.get("date") ?? "") || undefined,
                           guests: data.get("guests") ? Number(data.get("guests")) : undefined,
-                          requirements: data.getAll("requirements").join(", ") || undefined,
                           message: String(data.get("message") ?? "").trim() || undefined,
                         },
                       });
@@ -281,8 +300,7 @@ function Events() {
                   }}
                 >
                   <Field label="Your name" name="name" required maxLength={100} />
-                  <Field label="Phone" name="phone" type="tel" required maxLength={30} />
-                  <Field label="Email (optional)" name="email" type="email" maxLength={255} />
+                  <Field label="Phone / WhatsApp" name="phone" type="tel" required maxLength={30} />
                   <div className="grid gap-5 sm:grid-cols-2">
                     <label className="block">
                       <span className="eyebrow text-muted-foreground">Type of event</span>
@@ -299,30 +317,10 @@ function Events() {
                   </div>
                   <Field label="Preferred date" name="date" type="date" />
 
-                  <fieldset>
-                    <legend className="eyebrow text-muted-foreground">
-                      Anything you need? (optional)
-                    </legend>
-                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                      {eventRequirements.map((r) => (
-                        <label
-                          key={r}
-                          className="flex items-start gap-3 rounded-2xl border border-border p-3 text-sm transition-colors hover:border-primary/40"
-                        >
-                          <input
-                            type="checkbox"
-                            name="requirements"
-                            value={r}
-                            className="mt-1 accent-[var(--ochre)]"
-                          />
-                          <span className="text-muted-foreground">{r}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-
                   <label className="block">
-                    <span className="eyebrow text-muted-foreground">Tell us more</span>
+                    <span className="eyebrow text-muted-foreground">
+                      Anything we should know? (optional)
+                    </span>
                     <textarea
                       name="message"
                       rows={4}
@@ -345,7 +343,7 @@ function Events() {
                   </button>
                   <p className="text-xs leading-relaxed text-muted-foreground">
                     Your enquiry is saved and the team will confirm with you directly by phone or
-                    email.
+                    WhatsApp.
                   </p>
                 </form>
               )}

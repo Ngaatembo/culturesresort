@@ -17,7 +17,7 @@ export const Route = createFileRoute("/contact")({
       {
         name: "description",
         content:
-          "Cultures Resort, Corner Chiremba Road & Southey Road, Hillside, Harare. Call +263 77 295 1308 or email culturesresortzimbabwe@gmail.com.",
+          "Cultures Resort, Corner Chiremba Road & Southey Road, Hillside, Harare. Call +263 77 295 1308 or message us on WhatsApp.",
       },
       { property: "og:title", content: "Contact Cultures Resort, Harare" },
       {
@@ -70,11 +70,17 @@ function Contact() {
               <div>
                 <dt className="eyebrow text-muted-foreground">Phone</dt>
                 <dd className="mt-2 space-y-1">
-                  <a href={business.phoneHref} className="block font-display text-xl hover:text-primary">
+                  <a
+                    href={business.phoneHref}
+                    className="block font-display text-xl hover:text-primary"
+                  >
                     {business.phoneDisplay}
                   </a>
                   {business.phoneDisplay2 ? (
-                    <a href={business.phoneHref2 ?? undefined} className="block font-display text-xl hover:text-primary">
+                    <a
+                      href={business.phoneHref2 ?? undefined}
+                      className="block font-display text-xl hover:text-primary"
+                    >
                       {business.phoneDisplay2}
                     </a>
                   ) : null}
@@ -151,34 +157,20 @@ function Contact() {
               <h2 className="eyebrow text-foreground">Good to know</h2>
               {[
                 {
-                  label: "Dining & offerings",
+                  label: "Dining & catering",
                   items: [
-                    "Dine-in, takeaway & catering",
-                    "Outdoor seating",
-                    "Alcohol, beer, cocktails & wine",
-                    "Happy-hour drinks & food",
-                    "Small plates, quick bite & all-you-can-eat",
-                    "Vegetarian & vegan options",
+                    "Open-air garden dining",
+                    "Traditional African menu, cooked over open fire",
+                    "Maheu welcome for every guest",
+                    "Catering for weddings, roora, birthdays & family functions — on-site or at your venue",
                   ],
                 },
                 {
-                  label: "Great for",
+                  label: "Visiting",
                   items: [
-                    "Great cocktails, wine list & beer selection",
-                    "Great coffee, tea & dessert",
-                    "Breakfast, lunch, dinner & solo dining",
-                    "Casual, cosy, romantic & upmarket atmosphere",
-                    "Families, groups & tourists",
-                    "Hosting groups & events up to 200 guests",
-                  ],
-                },
-                {
-                  label: "Access & payments",
-                  items: [
+                    "Hosts groups & events up to 200 guests",
                     "Guarded on-site parking",
-                    "Wheelchair-accessible entrance, toilet, seating & car park",
-                    "Assistive hearing loop",
-                    "Kids' menu, good for birthdays",
+                    "Kids' play area",
                     "Cash, Ecocash, bank transfer & Visa accepted",
                   ],
                 },
@@ -217,8 +209,12 @@ function Contact() {
                     </a>
                     {business.phoneDisplay2 ? (
                       <>
-                        {" "}or{" "}
-                        <a href={business.phoneHref2 ?? undefined} className="text-primary underline">
+                        {" "}
+                        or{" "}
+                        <a
+                          href={business.phoneHref2 ?? undefined}
+                          className="text-primary underline"
+                        >
                           {business.phoneDisplay2}
                         </a>
                       </>
@@ -247,10 +243,10 @@ function Contact() {
                     e.preventDefault();
                     const data = new FormData(e.currentTarget);
                     const name = String(data.get("name") ?? "").trim();
-                    const subject = String(data.get("subject") ?? "").trim();
                     const body = String(data.get("message") ?? "").trim();
-                    if (name.length < 2 || body.length < 5) {
-                      setError("Please add your name and a short message.");
+                    const phone = String(data.get("phone") ?? "").trim();
+                    if (name.length < 2 || phone.length < 6 || body.length < 5) {
+                      setError("Please add your name, a phone number and a short message.");
                       return;
                     }
                     setError(null);
@@ -259,9 +255,8 @@ function Contact() {
                       await createEnquiry({
                         data: {
                           name,
-                          phone: String(data.get("phone") ?? "").trim() || undefined,
-                          email: String(data.get("email") ?? "").trim() || undefined,
-                          message: subject ? `[${subject}] ${body}` : body,
+                          phone,
+                          message: body,
                         },
                       });
                       setSent(true);
@@ -285,31 +280,13 @@ function Contact() {
                       className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-full transition-colors focus:border-primary"
                     />
                   </label>
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <label className="block">
-                      <span className="eyebrow text-muted-foreground">Phone</span>
-                      <input
-                        name="phone"
-                        type="tel"
-                        maxLength={30}
-                        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-full transition-colors focus:border-primary"
-                      />
-                    </label>
-                    <label className="block">
-                      <span className="eyebrow text-muted-foreground">Email</span>
-                      <input
-                        name="email"
-                        type="email"
-                        maxLength={255}
-                        className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-full transition-colors focus:border-primary"
-                      />
-                    </label>
-                  </div>
                   <label className="block">
-                    <span className="eyebrow text-muted-foreground">Subject</span>
+                    <span className="eyebrow text-muted-foreground">Phone / WhatsApp</span>
                     <input
-                      name="subject"
-                      maxLength={120}
+                      name="phone"
+                      type="tel"
+                      required
+                      maxLength={30}
                       className="mt-2 w-full border border-input bg-background px-4 py-3 text-sm rounded-full transition-colors focus:border-primary"
                     />
                   </label>

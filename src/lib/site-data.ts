@@ -21,7 +21,8 @@ export const business = {
   email: "culturesresort@gmail.com",
   emailAlt: "culturesresortzimbabwe@gmail.com",
   /** VERIFIED — exact GPS pin for the venue, confirmed by the owner. */
-  mapsHref: "https://www.google.com/maps/search/?api=1&query=Cultures+Resort%2C+Hillside%2C+Harare&query_place_id=ChIJMTkSNeOlMRkRoK7kK4kZYbE",
+  mapsHref:
+    "https://www.google.com/maps/search/?api=1&query=Cultures+Resort%2C+Hillside%2C+Harare&query_place_id=ChIJMTkSNeOlMRkRoK7kK4kZYbE",
   mapsEmbedHref: "https://www.google.com/maps?q=-17.8362078,31.0696115&output=embed",
   /** VERIFIED — the restaurant's real, live TripAdvisor listing. */
   tripadvisorHref:
@@ -353,14 +354,10 @@ export const visitDetails = [
     label: "Groups & celebrations",
     value: "Group bookings and celebrations welcome — hosts up to 200 guests",
   },
-  { label: "Dietary options", value: "Vegetarian options available" },
   {
     label: "Payments",
     value: "Cash, Ecocash, bank transfer, and card payments (Visa) accepted",
   },
-  { label: "Takeout & delivery", value: "Both available" },
-  { label: "Accessibility", value: "Wheelchair accessible" },
-  { label: "Drinks", value: "Fully licensed restaurant & bar" },
   { label: "Group reservations", value: "Advance booking recommended for larger groups" },
 ];
 

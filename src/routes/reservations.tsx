@@ -31,7 +31,6 @@ export const Route = createFileRoute("/reservations")({
 type Values = {
   name: string;
   phone: string;
-  email: string;
   date: string;
   time: string;
   guests: string;
@@ -41,7 +40,6 @@ type Values = {
 const empty: Values = {
   name: "",
   phone: "",
-  email: "",
   date: "",
   time: "",
   guests: "2",
@@ -67,8 +65,6 @@ function Reservations() {
     if (v.name.trim().length < 2) next.name = "Please enter your full name.";
     if (v.phone.trim().replace(/\D/g, "").length < 8)
       next.phone = "Please enter a phone number we can reach you on.";
-    if (v.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email.trim()))
-      next.email = "That email doesn't look right.";
     if (!v.date) next.date = "Please choose a date.";
     if (!v.time) next.time = "Please choose a time.";
     const g = Number(v.guests);
@@ -105,7 +101,6 @@ function Reservations() {
                 <Row label="Date" value={submitted.date} />
                 <Row label="Time" value={submitted.time} />
                 <Row label="Guests" value={submitted.guests} />
-                {submitted.email ? <Row label="Email" value={submitted.email} /> : null}
                 {submitted.request ? <Row label="Notes" value={submitted.request} /> : null}
               </dl>
 
@@ -113,11 +108,14 @@ function Reservations() {
                 <a href={business.phoneHref} className="eyebrow border border-border px-7 py-4">
                   Call {business.phoneDisplay}
                 </a>
-{business.phoneDisplay2 ? (
-  <a href={business.phoneHref2 ?? undefined} className="eyebrow border border-border px-7 py-4">
-    Call {business.phoneDisplay2}
-  </a>
-) : null}
+                {business.phoneDisplay2 ? (
+                  <a
+                    href={business.phoneHref2 ?? undefined}
+                    className="eyebrow border border-border px-7 py-4"
+                  >
+                    Call {business.phoneDisplay2}
+                  </a>
+                ) : null}
                 <a
                   href={`${business.whatsappHref}?text=${encodeURIComponent(
                     `Hello Cultures Resort, I'd like to request a table for ${submitted.guests} on ${submitted.date} at ${submitted.time}. Name: ${submitted.name}.`,
@@ -182,7 +180,6 @@ function Reservations() {
                       eventType: "Table reservation",
                       guestName: values.name,
                       guestPhone: values.phone,
-                      guestEmail: values.email || undefined,
                       eventDate: values.date,
                       guests: Number(values.guests),
                       requirements: values.time ? `Time: ${values.time}` : undefined,
@@ -212,26 +209,15 @@ function Reservations() {
                   maxLength={100}
                   autoComplete="name"
                 />
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <Input
-                    label="Phone"
-                    type="tel"
-                    value={values.phone}
-                    onChange={set("phone")}
-                    error={errors.phone}
-                    maxLength={30}
-                    autoComplete="tel"
-                  />
-                  <Input
-                    label="Email (optional)"
-                    type="email"
-                    value={values.email}
-                    onChange={set("email")}
-                    error={errors.email}
-                    maxLength={255}
-                    autoComplete="email"
-                  />
-                </div>
+                <Input
+                  label="Phone / WhatsApp"
+                  type="tel"
+                  value={values.phone}
+                  onChange={set("phone")}
+                  error={errors.phone}
+                  maxLength={30}
+                  autoComplete="tel"
+                />
                 <div className="grid gap-5 sm:grid-cols-3">
                   <Input
                     label="Date"
