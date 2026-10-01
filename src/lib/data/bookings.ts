@@ -9,13 +9,14 @@ export type CreateBookingInput = {
   eventType: string;
   guestName: string;
   guestPhone: string;
-  guestEmail?: string | undefined;
   eventDate?: string | undefined;
   guests?: number | undefined;
   requirements?: string | undefined;
   message?: string | undefined;
 };
 
+// No email is collected or stored for new enquiries. Any `email`/`guestEmail`
+// property on a request is ignored: only the named fields below are read.
 export const createBooking = createServerFn({ method: "POST" })
   .validator((data: CreateBookingInput) => data)
   .handler(async ({ data }) => {
@@ -26,7 +27,6 @@ export const createBooking = createServerFn({ method: "POST" })
       data.guestName.length > 100 ||
       data.guestPhone.length > 30 ||
       data.eventType.length > 100 ||
-      (data.guestEmail?.length ?? 0) > 255 ||
       (data.requirements?.length ?? 0) > 500 ||
       (data.message?.length ?? 0) > 1000 ||
       (data.eventDate?.length ?? 0) > 20 ||
@@ -40,14 +40,13 @@ export const createBooking = createServerFn({ method: "POST" })
     const db = getDb();
     const result = await db
       .prepare(
-        `INSERT INTO bookings (event_type, guest_name, guest_phone, guest_email, event_date, guests, requirements, message)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO bookings (event_type, guest_name, guest_phone, event_date, guests, requirements, message)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
       )
       .bind(
         data.eventType.trim(),
         data.guestName.trim(),
         data.guestPhone.trim(),
-        data.guestEmail?.trim() || null,
         data.eventDate || null,
         data.guests ?? null,
         data.requirements?.trim() || null,
@@ -62,7 +61,6 @@ export const createBooking = createServerFn({ method: "POST" })
       `New booking enquiry — ${data.eventType}`,
       [
         `${data.guestName} (${data.guestPhone})`,
-        data.guestEmail ? `Email: ${data.guestEmail}` : null,
         `Event type: ${data.eventType}`,
         data.eventDate ? `Date: ${data.eventDate}` : null,
         data.guests ? `Guests: ${data.guests}` : null,
