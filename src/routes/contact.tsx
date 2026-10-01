@@ -17,7 +17,7 @@ export const Route = createFileRoute("/contact")({
       {
         name: "description",
         content:
-          "Cultures Resort, Corner Chiremba Road & Southey Road, Hillside, Harare. Call +263 77 295 1308 or message us on WhatsApp.",
+          "Cultures Resort, Corner Chiremba Road & Southey Road, Hillside, Harare. Call +263 77 295 1308 or email culturesresortzimbabwe@gmail.com.",
       },
       { property: "og:title", content: "Contact Cultures Resort, Harare" },
       {
@@ -157,20 +157,34 @@ function Contact() {
               <h2 className="eyebrow text-foreground">Good to know</h2>
               {[
                 {
-                  label: "Dining & catering",
+                  label: "Dining & offerings",
                   items: [
-                    "Open-air garden dining",
-                    "Traditional African menu, cooked over open fire",
-                    "Maheu welcome for every guest",
-                    "Catering for weddings, roora, birthdays & family functions — on-site or at your venue",
+                    "Dine-in, takeaway & catering",
+                    "Outdoor seating",
+                    "Alcohol, beer, cocktails & wine",
+                    "Happy-hour drinks & food",
+                    "Small plates, quick bite & all-you-can-eat",
+                    "Vegetarian & vegan options",
                   ],
                 },
                 {
-                  label: "Visiting",
+                  label: "Great for",
                   items: [
-                    "Hosts groups & events up to 200 guests",
+                    "Great cocktails, wine list & beer selection",
+                    "Great coffee, tea & dessert",
+                    "Breakfast, lunch, dinner & solo dining",
+                    "Casual, cosy, romantic & upmarket atmosphere",
+                    "Families, groups & tourists",
+                    "Hosting groups & events up to 200 guests",
+                  ],
+                },
+                {
+                  label: "Access & payments",
+                  items: [
                     "Guarded on-site parking",
-                    "Kids' play area",
+                    "Wheelchair-accessible entrance, toilet, seating & car park",
+                    "Assistive hearing loop",
+                    "Kids' menu, good for birthdays",
                     "Cash, Ecocash, bank transfer & Visa accepted",
                   ],
                 },
@@ -198,6 +212,18 @@ function Contact() {
           <Reveal delay={120} className="lg:col-span-6 lg:col-start-7">
             <div className="border border-border bg-card p-8 lg:p-10">
               <h2 className="font-display text-3xl">Send an enquiry</h2>
+              <a
+                href={`${business.whatsappHref}?text=${encodeURIComponent("Hello Cultures Resort, I have a question: ")}`}
+                target="_blank"
+                rel="noreferrer"
+                className="eyebrow mt-6 flex items-center justify-center gap-2 rounded-full border border-border px-7 py-4 hover:bg-secondary"
+              >
+                <WhatsAppIcon className="h-4 w-4 text-leaf" aria-hidden="true" />
+                Chat on WhatsApp
+              </a>
+              <p className="mt-4 text-xs text-muted-foreground">
+                Or leave your details below and the team will get back to you.
+              </p>
               {sent ? (
                 <div className="mt-8 border-l-2 border-ochre bg-secondary p-6">
                   <p className="eyebrow text-primary">Message received</p>

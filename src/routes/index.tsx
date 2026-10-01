@@ -587,9 +587,9 @@ function Home() {
               A lifetime in the kitchen.
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-bone/85">
-              Cultures' kitchen is led by Chef Joseph, trained in the fire rather than the classroom
-              — the same slow, unhurried approach passed down through years at the flame shapes
-              every plate that leaves this kitchen today.
+              Cultures' kitchen is led by Chef Joseph, trained in the fire rather than the
+              classroom — the same slow, unhurried approach passed down through years at the
+              flame shapes every plate that leaves this kitchen today.
             </p>
           </Reveal>
         </div>
@@ -631,7 +631,7 @@ function Home() {
           <Reveal>
             <p className="eyebrow rule-ochre text-primary">What people remember</p>
             <h2 className="mt-6 max-w-2xl font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight">
-              From our Google reviews
+              Straight from Google &amp; TripAdvisor
             </h2>
           </Reveal>
           <div
@@ -751,10 +751,7 @@ function Home() {
                     {business.phoneDisplay}
                   </a>
                   {business.phoneDisplay2 ? (
-                    <a
-                      href={business.phoneHref2 ?? undefined}
-                      className="block text-sm hover:text-primary"
-                    >
+                    <a href={business.phoneHref2 ?? undefined} className="block text-sm hover:text-primary">
                       {business.phoneDisplay2}
                     </a>
                   ) : null}

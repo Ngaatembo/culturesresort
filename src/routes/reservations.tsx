@@ -198,7 +198,16 @@ function Reservations() {
                 }
               }}
             >
-              <h2 className="font-display text-3xl">Your details</h2>
+              <a
+                href={`${business.whatsappHref}?text=${encodeURIComponent("Hello Cultures Resort, I'd like to reserve a table. Date: \nTime: \nGuests: ")}`}
+                target="_blank"
+                rel="noreferrer"
+                className="eyebrow mb-8 flex items-center justify-center gap-2 rounded-full border border-border px-7 py-4 hover:bg-secondary"
+              >
+                <WhatsAppIcon className="h-4 w-4 text-leaf" aria-hidden="true" />
+                Reserve on WhatsApp
+              </a>
+              <h2 className="font-display text-3xl">Or send your details here</h2>
 
               <div className="mt-8 space-y-5">
                 <Input

@@ -137,10 +137,8 @@ function Privacy() {
               <span className="block">{business.addressLine}</span>
             </address>
             <p className="mt-4">
-              If you have a question or concern about your details, please contact us first and we
-              will respond. Personal information is handled with reference to Zimbabwe's Cyber and
-              Data Protection Act, and you may also raise a concern with the Postal and
-              Telecommunications Regulatory Authority of Zimbabwe (POTRAZ).
+              If you have a question or concern about your details, please contact us using the
+              details above and we will respond.
             </p>
           </section>
 
