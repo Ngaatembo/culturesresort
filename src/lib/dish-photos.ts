@@ -50,6 +50,21 @@ import softDrinkGlass from "@/assets/soft-drink-glass.jpg";
 import maheuPhoto from "@/assets/dishes/maheu.jpg";
 import freshJuice from "@/assets/dishes/fresh-juice.jpg";
 import pilauPhoto from "@/assets/dishes/pilau.jpg";
+import barLocalLagers from "@/assets/dishes/bar-local-lagers.jpg";
+import barImportedLagers from "@/assets/dishes/bar-imported-lagers.jpg";
+import barCastleLite from "@/assets/dishes/bar-castle-lite.jpg";
+import barMineralWater from "@/assets/dishes/bar-mineral-water.jpg";
+import barCiders from "@/assets/dishes/bar-ciders.jpg";
+import barSpirits from "@/assets/dishes/bar-spirits.jpg";
+import barJwRed from "@/assets/dishes/bar-jw-red.jpg";
+import barJwBlack from "@/assets/dishes/bar-jw-black.jpg";
+import barJwDoubleBlack from "@/assets/dishes/bar-jw-double-black.jpg";
+import barJwGold from "@/assets/dishes/bar-jw-gold.jpg";
+import barGlenfiddich12 from "@/assets/dishes/bar-glenfiddich-12.jpg";
+import barGlenfiddich15 from "@/assets/dishes/bar-glenfiddich-15.jpg";
+import barJackDaniels from "@/assets/dishes/bar-jack-daniels.jpg";
+import barChivas12 from "@/assets/dishes/bar-chivas-12.jpg";
+import barFamousGrouse from "@/assets/dishes/bar-famous-grouse.jpg";
 
 export const dishPhotos: Record<string, string> = {
   "Kuku Choma": kukuChoma,
@@ -116,4 +131,21 @@ export const dishPhotos: Record<string, string> = {
   "Soft Drink": softDrinkGlass,
   Maheu: maheuPhoto,
   "Fresh Juice": freshJuice,
+  // Bar price list (client-supplied product photos, matched by exact item name)
+  "Local Lagers": barLocalLagers,
+  "Imported Lagers": barImportedLagers,
+  "Castle Lite": barCastleLite,
+  "Mineral Water": barMineralWater,
+  "Ciders": barCiders,
+  "Spirits": barSpirits,
+  "J Walker Red": barJwRed,
+  "J Walker Black": barJwBlack,
+  "J Walker D/Black": barJwDoubleBlack,
+  "J Walker Double Black": barJwDoubleBlack,
+  "J Walker Gold": barJwGold,
+  "Glenfiddich 12yrs": barGlenfiddich12,
+  "Glenfiddich 15yrs": barGlenfiddich15,
+  "Jack Daniels": barJackDaniels,
+  "Chivas Regal 12yrs": barChivas12,
+  "Famous Grouse": barFamousGrouse,
 };
