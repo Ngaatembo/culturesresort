@@ -46,7 +46,7 @@ import plainRice from "@/assets/dishes/plain-rice.jpg";
 import homemadeCake from "@/assets/dishes/homemade-cake.jpg";
 import wildDriedFruits from "@/assets/dishes/wild-dried-fruits.jpg";
 import zimTeaCoffee from "@/assets/dishes/zim-tea-coffee.jpg";
-import softDrinkGlass from "@/assets/soft-drink-glass.jpg";
+import softDrinkPhoto from "@/assets/dishes/soft-drink.jpg";
 import maheuPhoto from "@/assets/dishes/maheu.jpg";
 import freshJuice from "@/assets/dishes/fresh-juice.jpg";
 import pilauPhoto from "@/assets/dishes/pilau.jpg";
@@ -65,6 +65,16 @@ import barGlenfiddich15 from "@/assets/dishes/bar-glenfiddich-15.jpg";
 import barJackDaniels from "@/assets/dishes/bar-jack-daniels.jpg";
 import barChivas12 from "@/assets/dishes/bar-chivas-12.jpg";
 import barFamousGrouse from "@/assets/dishes/bar-famous-grouse.jpg";
+import barMixers from "@/assets/dishes/bar-mixers.jpg";
+import wineChamdor from "@/assets/dishes/wine-chamdor.jpg";
+import wineDomaine from "@/assets/dishes/wine-jc-le-roux-domaine-white.jpg";
+import wineFleurette from "@/assets/dishes/wine-jc-le-roux-la-fleurette.jpg";
+import wineKwvSb from "@/assets/dishes/wine-kwv-sauvignon-blanc.jpg";
+import wineKwvMerlot from "@/assets/dishes/wine-kwv-merlot.jpg";
+import wineNederburg from "@/assets/dishes/wine-nederburg-pinotage.jpg";
+import wineBonCourage from "@/assets/dishes/wine-bon-courage-cabernet.jpg";
+import wineFatBastard from "@/assets/dishes/wine-fat-bastard-cabernet.jpg";
+import wineFourCousins from "@/assets/dishes/wine-four-cousins.jpg";
 
 export const dishPhotos: Record<string, string> = {
   "Kuku Choma": kukuChoma,
@@ -128,7 +138,7 @@ export const dishPhotos: Record<string, string> = {
   "Wild Dried Fruits": wildDriedFruits,
   "Best Zimbabwean Tea / Coffee": zimTeaCoffee,
   "Best Zimbabwean Coffee / Tea": zimTeaCoffee,
-  "Soft Drink": softDrinkGlass,
+  "Soft Drink": softDrinkPhoto,
   Maheu: maheuPhoto,
   "Fresh Juice": freshJuice,
   // Bar price list (client-supplied product photos, matched by exact item name)
@@ -136,8 +146,8 @@ export const dishPhotos: Record<string, string> = {
   "Imported Lagers": barImportedLagers,
   "Castle Lite": barCastleLite,
   "Mineral Water": barMineralWater,
-  "Ciders": barCiders,
-  "Spirits": barSpirits,
+  Ciders: barCiders,
+  Spirits: barSpirits,
   "J Walker Red": barJwRed,
   "J Walker Black": barJwBlack,
   "J Walker D/Black": barJwDoubleBlack,
@@ -148,4 +158,16 @@ export const dishPhotos: Record<string, string> = {
   "Jack Daniels": barJackDaniels,
   "Chivas Regal 12yrs": barChivas12,
   "Famous Grouse": barFamousGrouse,
+  "Mixers (Tonic, Ginger Ale, etc)": barMixers,
+  Mixers: barMixers,
+  // Wines (product-only photos, matched by exact name; Rooiberg Brut has no photo yet)
+  Chamdor: wineChamdor,
+  "J.C. Le Roux Domaine White": wineDomaine,
+  "J.C. Le Roux La Fleurette": wineFleurette,
+  "KWV Sauvignon Blanc": wineKwvSb,
+  "KWV Merlot": wineKwvMerlot,
+  "Nederburg Pinotage": wineNederburg,
+  "Bon Courage Cabernet Sauvignon": wineBonCourage,
+  "Fat Bastard Cabernet Sauvignon": wineFatBastard,
+  "Four Cousins": wineFourCousins,
 };
