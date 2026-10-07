@@ -293,7 +293,9 @@ function Menu() {
                               !isWine && WIDE_PHOTO_ITEMS.has(item.name) && !item.imageUrl;
                             const photo =
                               mappedPhoto ??
-                              (course === "food" || isWine ? null : images[imageKey]);
+                              (course === "food" || isWine || category.slug === "bar"
+                                ? null
+                                : images[imageKey]);
                             // A "choice" only exists with 2+ portions. A single stored portion
                             // (e.g. "Portion" at $14) is not a real choice and should use the
                             // normal single-price card treatment.

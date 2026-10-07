@@ -1,9 +1,9 @@
 -- Bar price list (Beverages tab). These are the original Cultures bar prices from 0002_seed_menu.sql, put back as they
--- are not in the live menu. Prices are unchanged. Idempotent: an item is only added if it is not already there.
--- NOT applied automatically: confirm with the client first, then run this file once against the culturesresort D1.
+-- are not in the live menu. Idempotent: an item is only added if it is not already there.
+-- Local Lagers is $2.00 and Quarts $4.00 as confirmed by the client on 07/10/2026 (Ciders $3, Imported Lagers $3 confirmed too).
 -- ("Drinks" is left out because Soft Drink already covers it.) One statement per item: D1 limits compound SELECTs.
 INSERT INTO menu_items (kind, category_slug, category_title, name, description, price_cents, featured, sort_order)
-SELECT 'beverages', 'bar', 'Bar Price List', 'Local Lagers', '', 150, 0, 1
+SELECT 'beverages', 'bar', 'Bar Price List', 'Local Lagers', '', 200, 0, 1
 WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE category_slug = 'bar' AND name = 'Local Lagers');
 INSERT INTO menu_items (kind, category_slug, category_title, name, description, price_cents, featured, sort_order)
 SELECT 'beverages', 'bar', 'Bar Price List', 'Imported Lagers', '', 300, 0, 2
@@ -50,3 +50,6 @@ WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE category_slug = 'bar' AND name 
 INSERT INTO menu_items (kind, category_slug, category_title, name, description, price_cents, featured, sort_order)
 SELECT 'beverages', 'bar', 'Bar Price List', 'Famous Grouse', '', 300, 0, 17
 WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE category_slug = 'bar' AND name = 'Famous Grouse');
+INSERT INTO menu_items (kind, category_slug, category_title, name, description, price_cents, featured, sort_order)
+SELECT 'beverages', 'bar', 'Bar Price List', 'Quarts', '', 400, 0, 4
+WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE category_slug = 'bar' AND name = 'Quarts');
