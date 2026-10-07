@@ -49,6 +49,7 @@ import zimTeaCoffee from "@/assets/dishes/zim-tea-coffee.jpg";
 import softDrinkGlass from "@/assets/soft-drink-glass.jpg";
 import maheuPhoto from "@/assets/dishes/maheu.jpg";
 import freshJuice from "@/assets/dishes/fresh-juice.jpg";
+import pilauPhoto from "@/assets/dishes/pilau.jpg";
 
 export const dishPhotos: Record<string, string> = {
   "Kuku Choma": kukuChoma,
@@ -98,7 +99,7 @@ export const dishPhotos: Record<string, string> = {
   "Muriwo Une Dovi": muriwoUneDovi,
   "Pilau / Jollof Rice": jollofRice,
   "Jollof Rice": jollofRice,
-  Pilau: jollofRice,
+  Pilau: pilauPhoto,
   Chapati: chapati,
   "Fried Potatoes": friedPotatoWedges,
   "Fried Potato Wedges": friedPotatoWedges,
