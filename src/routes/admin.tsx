@@ -88,11 +88,18 @@ function AdminLayout() {
       booking: "New reservation request",
       enquiry: "New enquiry",
     };
+    // Anything still waiting gets a gentle repeat chime every 2 minutes, so a missed alert is not lost.
+    let lastReminder = Date.now();
     const load = () => {
       getDashboardStats()
         .then((s) => {
           if (cancelled) return;
           setStats(s);
+          const waiting = s.pendingOrders + s.pendingBookings + s.newEnquiries;
+          if (waiting > 0 && Date.now() - lastReminder > 120_000) {
+            lastReminder = Date.now();
+            playRef.current();
+          }
           const fresh = arrivals({
             order: s.latestOrderId,
             booking: s.latestBookingId,
@@ -117,6 +124,17 @@ function AdminLayout() {
       clearTimeout(hideTimer);
     };
   }, [isPublicPage, role, arrivals]);
+
+  // Show how many things are waiting in the browser tab, e.g. "(3) Owner Dashboard | Cultures Resort".
+  const waitingCount = stats ? stats.pendingOrders + stats.pendingBookings + stats.newEnquiries : 0;
+  useEffect(() => {
+    if (isPublicPage) return;
+    const base = document.title.replace(/^\(\d+\) /, "");
+    document.title = waitingCount > 0 ? `(${waitingCount}) ${base}` : base;
+    return () => {
+      document.title = base;
+    };
+  }, [waitingCount, isPublicPage]);
 
   if (isPublicPage) {
     return <Outlet />;

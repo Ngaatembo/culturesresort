@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Plus, Wine } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { DishMedia } from "@/components/dish-media";
@@ -36,6 +36,9 @@ export const Route = createFileRoute("/menu")({
   component: Menu,
 });
 
+/** Photos that show several bottles side by side: shown whole, full width, instead of cropped into the side column. */
+const WIDE_PHOTO_ITEMS = new Set(["Soft Drink", "Mixers (Tonic, Ginger Ale, etc)", "Mixers"]);
+
 /** Category slug -> real photo of that category. */
 const CATEGORY_IMAGE: Record<string, keyof typeof images> = {
   starters: "craft",
@@ -48,6 +51,73 @@ const CATEGORY_IMAGE: Record<string, keyof typeof images> = {
 };
 
 type Course = MenuKind;
+
+/** Horizontal, swipeable row for the Wines category: touch swipe on phones, prev/next buttons and arrow keys on desktop. */
+function WineRow({ label, children }: { label: string; children: React.ReactNode }) {
+  const ref = useRef<HTMLUListElement>(null);
+  const [edge, setEdge] = useState({ start: true, end: false });
+  const update = () => {
+    const el = ref.current;
+    if (el)
+      setEdge({
+        start: el.scrollLeft < 4,
+        end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4,
+      });
+  };
+  useEffect(() => {
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  const go = (dir: 1 | -1) =>
+    ref.current?.scrollBy({
+      left: dir * Math.max(240, ref.current.clientWidth * 0.8),
+      behavior: "smooth",
+    });
+  const btn =
+    "absolute top-[38%] z-10 hidden h-11 w-11 items-center justify-center rounded-full border border-border bg-background shadow-md disabled:opacity-30 md:flex";
+  return (
+    <div className="relative mt-8">
+      <button
+        type="button"
+        aria-label={`Previous ${label}`}
+        disabled={edge.start}
+        onClick={() => go(-1)}
+        className={`${btn} left-2`}
+      >
+        <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+      </button>
+      <ul
+        ref={ref}
+        tabIndex={0}
+        role="region"
+        aria-label={`${label}, swipe or use the arrow keys`}
+        onScroll={update}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowRight") {
+            e.preventDefault();
+            go(1);
+          } else if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            go(-1);
+          }
+        }}
+        className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-1 pb-4 [scrollbar-width:thin] focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+      >
+        {children}
+      </ul>
+      <button
+        type="button"
+        aria-label={`Next ${label}`}
+        disabled={edge.end}
+        onClick={() => go(1)}
+        className={`${btn} right-2`}
+      >
+        <ChevronRight className="h-5 w-5" aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
 
 function Menu() {
   const { business, visitDetails } = useSiteSettings();
@@ -208,143 +278,181 @@ function Menu() {
                       </p>
                     </div>
 
-                    <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                      {category.items.map((item) => {
-                        const imageKey = CATEGORY_IMAGE[category.slug] ?? "food";
-                        const mappedPhoto = item.imageUrl
-                          ? `/gallery-image/${item.imageUrl}`
-                          : dishPhotos[item.name];
-                        // Food without a real photo gets a text-only card; only
-                        // beverages keep the category placeholder image.
-                        const photo = mappedPhoto ?? (course === "food" ? null : images[imageKey]);
-                        // A "choice" only exists with 2+ portions. A single stored portion
-                        // (e.g. "Portion" at $14) is not a real choice and should use the
-                        // normal single-price card treatment.
-                        const hasChoice = item.options.length > 1;
-                        const singleOption = item.options.length === 1 ? item.options[0] : null;
-                        const displayPrice = singleOption ? singleOption.price : item.price;
-                        return (
-                          <li
-                            key={item.id}
-                            className={`card-tactile flex overflow-hidden rounded-2xl border border-border bg-card ${photo ? "" : "border-l-4 border-l-ochre"}`}
-                          >
-                            {photo ? (
-                              <div className="w-[38%] shrink-0 sm:w-2/5">
-                                <DishMedia
-                                  imageSrc={photo}
-                                  videoSrc={
-                                    item.videoUrl ? `/gallery-image/${item.videoUrl}` : null
-                                  }
-                                  alt={item.name}
-                                  className="h-full min-h-36"
-                                />
-                              </div>
-                            ) : null}
-                            <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
-                              <div className="flex items-start justify-between gap-2">
-                                <h3 className="min-w-0 font-display text-lg leading-tight">
-                                  {item.name}
-                                </h3>
-                                {hasChoice ? null : (
-                                  <span className="shrink-0 rounded-full bg-secondary px-3 py-1 text-sm text-foreground">
-                                    {displayPrice}
-                                  </span>
-                                )}
-                              </div>
-                              <p className="eyebrow mt-1 text-primary">
-                                {category.title}
-                                {item.featured ? " · Signature" : ""}
-                              </p>
-                              <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
-                                {item.description}
-                              </p>
-                              {hasChoice ? (
-                                (() => {
-                                  const chosenId = selectedOption[item.id] ?? item.options[0]!.id;
-                                  const chosenOption =
-                                    item.options.find((o) => o.id === chosenId) ?? item.options[0]!;
-                                  const optionId = `${item.id}:${chosenOption.id}`;
-                                  const optionName = `${item.name} (${chosenOption.label})`;
-                                  return (
-                                    <div className="mt-4 space-y-3">
-                                      <div className="space-y-2">
-                                        <p className="eyebrow text-muted-foreground">
-                                          Choose portion
-                                        </p>
-                                        <div className="grid gap-2 sm:grid-cols-2">
-                                          {item.options.map((option) => {
-                                            const selected = option.id === chosenOption.id;
-                                            return (
-                                              <button
-                                                key={option.id}
-                                                type="button"
-                                                aria-pressed={selected}
-                                                onClick={() =>
-                                                  setSelectedOption((prev) => ({
-                                                    ...prev,
-                                                    [item.id]: option.id,
-                                                  }))
-                                                }
-                                                aria-label={`Select portion ${option.label}, ${option.price}`}
-                                                className={cn(
-                                                  "flex min-h-11 items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left transition-colors",
-                                                  selected
-                                                    ? "border-secondary bg-secondary/30"
-                                                    : "border-border hover:bg-secondary",
-                                                )}
-                                              >
-                                                <span className="text-sm font-medium">
-                                                  {option.label}
-                                                </span>
-                                                <span className="text-sm font-medium text-foreground">
-                                                  {option.price}
-                                                </span>
-                                              </button>
-                                            );
-                                          })}
+                    {(() => {
+                      const isWine = category.slug === "wines";
+                      const cards = (
+                        <>
+                          {category.items.map((item) => {
+                            const imageKey = CATEGORY_IMAGE[category.slug] ?? "food";
+                            const mappedPhoto = item.imageUrl
+                              ? `/gallery-image/${item.imageUrl}`
+                              : dishPhotos[item.name];
+                            // Food without a real photo gets a text-only card; only
+                            // beverages keep the category placeholder image.
+                            const isWide =
+                              !isWine && WIDE_PHOTO_ITEMS.has(item.name) && !item.imageUrl;
+                            const photo =
+                              mappedPhoto ??
+                              (course === "food" || isWine || category.slug === "bar"
+                                ? null
+                                : images[imageKey]);
+                            // A "choice" only exists with 2+ portions. A single stored portion
+                            // (e.g. "Portion" at $14) is not a real choice and should use the
+                            // normal single-price card treatment.
+                            const hasChoice = item.options.length > 1;
+                            const singleOption = item.options.length === 1 ? item.options[0] : null;
+                            const displayPrice = singleOption ? singleOption.price : item.price;
+                            return (
+                              <li
+                                key={item.id}
+                                className={`card-tactile flex overflow-hidden rounded-2xl border border-border bg-card ${isWine ? "w-[62vw] max-w-[260px] shrink-0 snap-start flex-col sm:w-[250px]" : isWide ? "flex-col" : photo ? "" : "border-l-4 border-l-ochre"}`}
+                              >
+                                {isWine && !photo ? (
+                                  <div className="flex aspect-[4/5] w-full items-center justify-center bg-secondary text-ochre">
+                                    <Wine className="h-12 w-12" aria-hidden="true" />
+                                  </div>
+                                ) : null}
+                                {photo ? (
+                                  <div
+                                    className={
+                                      isWine || isWide
+                                        ? "w-full bg-white"
+                                        : "w-[38%] shrink-0 sm:w-2/5"
+                                    }
+                                  >
+                                    <DishMedia
+                                      imgClassName={isWine || isWide ? "object-contain" : ""}
+                                      imageSrc={photo}
+                                      videoSrc={
+                                        item.videoUrl ? `/gallery-image/${item.videoUrl}` : null
+                                      }
+                                      alt={item.name}
+                                      className={
+                                        isWine
+                                          ? "aspect-[4/5] w-full"
+                                          : isWide
+                                            ? "aspect-[4/3] w-full"
+                                            : "h-full min-h-36"
+                                      }
+                                    />
+                                  </div>
+                                ) : null}
+                                <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <h3 className="min-w-0 font-display text-lg leading-tight">
+                                      {item.name}
+                                    </h3>
+                                    {hasChoice ? null : (
+                                      <span className="shrink-0 rounded-full bg-secondary px-3 py-1 text-sm text-foreground">
+                                        {displayPrice}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="eyebrow mt-1 text-primary">
+                                    {category.title}
+                                    {item.featured ? " · Signature" : ""}
+                                  </p>
+                                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                                    {item.description}
+                                  </p>
+                                  {hasChoice ? (
+                                    (() => {
+                                      const chosenId =
+                                        selectedOption[item.id] ?? item.options[0]!.id;
+                                      const chosenOption =
+                                        item.options.find((o) => o.id === chosenId) ??
+                                        item.options[0]!;
+                                      const optionId = `${item.id}:${chosenOption.id}`;
+                                      const optionName = `${item.name} (${chosenOption.label})`;
+                                      return (
+                                        <div className="mt-4 space-y-3">
+                                          <div className="space-y-2">
+                                            <p className="eyebrow text-muted-foreground">
+                                              Choose portion
+                                            </p>
+                                            <div className="grid gap-2 sm:grid-cols-2">
+                                              {item.options.map((option) => {
+                                                const selected = option.id === chosenOption.id;
+                                                return (
+                                                  <button
+                                                    key={option.id}
+                                                    type="button"
+                                                    aria-pressed={selected}
+                                                    onClick={() =>
+                                                      setSelectedOption((prev) => ({
+                                                        ...prev,
+                                                        [item.id]: option.id,
+                                                      }))
+                                                    }
+                                                    aria-label={`Select portion ${option.label}, ${option.price}`}
+                                                    className={cn(
+                                                      "flex min-h-11 items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left transition-colors",
+                                                      selected
+                                                        ? "border-secondary bg-secondary/30"
+                                                        : "border-border hover:bg-secondary",
+                                                    )}
+                                                  >
+                                                    <span className="text-sm font-medium">
+                                                      {option.label}
+                                                    </span>
+                                                    <span className="text-sm font-medium text-foreground">
+                                                      {option.price}
+                                                    </span>
+                                                  </button>
+                                                );
+                                              })}
+                                            </div>
+                                          </div>
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              add({
+                                                id: optionId,
+                                                name: optionName,
+                                                category: category.title,
+                                                price: chosenOption.price,
+                                              })
+                                            }
+                                            aria-label={`Add ${optionName} to your order, ${chosenOption.price}`}
+                                            className="eyebrow flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
+                                          >
+                                            <Plus className="h-4 w-4" aria-hidden="true" />
+                                            {has(optionId) ? "Added — add another" : "Add to order"}
+                                          </button>
                                         </div>
-                                      </div>
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          add({
-                                            id: optionId,
-                                            name: optionName,
-                                            category: category.title,
-                                            price: chosenOption.price,
-                                          })
-                                        }
-                                        aria-label={`Add ${optionName} to your order, ${chosenOption.price}`}
-                                        className="eyebrow flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
-                                      >
-                                        <Plus className="h-4 w-4" aria-hidden="true" />
-                                        {has(optionId) ? "Added — add another" : "Add to order"}
-                                      </button>
-                                    </div>
-                                  );
-                                })()
-                              ) : (
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    add({
-                                      id: String(item.id),
-                                      name: item.name,
-                                      category: category.title,
-                                      price: displayPrice,
-                                    })
-                                  }
-                                  className="eyebrow mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
-                                >
-                                  <Plus className="h-4 w-4" aria-hidden="true" />
-                                  {has(String(item.id)) ? "Added — add another" : "Add to order"}
-                                </button>
-                              )}
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
+                                      );
+                                    })()
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        add({
+                                          id: String(item.id),
+                                          name: item.name,
+                                          category: category.title,
+                                          price: displayPrice,
+                                        })
+                                      }
+                                      className="eyebrow mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-bone transition-colors hover:bg-ink/90"
+                                    >
+                                      <Plus className="h-4 w-4" aria-hidden="true" />
+                                      {has(String(item.id))
+                                        ? "Added — add another"
+                                        : "Add to order"}
+                                    </button>
+                                  )}
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </>
+                      );
+                      return isWine ? (
+                        <WineRow label={category.title}>{cards}</WineRow>
+                      ) : (
+                        <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{cards}</ul>
+                      );
+                    })()}
                   </Reveal>
                 ))}
               </div>
