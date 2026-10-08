@@ -74,10 +74,11 @@ export const placeOrder = createServerFn({ method: "POST" })
         .run();
     }
 
+    const itemCount = lines.reduce((sum, line) => sum + line.qty, 0);
+
     // The order is fully saved at this point. Phone push and the backup email
-    // run independently and both swallow their own errors, so neither can make
-    // a successfully placed order fail.
-    const pushPromise = notifyAdminsOfNewOrder(orderId);
+    // run independently and neither can make a successfully placed order fail.
+    const pushPromise = notifyAdminsOfNewOrder(orderId, totalCents, itemCount);
     const emailPromise = sendNotificationEmail(
       `New order #${orderId} — ${(totalCents / 100).toFixed(2)}`,
       [
@@ -116,10 +117,6 @@ type OrderItemRow = {
 
 export type OrderWithItems = OrderRow & { items: OrderItemRow[] };
 
-/** Recent orders for the admin dashboard, most recent first. Owner, manager
- * and staff get the full operational view; kitchen gets read access too
- * (that's the whole point of the kitchen queue) but see updateOrderStatus
- * below for how their write access is restricted. */
 export const listOrders = createServerFn({ method: "GET" })
   .middleware([ordersViewMiddleware])
   .handler(async (): Promise<OrderWithItems[]> => {
@@ -140,13 +137,6 @@ export const listOrders = createServerFn({ method: "GET" })
     return orders.map((o) => ({ ...o, items: items.filter((i) => i.order_id === o.id) }));
   });
 
-/**
- * Kitchen accounts only move an order forward through the kitchen
- * workflow (New → Preparing → Ready) — they can't cancel an order, jump
- * straight to "completed" from "pending", or move a status backwards.
- * Everyone else (owner/manager/staff) can set any status, matching the
- * existing Orders page workflow.
- */
 const KITCHEN_ALLOWED_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
   pending: ["preparing"],
   preparing: ["completed"],
