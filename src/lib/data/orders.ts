@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
 import { ordersViewMiddleware } from "@/lib/auth/functions";
 import { sendNotificationEmail } from "./notify";
+import { notifyAdminsOfNewOrder } from "./push";
 
 export type OrderStatus = "pending" | "preparing" | "completed" | "cancelled";
 
@@ -73,7 +74,11 @@ export const placeOrder = createServerFn({ method: "POST" })
         .run();
     }
 
-    await sendNotificationEmail(
+    // The order is fully saved at this point. Phone push and the backup email
+    // run independently and both swallow their own errors, so neither can make
+    // a successfully placed order fail.
+    const pushPromise = notifyAdminsOfNewOrder(orderId);
+    const emailPromise = sendNotificationEmail(
       `New order #${orderId} — ${(totalCents / 100).toFixed(2)}`,
       [
         `${customerName} (${customerPhone})`,
@@ -86,6 +91,7 @@ export const placeOrder = createServerFn({ method: "POST" })
         .filter((line) => line !== null)
         .join("\n"),
     );
+    await Promise.allSettled([pushPromise, emailPromise]);
 
     return { orderId, totalCents };
   });
