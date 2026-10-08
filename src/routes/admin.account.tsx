@@ -5,6 +5,7 @@ import { ROLE_LABELS } from "@/lib/auth/permissions";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import { PageHeader, SectionCard, StatusDot } from "@/components/admin/ui";
+import { PushSettings } from "@/components/admin/push-settings";
 
 export const Route = createFileRoute("/admin/account")({
   component: AccountPage,
@@ -63,6 +64,8 @@ function AccountPage() {
           {role ? ROLE_LABELS[role as keyof typeof ROLE_LABELS] : "…"}
         </p>
       </SectionCard>
+
+      <PushSettings />
 
       <SectionCard title="Change password">
         <form onSubmit={onSubmit} className="max-w-sm space-y-4">
