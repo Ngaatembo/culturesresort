@@ -8,7 +8,7 @@ self.addEventListener("push", (event) => {
   let data = {};
   try {
     data = event.data ? event.data.json() : {};
-  } catch (e) {
+  } catch {
     data = {};
   }
   const title = data.title || "Cultures Resort";
@@ -18,6 +18,7 @@ self.addEventListener("push", (event) => {
     badge: "/apple-touch-icon.png",
     tag: data.tag || undefined,
     renotify: !!data.tag,
+    requireInteraction: data.requireInteraction === true,
     data: { url: data.url || "/admin/orders" },
   };
   event.waitUntil(self.registration.showNotification(title, options));
@@ -25,7 +26,6 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  // Only ever open same-origin /admin paths.
   let path = (event.notification.data && event.notification.data.url) || "/admin/orders";
   if (typeof path !== "string" || !path.startsWith("/admin")) path = "/admin/orders";
   const target = new URL(path, self.location.origin).href;
@@ -38,7 +38,7 @@ self.addEventListener("notificationclick", (event) => {
           if ("navigate" in c) {
             try {
               await c.navigate(target);
-            } catch (e) {
+            } catch {
               /* ignore */
             }
           }
