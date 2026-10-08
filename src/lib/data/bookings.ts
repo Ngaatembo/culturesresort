@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
 import { managerUpMiddleware, staffUpMiddleware } from "@/lib/auth/functions";
 import { sendNotificationEmail } from "./notify";
+import { notifyAdminsOfBooking } from "./push";
 
 export type BookingStatus = "pending" | "confirmed" | "declined" | "completed" | "cancelled";
 
@@ -15,8 +16,6 @@ export type CreateBookingInput = {
   message?: string | undefined;
 };
 
-// No email is collected or stored for new enquiries. Any `email`/`guestEmail`
-// property on a request is ignored: only the named fields below are read.
 export const createBooking = createServerFn({ method: "POST" })
   .validator((data: CreateBookingInput) => data)
   .handler(async ({ data }) => {
@@ -38,14 +37,16 @@ export const createBooking = createServerFn({ method: "POST" })
       );
     }
     const db = getDb();
+    const eventType = data.eventType.trim();
+    const guestName = data.guestName.trim();
     const result = await db
       .prepare(
         `INSERT INTO bookings (event_type, guest_name, guest_phone, event_date, guests, requirements, message)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
       )
       .bind(
-        data.eventType.trim(),
-        data.guestName.trim(),
+        eventType,
+        guestName,
         data.guestPhone.trim(),
         data.eventDate || null,
         data.guests ?? null,
@@ -57,11 +58,18 @@ export const createBooking = createServerFn({ method: "POST" })
     const bookingId = result.meta.last_row_id;
     if (!bookingId) throw new Error("Could not create the booking.");
 
-    await sendNotificationEmail(
-      `New booking enquiry — ${data.eventType}`,
+    const pushPromise = notifyAdminsOfBooking(
+      bookingId,
+      eventType,
+      guestName,
+      data.eventDate,
+      data.guests,
+    );
+    const emailPromise = sendNotificationEmail(
+      `New booking enquiry — ${eventType}`,
       [
         `${data.guestName} (${data.guestPhone})`,
-        `Event type: ${data.eventType}`,
+        `Event type: ${eventType}`,
         data.eventDate ? `Date: ${data.eventDate}` : null,
         data.guests ? `Guests: ${data.guests}` : null,
         data.requirements ? `Requirements: ${data.requirements}` : null,
@@ -70,6 +78,7 @@ export const createBooking = createServerFn({ method: "POST" })
         .filter(Boolean)
         .join("\n"),
     );
+    await Promise.allSettled([pushPromise, emailPromise]);
 
     return { bookingId };
   });
@@ -88,9 +97,6 @@ export type BookingRow = {
   created_at: string;
 };
 
-/** All bookings (reservations + event enquiries alike) — owner/manager/staff.
- * Read-only visibility; see updateBookingStatus vs updateReservationStatus
- * below for how the two write paths are actually scoped. */
 export const listBookings = createServerFn({ method: "GET" })
   .middleware([staffUpMiddleware])
   .handler(async () => {
@@ -101,17 +107,8 @@ export const listBookings = createServerFn({ method: "GET" })
     return results;
   });
 
-/** The literal event_type value the booking form uses for a table reservation
- * (as opposed to a wedding/birthday/function enquiry). Kept here as the one
- * place both write paths below agree on it. */
 export const TABLE_RESERVATION_TYPE = "Table reservation";
 
-/**
- * Owner/manager only — updates the status of ANY booking, reservation or
- * event enquiry alike. Used by the Events & Functions admin page. Staff
- * must use updateReservationStatus below instead, which is scoped to
- * table reservations only.
- */
 export const updateBookingStatus = createServerFn({ method: "POST" })
   .middleware([managerUpMiddleware])
   .validator((data: { id: number; status: BookingStatus }) => data)
@@ -124,16 +121,6 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-/**
- * Owner/manager/staff — updates a booking's status, but only if that
- * booking is a table reservation. This is what actually enforces "Staff
- * can manage reservations, but not event/function bookings" server-side —
- * the Reservations admin page already only *shows* table reservations, but
- * without this check a staff account could otherwise call
- * updateBookingStatus directly (e.g. via a hand-crafted request) against a
- * wedding enquiry's id and change it. Re-checking the row's own event_type
- * here closes that gap regardless of what the UI does or doesn't show.
- */
 export const updateReservationStatus = createServerFn({ method: "POST" })
   .middleware([staffUpMiddleware])
   .validator((data: { id: number; status: BookingStatus }) => data)
