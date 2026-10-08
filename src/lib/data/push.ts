@@ -3,26 +3,18 @@ import { getDb } from "./cf";
 import { anyAdminMiddleware } from "@/lib/auth/functions";
 import { generateVapidKeys, sendWebPush, type VapidKeys } from "@/lib/push/webpush";
 
-/**
- * Roles that receive new-order phone alerts. Every admin role can already
- * view orders (see ordersViewMiddleware), so the default is all of them.
- * To exclude a role, remove it here.
- */
+/** Roles that receive operational phone alerts. */
 export const ORDER_PUSH_ROLES = ["owner", "manager", "staff", "kitchen"] as const;
+export const ENQUIRY_PUSH_ROLES = ["owner", "manager", "staff", "kitchen"] as const;
+export const RESERVATION_PUSH_ROLES = ["owner", "manager", "staff", "kitchen"] as const;
+export const EVENT_PUSH_ROLES = ["owner", "manager"] as const;
 
-// Contact URL sent to push services in the VAPID JWT (required by the spec).
 const VAPID_SUBJECT = "https://culturesresort.co.zw";
 const MAX_DEVICES_PER_ADMIN = 10;
 const VAPID_SECRET_KEY = "vapid_keys";
 
 type StoredVapid = { publicKey: string; privateJwk: JsonWebKey };
 
-/**
- * VAPID keys self-provision in app_secrets on first use — same convention as
- * the session secret (see auth/secret-store.ts): no manual Cloudflare secret
- * to configure, and it survives GitHub-integration redeploys. The private
- * key never leaves the server; only the public key is ever sent to browsers.
- */
 async function getVapidKeys(): Promise<VapidKeys> {
   const db = getDb();
   const read = () =>
@@ -37,20 +29,24 @@ async function getVapidKeys(): Promise<VapidKeys> {
       .prepare("INSERT OR IGNORE INTO app_secrets (key, value) VALUES (?, ?)")
       .bind(VAPID_SECRET_KEY, JSON.stringify(fresh satisfies StoredVapid))
       .run();
-    row = await read(); // whichever request wrote first wins
+    row = await read();
   }
   return JSON.parse(row!.value) as VapidKeys;
 }
 
 type SubRow = { id: number; endpoint: string; p256dh: string; auth: string };
-
-type PushPayload = { title: string; body: string; url: string; tag?: string };
+type PushPayload = {
+  title: string;
+  body: string;
+  url: string;
+  tag?: string;
+  requireInteraction?: boolean;
+};
 
 async function deliver(subs: SubRow[], payload: PushPayload) {
   if (!subs.length) return { sent: 0, failed: 0, removed: 0 };
   const db = getDb();
   const keys = await getVapidKeys();
-  // Independent sends: one broken subscription can't block anyone else.
   const results = await Promise.all(
     subs.map(async (s) => ({
       s,
@@ -76,7 +72,6 @@ async function deliver(subs: SubRow[], payload: PushPayload) {
       writes.push(db.prepare("DELETE FROM push_subscriptions WHERE id = ?").bind(s.id));
     } else {
       failed++;
-      // Transient failure: keep it, but disable after 10 consecutive failures.
       writes.push(
         db
           .prepare(
@@ -94,15 +89,14 @@ async function deliver(subs: SubRow[], payload: PushPayload) {
   return { sent, failed, removed };
 }
 
-/**
- * Broadcasts a new-order alert to every active device of every eligible admin.
- * Never throws — call it after the order is safely saved; a push problem must
- * never affect the customer's order. Lock-screen text carries no customer data.
- */
-export async function notifyAdminsOfNewOrder(orderId: number): Promise<void> {
+async function broadcast(
+  roles: readonly string[],
+  payload: PushPayload,
+  label: string,
+): Promise<void> {
   try {
     const db = getDb();
-    const placeholders = ORDER_PUSH_ROLES.map(() => "?").join(",");
+    const placeholders = roles.map(() => "?").join(",");
     const { results } = await db
       .prepare(
         `SELECT ps.id, ps.endpoint, ps.p256dh, ps.auth
@@ -110,17 +104,107 @@ export async function notifyAdminsOfNewOrder(orderId: number): Promise<void> {
            JOIN admin_users au ON au.id = ps.admin_user_id
           WHERE ps.active = 1 AND au.role IN (${placeholders})`,
       )
-      .bind(...ORDER_PUSH_ROLES)
+      .bind(...roles)
       .all<SubRow>();
-    await deliver(results, {
-      title: "New Cultures Resort Order",
-      body: `Order #${orderId} has been received. Tap to view.`,
+    await deliver(results, payload);
+  } catch (err) {
+    console.error(`push: ${label} broadcast failed`, err);
+  }
+}
+
+function firstName(value: string): string {
+  const first = value.trim().split(/\s+/)[0] ?? "";
+  if (!first || first.length > 40 || /\d/.test(first)) return "";
+  return first.replace(/[^\p{L}'’-]/gu, "");
+}
+
+function safeEnquiryExcerpt(message: string): string {
+  const cleaned = message
+    .replace(/(?:\+?\d[\d\s().-]{6,}\d)/g, "…")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!cleaned) return "New enquiry — open to view details.";
+  return cleaned.length > 80 ? `${cleaned.slice(0, 79).trimEnd()}…` : cleaned;
+}
+
+function dateLabel(value: string | null | undefined): string {
+  if (!value) return "";
+  const date = new Date(`${value.slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return value.slice(0, 20);
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  }).format(date);
+}
+
+function withPerson(text: string, name: string): string {
+  const first = firstName(name);
+  return first ? `${text} — ${first}` : text;
+}
+
+export async function notifyAdminsOfNewOrder(
+  orderId: number,
+  totalCents: number,
+  itemCount: number,
+): Promise<void> {
+  const amount = `$${(totalCents / 100).toFixed(2)}`;
+  await broadcast(
+    ORDER_PUSH_ROLES,
+    {
+      title: `New Order #${orderId}`,
+      body: `${amount}, ${itemCount} ${itemCount === 1 ? "item" : "items"}`,
       url: "/admin/orders",
       tag: `order-${orderId}`,
-    });
-  } catch (err) {
-    console.error("push: new-order broadcast failed", err);
-  }
+      requireInteraction: true,
+    },
+    "new-order",
+  );
+}
+
+export async function notifyAdminsOfEnquiry(
+  enquiryId: number,
+  name: string,
+  message: string,
+): Promise<void> {
+  const person = firstName(name);
+  const prefix = person ? `${person}: ` : "";
+  await broadcast(
+    ENQUIRY_PUSH_ROLES,
+    {
+      title: "New Enquiry",
+      body: `${prefix}${safeEnquiryExcerpt(message)}`,
+      url: "/admin/enquiries",
+      tag: `enquiry-${enquiryId}`,
+      requireInteraction: true,
+    },
+    "new-enquiry",
+  );
+}
+
+export async function notifyAdminsOfBooking(
+  bookingId: number,
+  eventType: string,
+  guestName: string,
+  eventDate: string | null | undefined,
+  guests: number | null | undefined,
+): Promise<void> {
+  const isReservation = eventType === "Table reservation";
+  const date = dateLabel(eventDate);
+  const base = isReservation
+    ? `Table for ${guests ?? "?"}${date ? `, ${date}` : ""}`
+    : `${eventType}${date ? `, ${date}` : ""}`;
+  await broadcast(
+    isReservation ? RESERVATION_PUSH_ROLES : EVENT_PUSH_ROLES,
+    {
+      title: isReservation ? "New Reservation" : "New Event Enquiry",
+      body: withPerson(base, guestName),
+      url: isReservation ? "/admin/reservations" : "/admin/events",
+      tag: `booking-${bookingId}`,
+    },
+    isReservation ? "new-reservation" : "new-event-enquiry",
+  );
 }
 
 /** Public VAPID key the browser needs to subscribe. Safe to expose. */
@@ -128,7 +212,6 @@ export const getPushPublicKey = createServerFn({ method: "GET" })
   .middleware([anyAdminMiddleware])
   .handler(async () => ({ publicKey: (await getVapidKeys()).publicKey }));
 
-/** How many of the signed-in admin's devices are registered, and whether a given endpoint is one. */
 export const getMyPushStatus = createServerFn({ method: "POST" })
   .middleware([anyAdminMiddleware])
   .validator((data: { endpoint?: string | null }) => data)
@@ -161,12 +244,6 @@ type RegisterInput = {
   userAgent?: string;
 };
 
-/**
- * Registers the calling device against the *signed-in* admin only — the admin
- * id always comes from the verified session, never from the request body.
- * If the same browser endpoint was previously registered to someone else
- * (shared device), it moves to the current admin.
- */
 export const registerPushSubscription = createServerFn({ method: "POST" })
   .middleware([anyAdminMiddleware])
   .validator((data: RegisterInput) => data)
@@ -228,7 +305,6 @@ export const registerPushSubscription = createServerFn({ method: "POST" })
            admin_user_id = excluded.admin_user_id,
            p256dh = excluded.p256dh,
            auth = excluded.auth,
-           user_agent = excluded.user_agent,
            platform = excluded.platform,
            active = 1,
            failure_count = 0,
@@ -239,7 +315,6 @@ export const registerPushSubscription = createServerFn({ method: "POST" })
     return { ok: true as const, platform };
   });
 
-/** Removes a device registration — only ever one belonging to the signed-in admin. */
 export const removePushSubscription = createServerFn({ method: "POST" })
   .middleware([anyAdminMiddleware])
   .validator((data: { endpoint: string }) => data)
@@ -251,7 +326,6 @@ export const removePushSubscription = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
-/** Sends a test notification to the signed-in admin's own registered devices only. */
 export const sendTestPush = createServerFn({ method: "POST" })
   .middleware([anyAdminMiddleware])
   .handler(async ({ context }) => {
