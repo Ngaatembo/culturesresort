@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getDb } from "./cf";
 import { staffUpMiddleware } from "@/lib/auth/functions";
 import { sendNotificationEmail } from "./notify";
+import { notifyAdminsOfEnquiry } from "./push";
 
 export type EnquiryStatus = "new" | "read" | "responded" | "closed";
 
@@ -11,7 +12,6 @@ export type CreateEnquiryInput = {
   message: string;
 };
 
-// No email is collected or stored; any `email` property on a request is ignored.
 export const createEnquiry = createServerFn({ method: "POST" })
   .validator((data: CreateEnquiryInput) => data)
   .handler(async ({ data }) => {
@@ -30,12 +30,14 @@ export const createEnquiry = createServerFn({ method: "POST" })
     const enquiryId = result.meta.last_row_id;
     if (!enquiryId) throw new Error("Could not save the enquiry.");
 
-    await sendNotificationEmail(
+    const pushPromise = notifyAdminsOfEnquiry(enquiryId, data.name.trim(), data.message.trim());
+    const emailPromise = sendNotificationEmail(
       "New enquiry",
       [`${data.name}`, data.phone ? `Phone: ${data.phone}` : null, `Message: ${data.message}`]
         .filter(Boolean)
         .join("\n"),
     );
+    await Promise.allSettled([pushPromise, emailPromise]);
 
     return { enquiryId };
   });
