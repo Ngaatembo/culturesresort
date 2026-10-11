@@ -4,6 +4,7 @@ import { useSiteSettings } from "@/lib/site-settings-query";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://culturesresort.co.zw/terms" }],
     meta: [
       { title: "Terms of Use | Cultures Resort, Harare" },
       {
