@@ -7,6 +7,7 @@ import { useSlotImage } from "@/lib/homepage-images";
 
 export const Route = createFileRoute("/experience")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://culturesresort.co.zw/experience" }],
     meta: [
       { title: "The Experience | Garden Dining & Culture at Cultures Resort" },
       {
