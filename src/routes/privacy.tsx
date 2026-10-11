@@ -4,6 +4,7 @@ import { useSiteSettings } from "@/lib/site-settings-query";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://culturesresort.co.zw/privacy" }],
     meta: [
       { title: "Privacy Policy | Cultures Resort, Harare" },
       {
