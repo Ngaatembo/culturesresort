@@ -12,6 +12,7 @@ import { useSiteSettings } from "@/lib/site-settings-query";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://culturesresort.co.zw/contact" }],
     meta: [
       { title: "Contact & Directions | Cultures Resort, Hillside Harare" },
       {
