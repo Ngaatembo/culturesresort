@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/menu")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://culturesresort.co.zw/menu" }],
     meta: [
       { title: "Menu & Beverages | Traditional African Food, Cultures Resort" },
       {
