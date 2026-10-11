@@ -158,7 +158,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           sameAs: [
             "https://www.facebook.com/100057503797633",
             "https://www.instagram.com/culturesresort/",
-            "https://www.tiktok.com/@culturesresort.hillside2",
+            "https://www.tiktok.com/@culturesresort_hillside2",
           ],
           address: {
             "@type": "PostalAddress",
