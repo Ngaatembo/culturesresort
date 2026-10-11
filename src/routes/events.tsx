@@ -11,6 +11,7 @@ import { useSiteSettings } from "@/lib/site-settings-query";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://culturesresort.co.zw/events" }],
     meta: [
       { title: "Events, Functions & Catering | Cultures Resort, Harare" },
       {
