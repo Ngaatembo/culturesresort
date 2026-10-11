@@ -10,6 +10,7 @@ import { useSiteSettings } from "@/lib/site-settings-query";
 
 export const Route = createFileRoute("/reservations")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://culturesresort.co.zw/reservations" }],
     meta: [
       { title: "Reserve a Table | Cultures Resort, Harare" },
       {
