@@ -28,6 +28,7 @@ type PreviewDish = MenuItemOut & { categoryTitle: string; categorySlug: string }
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://culturesresort.co.zw/" }],
     meta: [
       { title: "Cultures Resort | Traditional African Restaurant in Harare" },
       {
