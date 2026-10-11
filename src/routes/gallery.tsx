@@ -18,6 +18,7 @@ const GALLERY_CARD_SIZES = "(min-width: 1024px) 34vw, 50vw";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://culturesresort.co.zw/gallery" }],
     meta: [
       { title: "Gallery | Cultures Resort, Hillside Harare" },
       { name: "description", content: "Photographs of the garden, the food, the craft and the cultural atmosphere at Cultures Resort in Hillside, Harare." },
