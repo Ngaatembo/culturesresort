@@ -143,6 +143,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           name: "Cultures Resort",
           servesCuisine: "Traditional African",
           url: "https://culturesresort.co.zw/",
+          image: "https://culturesresort.co.zw/assets/entrance-banana-leaves-CTmydJxm.jpg",
           telephone: "+263772951308",
           email: "culturesresort@gmail.com",
           openingHoursSpecification: {
