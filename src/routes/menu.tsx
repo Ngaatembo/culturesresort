@@ -11,6 +11,8 @@ import { useOrder } from "@/lib/order";
 import { getMenu, type MenuCategoryOut, type MenuKind } from "@/lib/data/menu";
 import { dishPhotos } from "@/lib/dish-photos";
 import { useSiteSettings } from "@/lib/site-settings-query";
+import { LazyVideo } from "@/components/lazy-video";
+import { canPlayAmbientVideo } from "@/lib/media-prefs";
 import cocktailPourLoop from "@/assets/video/cocktail-pour-loop.mp4";
 import cocktailPoster from "@/assets/cocktail-poster.jpg";
 import { cn } from "@/lib/utils";
@@ -134,9 +136,7 @@ function Menu() {
   const [playVideo, setPlayVideo] = useState(false);
 
   useEffect(() => {
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setPlayVideo(true);
-    }
+    if (canPlayAmbientVideo()) setPlayVideo(true);
   }, []);
 
   useEffect(() => {
@@ -191,14 +191,11 @@ function Menu() {
           {course === "beverages" ? (
             <Reveal className="card-tactile img-zoom relative mt-8 overflow-hidden rounded-2xl">
               {playVideo ? (
-                <video
+                <LazyVideo
                   src={cocktailPourLoop}
                   poster={cocktailPoster}
-                  autoPlay
                   muted
                   loop
-                  playsInline
-                  preload="metadata"
                   aria-hidden="true"
                   className="img-zoom-target h-56 w-full object-cover sm:h-72"
                 />

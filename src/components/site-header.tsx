@@ -8,6 +8,7 @@ import { useSiteSettings } from "@/lib/site-settings-query";
 import { useSlotImage } from "@/lib/homepage-images";
 import { cn } from "@/lib/utils";
 import logoMark from "@/assets/logo-mark.png";
+import { responsive, responsiveProps } from "@/lib/responsive-images";
 import "../ui-refinements.css";
 
 export function SiteHeader() {
@@ -48,10 +49,9 @@ export function SiteHeader() {
             "flex min-w-0 items-center gap-3 leading-none transition-colors",
             scrolled || open ? "text-foreground" : "text-bone",
           )}
-          aria-label={`${business.name} — home`}
         >
           <img
-            src={logoSrc}
+            {...responsiveProps(logoSrc, responsive.logoMark)}
             alt=""
             aria-hidden="true"
             width={40}

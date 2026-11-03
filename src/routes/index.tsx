@@ -22,6 +22,9 @@ import fireCookingLoop from "@/assets/video/fire-cooking-loop.mp4";
 import entranceTour from "@/assets/video/entrance-tour.mp4";
 import gardenLoop from "@/assets/video/garden-loop.mp4";
 import logoWatermark from "@/assets/logo-mark-transparent.png";
+import { LazyVideo } from "@/components/lazy-video";
+import { canPlayAmbientVideo } from "@/lib/media-prefs";
+import { responsive, responsiveProps } from "@/lib/responsive-images";
 import { cn } from "@/lib/utils";
 
 type PreviewDish = MenuItemOut & { categoryTitle: string; categorySlug: string };
@@ -66,27 +69,15 @@ function Home() {
   const { add, has } = useOrder();
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    // Don't even attempt the hero/fire videos on a connection that can't
-    // sustain them — this is what caused the "video keeps halting" symptom:
-    // the browser starts playback, immediately outruns its buffer on a slow
-    // link, and repeatedly stalls/rebuffers instead of ever completing a
-    // smooth loop. Skipping straight to the static image is both faster and
-    // visually steadier on 2G/3G or data-saver connections.
-    const nav = navigator as Navigator & {
-      connection?: { saveData?: boolean; effectiveType?: string };
-    };
-    const conn = nav.connection;
-    const isSlow =
-      conn?.saveData === true ||
-      (conn?.effectiveType && ["slow-2g", "2g", "3g"].includes(conn.effectiveType));
+    // Reduced-motion, data-saver and 2G/3G visitors keep the static images:
+    // starting playback on a link that can't sustain it causes repeated
+    // stalls instead of a smooth loop (see canPlayAmbientVideo).
     // Keep the mobile hero on its optimized static image. The hero is the
     // first viewport's largest visual; downloading an ambient MP4 here adds
     // avoidable network work on phones and can compete with the page's
     // critical content. Desktop keeps the existing video treatment.
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    if (isSlow || isMobile) return;
+    if (!canPlayAmbientVideo() || isMobile) return;
 
     setPlayVideo(true);
   }, []);
@@ -149,7 +140,7 @@ function Home() {
             <video
               ref={heroVideoRef}
               src={gardenLoop}
-              poster={heroImg}
+              poster={responsiveProps(heroImg, responsive.hero).src}
               autoPlay
               muted
               playsInline
@@ -160,7 +151,8 @@ function Home() {
             />
           ) : (
             <img
-              src={heroImg}
+              {...responsiveProps(heroImg, responsive.hero)}
+              sizes="100vw"
               alt="The thatched entrance to Cultures Resort, framed by banana plants"
               width={1920}
               height={2560}
@@ -243,15 +235,12 @@ function Home() {
         <div className="mx-auto grid max-w-7xl items-start gap-14 px-5 lg:grid-cols-12 lg:px-10">
           <Reveal className="relative lg:col-span-5">
             <div className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-ink">
-              <video
+              <LazyVideo
                 ref={craftVideoRef}
                 src={fireCookingLoop}
-                poster={fireGrill}
-                autoPlay
+                poster={responsive.fire.smallest}
                 muted={craftMuted}
                 loop
-                playsInline
-                preload="metadata"
                 aria-label="Behind the craft: cooking over the open fire at Cultures Resort"
                 className="h-full w-full object-cover"
               />
@@ -344,7 +333,8 @@ function Home() {
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:gap-3">
             <Reveal className="col-span-2 row-span-2 overflow-hidden rounded-2xl">
               <img
-                src={images.pavilionWide}
+                {...responsiveProps(images.pavilionWide, responsive.pavilion)}
+                sizes="(min-width: 640px) 50vw, 100vw"
                 alt="The thatched dining pavilion seen across the lawn, with a stone path and crocodile and antelope sculptures"
                 loading="lazy"
                 width={1024}
@@ -354,7 +344,8 @@ function Home() {
             </Reveal>
             <Reveal delay={60} className="overflow-hidden rounded-2xl">
               <img
-                src={images.craft}
+                {...responsiveProps(images.craft, responsive.craft)}
+                sizes="(min-width: 640px) 25vw, 50vw"
                 alt="A staff member in traditional beadwork admiring a hand-drawn buffalo artwork on the brick pavilion wall"
                 loading="lazy"
                 width={1145}
@@ -364,7 +355,8 @@ function Home() {
             </Reveal>
             <Reveal delay={90} className="overflow-hidden rounded-2xl">
               <img
-                src={images.chickenOnGrate800}
+                {...responsiveProps(images.chickenOnGrate800, responsive.chicken)}
+                sizes="(min-width: 640px) 25vw, 50vw"
                 alt="Golden-brown grilled chicken and other cuts on the grate above glowing coals"
                 loading="lazy"
                 width={800}
@@ -374,7 +366,8 @@ function Home() {
             </Reveal>
             <Reveal delay={120} className="overflow-hidden rounded-2xl">
               <img
-                src={cultureImg}
+                {...responsiveProps(cultureImg, responsive.drums)}
+                sizes="(min-width: 640px) 25vw, 50vw"
                 alt="A staff member in traditional-pattern uniform beside African paintings and art on display"
                 loading="lazy"
                 width={940}
@@ -384,7 +377,8 @@ function Home() {
             </Reveal>
             <Reveal delay={150} className="overflow-hidden rounded-2xl">
               <img
-                src={images.gardenZebraSignpost}
+                {...responsiveProps(images.gardenZebraSignpost, responsive.zebra)}
+                sizes="(min-width: 640px) 25vw, 50vw"
                 alt="A zebra sculpture beside a signpost of African destinations, with umbrellas and picnic tables behind"
                 loading="lazy"
                 width={810}
@@ -394,7 +388,8 @@ function Home() {
             </Reveal>
             <Reveal delay={180} className="col-span-2 overflow-hidden rounded-2xl">
               <img
-                src={images.feastPlatterMixed}
+                {...responsiveProps(images.feastPlatterMixed, responsive.feast)}
+                sizes="(min-width: 640px) 50vw, 100vw"
                 alt="Large mixed grill platter at Cultures Resort: sadza, brown rice, jollof rice, grilled chicken, chips, greens and gravy"
                 loading="lazy"
                 width={1920}
@@ -419,7 +414,8 @@ function Home() {
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-1 px-1 pt-1 lg:grid-cols-3 lg:gap-2 lg:px-2 lg:pt-2">
           <div className="col-span-2 aspect-[16/11] overflow-hidden lg:col-span-2 lg:aspect-auto">
             <img
-              src={foodMainImg}
+              {...responsiveProps(foodMainImg, responsive.sadzaGreens)}
+              sizes="(min-width: 1024px) 66vw, 100vw"
               alt="Meal served at Cultures Resort: sadza, cooked greens, brown rice and chips on a steel platter, with a small bowl of gravy"
               width={1920}
               height={2560}
@@ -438,7 +434,8 @@ function Home() {
             </div>
             <div className="overflow-hidden">
               <img
-                src={images.porkSizzler}
+                {...responsiveProps(images.porkSizzler, responsive.pork)}
+                sizes="25vw"
                 alt="Sizzling grilled pork served on a hot plate with tomato and onion"
                 loading="lazy"
                 className="h-full w-full object-cover"
@@ -517,20 +514,18 @@ function Home() {
       <section className="relative flex h-[60svh] items-center justify-center overflow-hidden">
         <ParallaxImage strength={30} className="absolute inset-0 h-full w-full">
           {playVideo ? (
-            <video
+            <LazyVideo
               src={fireCookingLoop}
-              poster={fireGrill}
-              autoPlay
+              poster={responsive.fire.smallest}
               muted
               loop
-              playsInline
-              preload="metadata"
               aria-hidden="true"
               className="h-[122%] w-full object-cover"
             />
           ) : (
             <img
-              src={fireGrill}
+              {...responsiveProps(fireGrill, responsive.fire)}
+              sizes="100vw"
               alt="Ribs and cuts of meat charring over open charcoal"
               width={1600}
               height={900}
@@ -606,7 +601,8 @@ function Home() {
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 lg:grid-cols-2 lg:gap-16 lg:px-10">
           <Reveal className="overflow-hidden rounded-2xl">
             <img
-              src={images.traditionalDrinkPouring}
+              {...responsiveProps(images.traditionalDrinkPouring, responsive.drink)}
+              sizes="(min-width: 1024px) 50vw, 100vw"
               alt="Two staff members in branded caps preparing maheu and traditional snacks beside large clay pots and calabashes"
               loading="lazy"
               width={896}
@@ -628,7 +624,7 @@ function Home() {
       {/* Reviews */}
       <section className="relative overflow-hidden bg-background pb-16 pt-10 lg:py-24">
         <img
-          src={logoWatermark}
+          {...responsiveProps(logoWatermark, responsive.logoMarkTransparent)}
           alt=""
           aria-hidden="true"
           className="pointer-events-none absolute left-1/2 top-1/2 h-[85%] w-auto -translate-x-1/2 -translate-y-1/2 select-none opacity-[0.06] lg:h-[70%]"
@@ -663,7 +659,11 @@ function Home() {
                     <p className="truncate text-xs text-muted-foreground">{t.meta}</p>
                   </div>
                 </div>
-                <div className="mt-4 flex gap-0.5" aria-label={`${t.rating} out of 5 stars`}>
+                <div
+                  className="mt-4 flex gap-0.5"
+                  role="img"
+                  aria-label={`${t.rating} out of 5 stars`}
+                >
                   {Array.from({ length: 5 }).map((_, s) => (
                     <Star
                       key={s}
@@ -688,7 +688,8 @@ function Home() {
       {/* Culture band */}
       <section className="relative overflow-hidden">
         <img
-          src={cultureImg}
+          {...responsiveProps(cultureImg, responsive.drums)}
+          sizes="100vw"
           alt="A staff member in traditional-pattern uniform beside African paintings and art on display"
           width={1600}
           height={1067}

@@ -78,7 +78,7 @@
   --card-foreground: #2b211a;
   --popover: #f8f3e9;
   --popover-foreground: #2b211a;
-  --primary: #c1502e;
+  --primary: #b54827; /* darkened from #c1502e to reach WCAG AA 4.5:1 for text on --background and for --primary-foreground on it */
   --primary-foreground: #f8f3e9;
   --secondary: #d8c49a;
   --secondary-foreground: #2b211a;
