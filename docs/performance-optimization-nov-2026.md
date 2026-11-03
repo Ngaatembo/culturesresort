@@ -98,12 +98,7 @@ Tested against the local preview (Playwright, mobile 390×844 and desktop 1366×
 - ✅ `tsc --noEmit` clean; `vite build` succeeds.
 - Lighthouse accessibility: 100 on mobile and desktop (automated; screen-reader/keyboard walk-through not performed).
 
-**Not tested** (needs staging with real bindings, secrets and safe test records):
-- Submitting a reservation/enquiry end-to-end and the confirmation/notification path.
-- Admin login (local D1 lacks the `app_secrets` table that the auth code expects — pre-existing; unrelated to this change), permissions, menu editing, gallery upload/replace, homepage slot assignment, reservations/enquiries management, settings persistence.
-- WhatsApp link targets (not modified).
-- Production response headers, Cloudflare compression/caching rules.
-- `npm run lint`: pre-existing Prettier errors remain in files I did not need to change (`src/lib/site-data.ts`, two spots in `src/routes/index.tsx`); files I added are clean. There is no `test` script in `package.json`.
+**Not tested**: see §9 (final review), which supersedes the earlier "not tested" list.
 
 ## 6. Remaining issues and next actions
 
@@ -126,6 +121,39 @@ Tested against the local preview (Playwright, mobile 390×844 and desktop 1366×
 **Weekly — forms/links/admin:** place a test reservation and enquiry and confirm staff receive them; click WhatsApp and phone links; log in to admin, toggle a menu item's availability and revert.
 
 **Cloudflare:** confirm `/assets/*` immutable caching, HTML not cached, admin responses `no-store`, compression on; purge cache only after deploys that change non-fingerprinted files (`/sw.js`, `/og-image.jpg`).
+
+## 9. Final production-readiness review (local, safe tests only)
+
+Environment: `wrangler dev` with local D1/R2 (migrations applied, throwaway `ZZ TEST` records, throwaway local admin); `main` built in a separate worktree and run side by side for comparison. No production data or services were touched.
+
+**Integration of #14 + #15.** Branch is 0 commits behind `main`; contains both #14 commits (mobile hero video deferral, baseline doc) plus the follow-up. The diff versus #14 touches no data-layer files, server functions, reservation/contact/admin routes, admin components or migrations.
+
+| Area | Result |
+|---|---|
+| Admin-managed images | ✅ With a test R2 object assigned to the `hero` slot in `site_settings`, the hero rendered `/gallery-image/gallery/test-admin-1.webp` with **no** `srcset` (bundled variants not applied) and loaded. R2 route still returns immutable cache, 404 for `..` traversal and for non-public prefixes |
+| Admin gallery upload | ✅ Upload via admin UI succeeded (image count +1, no error) |
+| Reservation | ✅ Submits, shows "Request received", row saved `pending` |
+| Events enquiry | ✅ Saved to `bookings` (identical on `main` and PR build) |
+| Contact form | ✅ Success state shown |
+| WhatsApp links | ✅ `wa.me/263772951308` (general and pre-filled) unchanged |
+| Menu | ✅ Seed menu renders with prices (e.g. $4.00, $3.00) |
+| Admin | ✅ Setup, login, and `/admin`, `/menu`, `/reservations`, `/enquiries`, `/gallery`, `/settings`, `/orders`, `/events` all load; reservation test rows visible; unauthenticated `/admin/menu` redirects to login. Menu availability toggle, homepage slot assignment UI and settings save were **not** exercised (admin code unchanged) |
+| Video | ✅ Mobile: no MP4 until scroll; reduced-motion: none; desktop hero loop plays; tour video only on open |
+| Responsive images | ✅ Hero picks 800 w on a 390 px phone; no layout shift (CLS 0) |
+| Accessibility | ✅ Lighthouse 100/100 mobile and desktop (automated only) |
+| Caching/security | ✅ Headers identical to `main` (`/assets/*` immutable; no new routes, cookies or headers; R2 keys unique per upload so immutable caching cannot serve stale replaced images; menu/admin `no-store` untouched) |
+| TypeScript | ✅ clean |
+| Lint | `main`: 138 errors; this branch: 138 after fixing one I introduced. All remaining are pre-existing formatting issues in untouched code |
+| Console | ⚠️ React hydration error #418 appears once per page load on **both `main` and this branch** — pre-existing, not a regression; not investigated (changing it risks scope creep) |
+
+**Still requires staging/production verification**
+1. Real PageSpeed Insights run on a Cloudflare preview (compression, CDN, real fonts), mobile and desktop, several runs.
+2. Production response headers (`curl -I` for `/`, `/assets/*`, `/gallery-image/*`, admin) and Cloudflare cache/compression rules.
+3. Real notification paths (email/push) for reservations and enquiries; cross-device WhatsApp link opening.
+4. Admin: homepage slot assignment UI, image replace/delete, menu availability toggle, settings persistence, role permissions, with real R2.
+5. Visual comparison on real phones (hero crop, `--primary` colour shift, grid images).
+6. Real-device keyboard/screen-reader pass; autoplay behaviour on iOS Safari/Low Power Mode.
+7. Decide on the pre-existing hydration error and Prettier backlog.
 
 ## 8. Deployment gate
 

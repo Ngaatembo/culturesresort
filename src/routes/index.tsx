@@ -659,7 +659,11 @@ function Home() {
                     <p className="truncate text-xs text-muted-foreground">{t.meta}</p>
                   </div>
                 </div>
-                <div className="mt-4 flex gap-0.5" role="img" aria-label={`${t.rating} out of 5 stars`}>
+                <div
+                  className="mt-4 flex gap-0.5"
+                  role="img"
+                  aria-label={`${t.rating} out of 5 stars`}
+                >
                   {Array.from({ length: 5 }).map((_, s) => (
                     <Star
                       key={s}
