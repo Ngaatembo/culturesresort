@@ -2,6 +2,7 @@ import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
 import { experiences } from "@/lib/site-data";
 import { useSlotImage } from "@/lib/homepage-images";
+import { responsive, responsiveProps } from "@/lib/responsive-images";
 
 /**
  * The four pillars as four different chapters, not four identical cards —
@@ -33,7 +34,8 @@ export function ExperienceGrid() {
         className="card-tactile group relative overflow-hidden rounded-2xl lg:row-span-2"
       >
         <img
-          src={gardenSrc}
+          {...responsiveProps(gardenSrc, responsive.garden)}
+          sizes="(min-width: 1024px) 50vw, 100vw"
           alt=""
           aria-hidden="true"
           loading="lazy"
@@ -58,7 +60,8 @@ export function ExperienceGrid() {
         className="card-tactile grid grid-cols-[minmax(0,7rem)_1fr] gap-4 overflow-hidden rounded-2xl border border-border bg-card p-4 sm:grid-cols-[minmax(0,9rem)_1fr] lg:p-5"
       >
         <img
-          src={fireSrc}
+          {...responsiveProps(fireSrc, responsive.food)}
+          sizes="144px"
           alt=""
           aria-hidden="true"
           loading="lazy"
@@ -74,7 +77,8 @@ export function ExperienceGrid() {
       <Reveal as="li" delay={180} className="relative overflow-visible">
         <div className="card-tactile group overflow-hidden rounded-2xl">
           <img
-            src={decorSrc}
+            {...responsiveProps(decorSrc, responsive.craft)}
+            sizes="(min-width: 1024px) 50vw, 100vw"
             alt=""
             aria-hidden="true"
             loading="lazy"
