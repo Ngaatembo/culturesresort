@@ -71,3 +71,22 @@ for name, widths in AVIF_JOBS.items():
         out = OUT / f"{stem}-{w}w.avif"
         im.resize((w, h), Image.LANCZOS).save(out, "AVIF", quality=AVIF_QUALITY)
         print(f"{out.name:48} {w}x{h} {out.stat().st_size/1024:7.1f} KB (avif)")
+
+# Menu dish photos that were shown in small cards at 400-600 KB each. Written to
+# src/assets/dishes/optimized/<name>.webp and used by src/lib/dish-photos.ts.
+# See limits below.
+# Long-side limit per photo: square dishes are shown as ~150-300 px thumbnails;
+# wide photos are cropped (object-cover) into a tall box, so they need more width.
+DISH_JOBS = {"haifiridzi": 560, "jollof-rice": 560, "mufushwa-une-dovi": 800, "pilau": 800,
+             "samaki-makange": 900, "biryani-rice": 900, "wild-dried-fruits": 900}
+DISH_QUALITY = 78
+DISH_OUT = SRC / "dishes" / "optimized"
+DISH_OUT.mkdir(parents=True, exist_ok=True)
+for stem, max_side in DISH_JOBS.items():
+    im = Image.open(SRC / "dishes" / f"{stem}.jpg").convert("RGB")
+    scale = min(1.0, max_side / max(im.size))
+    im = im.resize((round(im.width * scale), round(im.height * scale)), Image.LANCZOS)
+    out = DISH_OUT / f"{stem}.webp"
+    im.save(out, "WEBP", quality=DISH_QUALITY, method=6)
+    orig = (SRC / "dishes" / f"{stem}.jpg").stat().st_size / 1024
+    print(f"dish {out.name:34} {im.size} {out.stat().st_size/1024:6.1f} KB (orig {orig:.0f} KB)")
