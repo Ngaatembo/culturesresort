@@ -179,6 +179,32 @@ Findings from this run and actions:
 - **Mobile best practices 96, "Displays images with incorrect aspect ratio"**: not yet identified; needs the expanded audit.
 - Mobile render-blocking 450 ms (CSS) and unused JS 39 KiB: unchanged, as documented in §6.
 
+### 10.1 Same-day comparison, mobile (PSI, 3 Nov 2026 evening, Moto G Power / slow 4G, one run each)
+
+| | Production `culturesresort.co.zw` (23:45, old code) | Preview, earlier build (23:24) | Preview, latest (23:39) |
+|---|---|---|---|
+| Performance | **72** | 89 | 81 |
+| FCP | 1.5 s | 0.9 s | 0.9 s |
+| LCP | **8.0 s** | 3.5 s | 4.1 s |
+| TBT / CLS | 0 / 0 | 0 / 0 | 0 / 0 |
+| Speed Index | 4.8 s | 4.0 s | 6.2 s |
+| Accessibility | **92** | 100 | 100 |
+| Best practices | 96 | 96 | 96 |
+| SEO | **100** | 69 * | 69 * |
+| Total payload | **6,927 KiB** | n/a | n/a |
+
+\* The preview's SEO 69 is confirmed to be a `workers.dev` preview artefact: production scores 100.
+
+Production findings (all pre-existing): image delivery savings 4,030 KiB; hero JPEG 860 KiB, `logo-full.png` 800 KiB and other full-size JPEGs; the ambient hero MP4 is still downloaded on mobile (production does not yet have #14); render-blocking 670 ms (CSS + Google Fonts); forced reflow 60 ms (unattributed); star-rating `aria-label` on a plain `div` (the accessibility 92 and the "agent accessibility tree" warning), fixed in this PR.
+
+Preview mobile varies between runs (local control runs of the same build ranged 67–84), so report it as roughly 80–90 until several runs are averaged. Not yet measured: production desktop on the same day, and multiple runs per target.
+
+### 10.2 Desktop on the poster-fix build (commit `2ff004c`, two runs)
+Performance 95 and 96; FCP 0.3 s; LCP 1.0 s; TBT 0 ms; CLS 0.045; Speed Index 1.6–1.9 s; accessibility 100; best practices 100. Poster fix confirmed (hero video poster is the optimised WebP). Desktop baseline 97–98 was from earlier on production; same-day production desktop still to be captured.
+
+### 10.3 Tested and rejected
+Removing the logo intro overlay (local mobile, 4 runs each): Speed Index 4.7 s → 2.4 s but LCP 3.7 s → 4.6 s and score 83 → 80. Not a reliable lever, so the intro is unchanged.
+
 ## 8. Deployment gate
 
 Do not merge to `main` or deploy until: (a) a preview deploy on Cloudflare has been measured in PSI, (b) a staging reservation/enquiry and admin smoke test pass, and (c) the owner approves.
