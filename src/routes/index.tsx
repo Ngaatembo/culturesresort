@@ -140,7 +140,7 @@ function Home() {
             <video
               ref={heroVideoRef}
               src={gardenLoop}
-              poster={heroImg}
+              poster={responsiveProps(heroImg, responsive.hero).src}
               autoPlay
               muted
               playsInline

@@ -155,6 +155,30 @@ Environment: `wrangler dev` with local D1/R2 (migrations applied, throwaway `ZZ 
 6. Real-device keyboard/screen-reader pass; autoplay behaviour on iOS Safari/Low Power Mode.
 7. Decide on the pre-existing hydration error and Prettier backlog.
 
+## 10. Real PageSpeed Insights on the branch preview (3 Nov 2026, 23:24 GMT+2)
+
+URL: `https://claude-cultures-resort-perf-ns53qm-culturesresort.ngaatendwew.workers.dev/` (commit `e300e82`). Run once per device on a phone browser by the owner; no CrUX data ("No Data"). **Preview on workers.dev, not the production domain, so not strictly comparable with the production baseline.**
+
+| | Baseline (production, screenshots) | Branch preview, mobile | Branch preview, desktop |
+|---|---|---|---|
+| Performance | 72 / 97–98 | **89** | **88** |
+| Accessibility | desktop 100 | 100 | 100 |
+| Best practices | desktop 100 | 96 | 100 |
+| SEO | desktop 100 | 69 * | 69 * |
+| FCP / LCP | not recorded | 0.9 s / 3.5 s | 0.3 s / 1.8 s |
+| TBT / CLS / SI | not recorded | 0 ms / 0 / 4.0 s | 0 ms / 0.045 / 2.2 s |
+| Total payload | ~6,931 KiB (one screenshot) | not captured | 3,580 KiB |
+
+\* "Page is blocked from indexing": no `noindex` exists in the public code (only `/admin`); this is expected to be the `workers.dev` preview behaviour. **Must be re-checked on the production domain.**
+
+Findings from this run and actions:
+- **Desktop image delivery (933 KiB) and "LCP request discovery"**: caused by the desktop hero `<video poster>` still pointing at the original 860 KB JPEG. Fixed in the follow-up commit (poster now uses the optimised WebP). Local desktop Lighthouse 90 → 94; only the WebP is fetched. Needs re-measurement on a new preview.
+- **Desktop 88 vs baseline 97–98**: a possible regression versus the baseline, or an artefact of preview/test conditions. Unresolved until PSI is run on production and on the updated preview the same day.
+- **Desktop CLS 0.045** (local CLS was 0): suspected cause is the font swap now that Google Fonts no longer blocks rendering, or the hero image→video swap. Unconfirmed; needs the "Layout shift culprits" detail.
+- **Mobile "Forced reflow"** flagged: source not yet identified; needs the expanded audit.
+- **Mobile best practices 96, "Displays images with incorrect aspect ratio"**: not yet identified; needs the expanded audit.
+- Mobile render-blocking 450 ms (CSS) and unused JS 39 KiB: unchanged, as documented in §6.
+
 ## 8. Deployment gate
 
 Do not merge to `main` or deploy until: (a) a preview deploy on Cloudflare has been measured in PSI, (b) a staging reservation/enquiry and admin smoke test pass, and (c) the owner approves.
