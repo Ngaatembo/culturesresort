@@ -1,6 +1,6 @@
 # Website performance, accessibility and maintenance — November 2026
 
-Status: **preview-tested locally; not deployed. Production deployment needs owner approval.**
+Status: **merged to `main` and deployed on 3 Nov 2026 with owner approval; live results in §11.**
 
 ## 1. Baseline evidence (PageSpeed Insights, 3 Nov 2026, supplied by WebAura)
 
@@ -204,6 +204,29 @@ Performance 95 and 96; FCP 0.3 s; LCP 1.0 s; TBT 0 ms; CLS 0.045; Speed Index 1.
 
 ### 10.3 Tested and rejected
 Removing the logo intro overlay (local mobile, 4 runs each): Speed Index 4.7 s → 2.4 s but LCP 3.7 s → 4.6 s and score 83 → 80. Not a reliable lever, so the intro is unchanged.
+
+## 11. Live-site results after deployment (merged 3 Nov 2026, measured 4 Nov 2026 00:02–00:03, PSI, one run each)
+
+URL: `https://culturesresort.co.zw/`. Same-day "before" runs were taken at 23:45 on the old production code. Mobile = Moto G Power / slow 4G; desktop = emulated desktop.
+
+| | Before (23:45) | After (00:03) |
+|---|---|---|
+| Mobile performance | 72 | **81** |
+| Mobile LCP | 8.0 s | **4.1 s** |
+| Mobile FCP / TBT / CLS / Speed Index | 1.5 s / 0 / 0 / 4.8 s | 0.9 s / 0 / 0 / 6.2 s |
+| Mobile accessibility / best practices / SEO | 92 / 96 / 100 | **100** / 96 / 100 |
+| Desktop performance | 90 | **96** |
+| Desktop LCP / FCP / TBT / CLS / Speed Index | 1.6 s / 0.4 s / 0 / 0.043 / 1.9 s | 1.1 s / 0.3 s / 0 / 0.045 / 1.5 s |
+| Desktop accessibility / best practices / SEO | 92 / 100 / 100 | **100** / 100 / 100 |
+| Total payload (mobile / desktop) | 6,927 KiB / 6,508 KiB | not captured |
+
+Notes: single runs (mobile varies by several points between runs; treat as roughly 80–90). Mobile Speed Index is higher after than before; the first-visit logo intro covers the hero in the lab run, and removing it was tested locally without a net score gain, so it was left unchanged. No CrUX field data exists yet for the site.
+
+Owner confirmation after deployment: homepage, menu, gallery, WhatsApp links and admin login all working on the live site. One "Aw, Snap!" tab crash was reported on a phone with ~41 open tabs after switching to WhatsApp; the WhatsApp code is unchanged by this work and the cause is believed to be browser memory pressure (not reproduced; monitor).
+
+Still open (optional, not blockers): inline critical CSS (render-blocking ~460 ms mobile), slightly stronger image compression, the 39 KiB unused JavaScript bundle, unattributed forced reflow (~60 ms, present before this work), the pre-existing React hydration error #418, resize-on-upload for admin images, and the Prettier backlog.
+
+**Rollback** if ever needed: Cloudflare → previous version, or revert merge commit `82169d7` on `main`.
 
 ## 8. Deployment gate
 
