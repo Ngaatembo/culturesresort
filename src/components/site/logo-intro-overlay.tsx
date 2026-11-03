@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSlotImage } from "@/lib/homepage-images";
 import logoFull from "@/assets/logo-full.png";
+import { responsive, responsiveProps } from "@/lib/responsive-images";
 
 const SESSION_KEY = "cultures-logo-intro-shown";
 
@@ -37,7 +38,7 @@ export function LogoIntroOverlay() {
       onAnimationEnd={() => setVisible(false)}
     >
       <img
-        src={logoSrc}
+        {...responsiveProps(logoSrc, responsive.logoFull)}
         alt=""
         width={1254}
         height={1254}

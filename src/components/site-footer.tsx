@@ -7,6 +7,7 @@ import { whatsappLink, whatsappMessages } from "@/lib/site-data";
 import { useSiteSettings } from "@/lib/site-settings-query";
 import { useSlotImage } from "@/lib/homepage-images";
 import logoFull from "@/assets/logo-full.png";
+import { responsive, responsiveProps } from "@/lib/responsive-images";
 
 /**
  * Simplified per the brand brief (Section 24): brand + tagline + contact,
@@ -23,7 +24,8 @@ export function SiteFooter() {
     <footer className="bg-ink text-bone">
       <div className="mx-auto max-w-3xl px-5 py-20 text-center lg:px-10 lg:py-28">
         <img
-          src={logoSrc}
+          {...responsiveProps(logoSrc, responsive.logoFull)}
+          loading="lazy"
           alt="Cultures Resort — African Traditional Restaurant"
           width={1254}
           height={1254}
@@ -122,7 +124,7 @@ export function SiteFooter() {
           )}
         </div>
       </div>
-      <div className="border-t border-bone/10 px-5 py-6 text-center text-xs text-bone/45 lg:px-10">
+      <div className="border-t border-bone/10 px-5 py-6 text-center text-xs text-bone/60 lg:px-10">
         © {new Date().getFullYear()} Cultures Resort, Harare.
         <span aria-hidden="true"> · </span>
         <Link to="/privacy" className="underline underline-offset-2 hover:text-ochre">

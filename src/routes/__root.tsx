@@ -129,12 +129,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      // Google Fonts CSS is loaded without blocking first paint: it starts as
+      // media="print" (non-blocking) and the inline script below flips it to
+      // "all" once loaded. `display=swap` shows fallback text meanwhile, and
+      // the <noscript> in RootShell covers visitors without JavaScript.
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..700&family=DM+Sans:ital,wght@0,300..700;1,300..500&family=Manrope:wght@400..800&display=swap",
+        href: FONTS_HREF,
+        media: "print",
+        "data-font-swap": "",
       },
     ],
     scripts: [
+      {
+        children:
+          "document.querySelectorAll('link[data-font-swap]').forEach(function(l){function s(){l.media='all'}if(l.sheet){s()}else{l.addEventListener('load',s)}})",
+      },
       {
         type: "application/ld+json",
         children: JSON.stringify({
@@ -181,11 +191,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+const FONTS_HREF =
+  "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..700&family=DM+Sans:ital,wght@0,300..700;1,300..500&family=Manrope:wght@400..800&display=swap";
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        <noscript>
+          <link rel="stylesheet" href={FONTS_HREF} />
+        </noscript>
       </head>
       <body>
         {children}
