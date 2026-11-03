@@ -40,7 +40,9 @@ JOBS = {
     "logo-mark-transparent.png": (320,),
     "chicken-on-grate-closeup-1600w.webp": (480, 800),
 }
-QUALITY = 74
+QUALITY = 66
+# The LCP hero keeps higher quality; thumbnails/grid photos tolerate more compression.
+HERO_QUALITY = 74
 
 OUT.mkdir(parents=True, exist_ok=True)
 for old in OUT.glob("*.webp"):
@@ -54,5 +56,5 @@ for name, widths in JOBS.items():
         w = min(w, im.width)
         h = round(im.height * w / im.width)
         out = OUT / f"{stem}-{w}w.webp"
-        im.resize((w, h), Image.LANCZOS).save(out, "WEBP", quality=QUALITY, method=6)
+        im.resize((w, h), Image.LANCZOS).save(out, "WEBP", quality=HERO_QUALITY if stem == "entrance-banana-leaves" else QUALITY, method=6)
         print(f"{out.name:48} {w}x{h} {out.stat().st_size/1024:7.1f} KB (orig {(SRC/name).stat().st_size/1024:.0f} KB)")
