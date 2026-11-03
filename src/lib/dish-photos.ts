@@ -1,10 +1,11 @@
+// Seven heavy photos use smaller WebP copies (scripts/optimize-images.py); originals are kept.
 // Real dish/drink photos, cropped from the client's own printed menu.
 // Keyed by the exact menu_items.name value in D1 (current client names and the
 // older names they replace). Food with no entry here is shown as a text-only
 // card in routes/menu.tsx; only beverages fall back to a category placeholder.
 import kukuChoma from "@/assets/dishes/kuku-choma.jpg";
-import mufushwaUneDovi from "@/assets/dishes/mufushwa-une-dovi.jpg";
-import biryaniRice from "@/assets/dishes/biryani-rice.jpg";
+import mufushwaUneDovi from "@/assets/dishes/optimized/mufushwa-une-dovi.webp";
+import biryaniRice from "@/assets/dishes/optimized/biryani-rice.webp";
 import kukuKaranga from "@/assets/dishes/kuku-karanga.jpg";
 import beefChopAlaMasai from "@/assets/dishes/beef-chop-ala-masai.jpg";
 import mbavuZaMbuzi from "@/assets/dishes/mbavu-za-mbuzi.jpg";
@@ -17,9 +18,9 @@ import roadRunnerChicken from "@/assets/dishes/road-runner-chicken.jpg";
 import mguuWaMbuzi from "@/assets/dishes/mguu-wa-mbuzi.jpg";
 import borewores from "@/assets/dishes/borewores.jpg";
 import samakiBream from "@/assets/dishes/samaki-bream.jpg";
-import samakiMakange from "@/assets/dishes/samaki-makange.jpg";
+import samakiMakange from "@/assets/dishes/optimized/samaki-makange.webp";
 import hanga from "@/assets/dishes/hanga.jpg";
-import haifiridzi from "@/assets/dishes/haifiridzi.jpg";
+import haifiridzi from "@/assets/dishes/optimized/haifiridzi.webp";
 import braaiedBeefShortRibs from "@/assets/dishes/braaied-beef-short-ribs.jpg";
 import maasaiMeatPlatter from "@/assets/dishes/maasai-meat-platter.jpg";
 import mbuziUlaya from "@/assets/dishes/mbuzi-ulaya.jpg";
@@ -37,19 +38,19 @@ import tequilaGinSunrise from "@/assets/dishes/tequila-gin-sunrise.jpg";
 import blueLagoon from "@/assets/dishes/blue-lagoon.jpg";
 import chips from "@/assets/dishes/chips.jpg";
 import muriwoUneDovi from "@/assets/dishes/muriwo-une-dovi.jpg";
-import jollofRice from "@/assets/dishes/jollof-rice.jpg";
+import jollofRice from "@/assets/dishes/optimized/jollof-rice.webp";
 import chapati from "@/assets/dishes/chapati.jpg";
 import friedPotatoWedges from "@/assets/dishes/fried-potato-wedges.jpg";
 import mpungaUneDovi from "@/assets/dishes/mpunga-une-dovi.jpg";
 import sadzaUgali from "@/assets/dishes/sadza-ugali.jpg";
 import plainRice from "@/assets/dishes/plain-rice.jpg";
 import homemadeCake from "@/assets/dishes/homemade-cake.jpg";
-import wildDriedFruits from "@/assets/dishes/wild-dried-fruits.jpg";
+import wildDriedFruits from "@/assets/dishes/optimized/wild-dried-fruits.webp";
 import zimTeaCoffee from "@/assets/dishes/zim-tea-coffee.jpg";
 import softDrinkPhoto from "@/assets/dishes/soft-drink.jpg";
 import maheuPhoto from "@/assets/dishes/maheu.jpg";
 import freshJuice from "@/assets/dishes/fresh-juice.jpg";
-import pilauPhoto from "@/assets/dishes/pilau.jpg";
+import pilauPhoto from "@/assets/dishes/optimized/pilau.webp";
 import barLocalLagers from "@/assets/dishes/bar-local-lagers.jpg";
 import barImportedLagers from "@/assets/dishes/bar-imported-lagers.jpg";
 import barCastleLite from "@/assets/dishes/bar-castle-lite.jpg";

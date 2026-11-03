@@ -21,6 +21,28 @@ const files = import.meta.glob<string>("/src/assets/optimized/*.webp", {
   query: "?url",
   import: "default",
 });
+const avifFiles = import.meta.glob<string>("/src/assets/optimized/*.avif", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+
+function avifVariants(stem: string): Array<readonly [string, number]> {
+  return Object.entries(avifFiles)
+    .map(([path, url]) => {
+      const m = /\/([^/]+)-(\d+)w\.avif$/.exec(path);
+      return m && m[1] === stem ? ([url, Number(m[2])] as const) : null;
+    })
+    .filter((v): v is readonly [string, number] => v !== null)
+    .sort((a, b) => a[1] - b[1]);
+}
+
+/** `srcset` of AVIF variants for a stem (empty string if none generated). */
+function avifSrcSet(stem: string): string {
+  return avifVariants(stem)
+    .map(([url, w]) => `${url} ${w}w`)
+    .join(", ");
+}
 
 export type ResponsiveImage = {
   /** The bundled full-size asset this set replaces. */
@@ -30,6 +52,10 @@ export type ResponsiveImage = {
   /** Smallest variant, e.g. for video posters. */
   smallest: string;
   srcSet: string;
+  /** Optional AVIF srcset (same widths); use inside <picture> with WebP fallback. */
+  avifSrcSet?: string;
+  /** Largest AVIF variant (e.g. as a <video poster>, which has no srcset). */
+  avifLargest?: string | undefined;
 };
 
 function set(original: string, stem: string): ResponsiveImage {
@@ -53,7 +79,11 @@ function set(original: string, stem: string): ResponsiveImage {
 }
 
 export const responsive = {
-  hero: set(images.entranceBananaLeaves, "entrance-banana-leaves"),
+  hero: {
+    ...set(images.entranceBananaLeaves, "entrance-banana-leaves"),
+    avifSrcSet: avifSrcSet("entrance-banana-leaves"),
+    avifLargest: avifVariants("entrance-banana-leaves").at(-1)?.[0],
+  },
   pavilion: set(images.pavilionWide, "pavilion-wide"),
   craft: set(images.craft, "craft-detail"),
   drums: set(images.drums, "culture-drums"),
