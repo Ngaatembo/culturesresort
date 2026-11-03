@@ -81,7 +81,12 @@ function Home() {
     const isSlow =
       conn?.saveData === true ||
       (conn?.effectiveType && ["slow-2g", "2g", "3g"].includes(conn.effectiveType));
-    if (isSlow) return;
+    // Keep the mobile hero on its optimized static image. The hero is the
+    // first viewport's largest visual; downloading an ambient MP4 here adds
+    // avoidable network work on phones and can compete with the page's
+    // critical content. Desktop keeps the existing video treatment.
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    if (isSlow || isMobile) return;
 
     setPlayVideo(true);
   }, []);
