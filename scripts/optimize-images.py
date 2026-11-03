@@ -42,8 +42,13 @@ JOBS = {
 }
 QUALITY = 74
 
+# AVIF variants, only for the mobile LCP hero (≈40% smaller than WebP at equal
+# visual quality). WebP stays as the fallback for browsers without AVIF.
+AVIF_JOBS = {"entrance-banana-leaves.jpg": (480, 800, 1080, 1600)}
+AVIF_QUALITY = 50
+
 OUT.mkdir(parents=True, exist_ok=True)
-for old in OUT.glob("*.webp"):
+for old in list(OUT.glob("*.webp")) + list(OUT.glob("*.avif")):
     old.unlink()  # regenerate cleanly so removed widths do not linger
 for name, widths in JOBS.items():
     im = Image.open(SRC / name)
@@ -56,3 +61,13 @@ for name, widths in JOBS.items():
         out = OUT / f"{stem}-{w}w.webp"
         im.resize((w, h), Image.LANCZOS).save(out, "WEBP", quality=QUALITY, method=6)
         print(f"{out.name:48} {w}x{h} {out.stat().st_size/1024:7.1f} KB (orig {(SRC/name).stat().st_size/1024:.0f} KB)")
+
+for name, widths in AVIF_JOBS.items():
+    im = Image.open(SRC / name).convert("RGB")
+    stem = Path(name).stem
+    for w in widths:
+        w = min(w, im.width)
+        h = round(im.height * w / im.width)
+        out = OUT / f"{stem}-{w}w.avif"
+        im.resize((w, h), Image.LANCZOS).save(out, "AVIF", quality=AVIF_QUALITY)
+        print(f"{out.name:48} {w}x{h} {out.stat().st_size/1024:7.1f} KB (avif)")

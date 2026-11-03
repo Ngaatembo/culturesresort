@@ -1,3 +1,4 @@
+import { LazyImg } from "@/components/lazy-img";
 import { Reveal } from "@/components/reveal";
 import { images } from "@/lib/gallery";
 import { experiences } from "@/lib/site-data";
@@ -21,7 +22,10 @@ export function ExperienceGrid() {
   // ("garden" / "food" / "craft"), so an admin-assigned Media Library photo
   // for that slot swaps in here automatically; family's imageKey isn't a
   // managed slot, so it always uses its bundled photo.
-  const gardenSrc = useSlotImage(garden?.imageKey ?? "garden", images[garden?.imageKey ?? "garden"]);
+  const gardenSrc = useSlotImage(
+    garden?.imageKey ?? "garden",
+    images[garden?.imageKey ?? "garden"],
+  );
   const fireSrc = useSlotImage(fire?.imageKey ?? "food", images[fire?.imageKey ?? "food"]);
   const decorSrc = useSlotImage(decor?.imageKey ?? "craft", images[decor?.imageKey ?? "craft"]);
   if (!garden || !fire || !decor || !family) return null;
@@ -33,12 +37,11 @@ export function ExperienceGrid() {
         as="li"
         className="card-tactile group relative overflow-hidden rounded-2xl lg:row-span-2"
       >
-        <img
+        <LazyImg
           {...responsiveProps(gardenSrc, responsive.garden)}
           sizes="(min-width: 1024px) 50vw, 100vw"
           alt=""
           aria-hidden="true"
-          loading="lazy"
           className="aspect-[4/3] w-full object-cover transition-transform duration-700 [transition-timing-function:var(--ease-premium)] group-hover:scale-[1.06] lg:h-full lg:aspect-auto"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/30 to-transparent" />
@@ -59,12 +62,11 @@ export function ExperienceGrid() {
         delay={90}
         className="card-tactile grid grid-cols-[minmax(0,7rem)_1fr] gap-4 overflow-hidden rounded-2xl border border-border bg-card p-4 sm:grid-cols-[minmax(0,9rem)_1fr] lg:p-5"
       >
-        <img
+        <LazyImg
           {...responsiveProps(fireSrc, responsive.food)}
           sizes="144px"
           alt=""
           aria-hidden="true"
-          loading="lazy"
           className="aspect-square w-full rounded-xl object-cover"
         />
         <div className="min-w-0 self-center">
@@ -76,12 +78,11 @@ export function ExperienceGrid() {
       {/* Décor — overlapping text panel breaking the image edge */}
       <Reveal as="li" delay={180} className="relative overflow-visible">
         <div className="card-tactile group overflow-hidden rounded-2xl">
-          <img
+          <LazyImg
             {...responsiveProps(decorSrc, responsive.craft)}
             sizes="(min-width: 1024px) 50vw, 100vw"
             alt=""
             aria-hidden="true"
-            loading="lazy"
             className="aspect-[16/10] w-full object-cover transition-transform duration-700 [transition-timing-function:var(--ease-premium)] group-hover:scale-[1.06]"
           />
         </div>
@@ -97,11 +98,10 @@ export function ExperienceGrid() {
         delay={270}
         className="card-tactile group relative overflow-hidden rounded-2xl lg:col-span-2"
       >
-        <img
+        <LazyImg
           src={images[family.imageKey]}
           alt=""
           aria-hidden="true"
-          loading="lazy"
           className="aspect-[16/9] w-full object-cover transition-transform duration-700 [transition-timing-function:var(--ease-premium)] group-hover:scale-[1.04] lg:aspect-[21/9]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/15 to-transparent" />

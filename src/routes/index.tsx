@@ -1,3 +1,4 @@
+import { LazyImg } from "@/components/lazy-img";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Flame, Palette, Play, Plus, Star, Trees, Users, Volume2, VolumeX } from "lucide-react";
@@ -140,7 +141,11 @@ function Home() {
             <video
               ref={heroVideoRef}
               src={gardenLoop}
-              poster={responsiveProps(heroImg, responsive.hero).src}
+              poster={
+                heroImg === responsive.hero.original && responsive.hero.avifLargest
+                  ? responsive.hero.avifLargest
+                  : responsiveProps(heroImg, responsive.hero).src
+              }
               autoPlay
               muted
               playsInline
@@ -150,15 +155,22 @@ function Home() {
               className="h-[122%] w-full object-cover object-[60%_50%] md:object-[50%_68%]"
             />
           ) : (
-            <img
-              {...responsiveProps(heroImg, responsive.hero)}
-              sizes="100vw"
-              alt="The thatched entrance to Cultures Resort, framed by banana plants"
-              width={1920}
-              height={2560}
-              className="h-[122%] w-full object-cover object-[60%_50%] md:object-[50%_68%]"
-              fetchPriority="high"
-            />
+            <picture className="contents">
+              {/* AVIF (~40% smaller) only while the hero slot is still the bundled
+                  photo; an admin-assigned hero image is served untouched. */}
+              {heroImg === responsive.hero.original && responsive.hero.avifSrcSet ? (
+                <source type="image/avif" srcSet={responsive.hero.avifSrcSet} sizes="100vw" />
+              ) : null}
+              <img
+                {...responsiveProps(heroImg, responsive.hero)}
+                sizes="100vw"
+                alt="The thatched entrance to Cultures Resort, framed by banana plants"
+                width={1920}
+                height={2560}
+                className="h-[122%] w-full object-cover object-[60%_50%] md:object-[50%_68%]"
+                fetchPriority="high"
+              />
+            </picture>
           )}
         </ParallaxImage>
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/35" />
@@ -332,66 +344,60 @@ function Home() {
           </Reveal>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:gap-3">
             <Reveal className="col-span-2 row-span-2 overflow-hidden rounded-2xl">
-              <img
+              <LazyImg
                 {...responsiveProps(images.pavilionWide, responsive.pavilion)}
                 sizes="(min-width: 640px) 50vw, 100vw"
                 alt="The thatched dining pavilion seen across the lawn, with a stone path and crocodile and antelope sculptures"
-                loading="lazy"
                 width={1024}
                 height={1536}
                 className="h-full min-h-[16rem] w-full object-cover"
               />
             </Reveal>
             <Reveal delay={60} className="overflow-hidden rounded-2xl">
-              <img
+              <LazyImg
                 {...responsiveProps(images.craft, responsive.craft)}
                 sizes="(min-width: 640px) 25vw, 50vw"
                 alt="A staff member in traditional beadwork admiring a hand-drawn buffalo artwork on the brick pavilion wall"
-                loading="lazy"
                 width={1145}
                 height={1374}
                 className="aspect-square w-full object-cover"
               />
             </Reveal>
             <Reveal delay={90} className="overflow-hidden rounded-2xl">
-              <img
+              <LazyImg
                 {...responsiveProps(images.chickenOnGrate800, responsive.chicken)}
                 sizes="(min-width: 640px) 25vw, 50vw"
                 alt="Golden-brown grilled chicken and other cuts on the grate above glowing coals"
-                loading="lazy"
                 width={800}
                 height={1067}
                 className="aspect-square w-full object-cover object-[50%_32%]"
               />
             </Reveal>
             <Reveal delay={120} className="overflow-hidden rounded-2xl">
-              <img
+              <LazyImg
                 {...responsiveProps(cultureImg, responsive.drums)}
                 sizes="(min-width: 640px) 25vw, 50vw"
                 alt="A staff member in traditional-pattern uniform beside African paintings and art on display"
-                loading="lazy"
                 width={940}
                 height={1674}
                 className="aspect-square w-full object-cover"
               />
             </Reveal>
             <Reveal delay={150} className="overflow-hidden rounded-2xl">
-              <img
+              <LazyImg
                 {...responsiveProps(images.gardenZebraSignpost, responsive.zebra)}
                 sizes="(min-width: 640px) 25vw, 50vw"
                 alt="A zebra sculpture beside a signpost of African destinations, with umbrellas and picnic tables behind"
-                loading="lazy"
                 width={810}
                 height={1080}
                 className="aspect-square w-full object-cover"
               />
             </Reveal>
             <Reveal delay={180} className="col-span-2 overflow-hidden rounded-2xl">
-              <img
+              <LazyImg
                 {...responsiveProps(images.feastPlatterMixed, responsive.feast)}
                 sizes="(min-width: 640px) 50vw, 100vw"
                 alt="Large mixed grill platter at Cultures Resort: sadza, brown rice, jollof rice, grilled chicken, chips, greens and gravy"
-                loading="lazy"
                 width={1920}
                 height={2560}
                 className="aspect-[16/9] w-full object-cover object-center sm:aspect-[21/9]"
@@ -413,31 +419,28 @@ function Home() {
       <section className="bg-clay text-bone">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-1 px-1 pt-1 lg:grid-cols-3 lg:gap-2 lg:px-2 lg:pt-2">
           <div className="col-span-2 aspect-[16/11] overflow-hidden lg:col-span-2 lg:aspect-auto">
-            <img
+            <LazyImg
               {...responsiveProps(foodMainImg, responsive.sadzaGreens)}
               sizes="(min-width: 1024px) 66vw, 100vw"
               alt="Meal served at Cultures Resort: sadza, cooked greens, brown rice and chips on a steel platter, with a small bowl of gravy"
               width={1920}
               height={2560}
-              loading="lazy"
               className="h-full w-full object-cover object-center"
             />
           </div>
           <div className="hidden h-full grid-rows-2 gap-2 lg:grid">
             <div className="overflow-hidden">
-              <img
+              <LazyImg
                 src={images.sadzaPlate}
                 alt="Sadza and covo served on a white plate at an outdoor wooden table"
-                loading="lazy"
                 className="h-full w-full object-cover"
               />
             </div>
             <div className="overflow-hidden">
-              <img
+              <LazyImg
                 {...responsiveProps(images.porkSizzler, responsive.pork)}
                 sizes="25vw"
                 alt="Sizzling grilled pork served on a hot plate with tomato and onion"
-                loading="lazy"
                 className="h-full w-full object-cover"
               />
             </div>
@@ -523,13 +526,12 @@ function Home() {
               className="h-[122%] w-full object-cover"
             />
           ) : (
-            <img
+            <LazyImg
               {...responsiveProps(fireGrill, responsive.fire)}
               sizes="100vw"
               alt="Ribs and cuts of meat charring over open charcoal"
               width={1600}
               height={900}
-              loading="lazy"
               className="h-[122%] w-full object-cover"
             />
           )}
@@ -569,7 +571,7 @@ function Home() {
 
       {/* Chef / story */}
       <section className="relative overflow-hidden bg-ink text-bone">
-        <img
+        <LazyImg
           src={grillStaffLiftingChicken1600}
           srcSet={`${grillStaffLiftingChicken800} 800w, ${grillStaffLiftingChicken1600} 1600w`}
           sizes="100vw"
@@ -577,7 +579,6 @@ function Home() {
           aria-hidden="true"
           width={1600}
           height={2133}
-          loading="lazy"
           style={{ objectPosition: "50% 60%" }}
           className="absolute inset-0 h-full w-full object-cover opacity-25"
         />
@@ -588,9 +589,9 @@ function Home() {
               A lifetime in the kitchen.
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-bone/85">
-              Cultures' kitchen is led by Chef Joseph, trained in the fire rather than the
-              classroom — the same slow, unhurried approach passed down through years at the
-              flame shapes every plate that leaves this kitchen today.
+              Cultures' kitchen is led by Chef Joseph, trained in the fire rather than the classroom
+              — the same slow, unhurried approach passed down through years at the flame shapes
+              every plate that leaves this kitchen today.
             </p>
           </Reveal>
         </div>
@@ -600,11 +601,10 @@ function Home() {
       <section className="bg-clay py-14 text-bone">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 lg:grid-cols-2 lg:gap-16 lg:px-10">
           <Reveal className="overflow-hidden rounded-2xl">
-            <img
+            <LazyImg
               {...responsiveProps(images.traditionalDrinkPouring, responsive.drink)}
               sizes="(min-width: 1024px) 50vw, 100vw"
               alt="Two staff members in branded caps preparing maheu and traditional snacks beside large clay pots and calabashes"
-              loading="lazy"
               width={896}
               height={1120}
               className="aspect-[4/5] w-full object-cover"
@@ -623,7 +623,7 @@ function Home() {
 
       {/* Reviews */}
       <section className="relative overflow-hidden bg-background pb-16 pt-10 lg:py-24">
-        <img
+        <LazyImg
           {...responsiveProps(logoWatermark, responsive.logoMarkTransparent)}
           alt=""
           aria-hidden="true"
@@ -687,13 +687,12 @@ function Home() {
 
       {/* Culture band */}
       <section className="relative overflow-hidden">
-        <img
+        <LazyImg
           {...responsiveProps(cultureImg, responsive.drums)}
           sizes="100vw"
           alt="A staff member in traditional-pattern uniform beside African paintings and art on display"
           width={1600}
           height={1067}
-          loading="lazy"
           className="h-[70svh] w-full object-cover"
         />
         <div className="absolute inset-0 flex items-center bg-ink/60">
@@ -758,7 +757,10 @@ function Home() {
                     {business.phoneDisplay}
                   </a>
                   {business.phoneDisplay2 ? (
-                    <a href={business.phoneHref2 ?? undefined} className="block text-sm hover:text-primary">
+                    <a
+                      href={business.phoneHref2 ?? undefined}
+                      className="block text-sm hover:text-primary"
+                    >
                       {business.phoneDisplay2}
                     </a>
                   ) : null}
