@@ -143,7 +143,7 @@ Environment: `wrangler dev` with local D1/R2 (migrations applied, throwaway `ZZ 
 | Accessibility | ✅ Lighthouse 100/100 mobile and desktop (automated only) |
 | Caching/security | ✅ Headers identical to `main` (`/assets/*` immutable; no new routes, cookies or headers; R2 keys unique per upload so immutable caching cannot serve stale replaced images; menu/admin `no-store` untouched) |
 | TypeScript | ✅ clean |
-| Lint | `main`: 138 errors; this branch: 138 after fixing one I introduced. All remaining are pre-existing formatting issues in untouched code |
+| Lint | `eslint src`: per-file error counts identical to `main` (no new errors; I fixed the one I introduced). All remaining are pre-existing formatting issues in untouched code. (Repo-wide `eslint .` totals differ by a few when build output is present, so compare `src` only.) |
 | Console | ⚠️ React hydration error #418 appears once per page load on **both `main` and this branch** — pre-existing, not a regression; not investigated (changing it risks scope creep) |
 
 **Still requires staging/production verification**
